@@ -18,20 +18,6 @@ export interface backendInterface {
     }>;
     getBioStatus(): Promise<string>;
     getCommunicationInfo(): Promise<[boolean, string, string, boolean]>;
-    getDetailedHazardSummary(): Promise<{
-        radStatus: string;
-        fireStatus: string;
-        electricalStatus: string;
-        gasStatus: string;
-        bioStatus: string;
-        hazardLevels: {
-            bio: bigint;
-            gas: bigint;
-            rad: bigint;
-            fire: bigint;
-            electrical: bigint;
-        };
-    }>;
     getElectricalStatus(): Promise<string>;
     getEnvProtectionInfo(): Promise<[boolean, bigint, bigint, string]>;
     getFireStatus(): Promise<string>;

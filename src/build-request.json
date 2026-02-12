@@ -1,94 +1,104 @@
 {
   "kind": "build_request",
-  "title": "Add dedicated Hazard tab with comprehensive hazards, environmental status, and simulated statistics",
+  "title": "Add melee, ranged, and magic weapon sections with static weapon info and images in Weapons tab",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-6",
-      "text": "Add a new dedicated \"HAZARD\" tab to the main tab navigation and render it in both STANDARD and TACTICAL display modes.",
+      "id": "REQ-1",
+      "text": "Update the Weapons tab UI (`frontend/src/tabs/WeaponsTab.tsx`) to include three clearly labeled weapon sections: MELEE, RANGED, and MAGIC, each showing a list/grid of weapon entries that the user can click to select.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-6"
+          "msg-3",
+          "msg-4"
         ],
         "quotes": [
-          "you can make a hazard TAB with everything."
+          "add weapon sections and info in the weapons tab",
+          "yes, all, and static"
         ]
       },
       "acceptanceCriteria": [
-        "A new TabsTrigger labeled \"HAZARD\" is present alongside existing tabs in frontend/src/App.tsx.",
-        "Selecting the HAZARD tab shows a corresponding <TabsContent value=\"hazard\"> with the Hazard tab UI.",
-        "Tab switching continues to use the existing uiSfx.tabSwitch() behavior."
+        "Weapons tab displays three sections labeled MELEE, RANGED, and MAGIC.",
+        "Each section renders multiple weapon entries (not just a single item).",
+        "Clicking an entry selects that weapon and updates the weapon details panel."
       ]
     },
     {
-      "id": "REQ-7",
-      "text": "Implement a new Hazard tab UI (new component file under frontend/src/tabs) that presents (a) an \"All Hazards\" section containing all hazard categories and (b) an \"Environmental Status\" section with detailed status indicators.",
+      "id": "REQ-2",
+      "text": "Replace/extend the current `WEAPONS` static data in `frontend/src/tabs/WeaponsTab.tsx` to be categorized (melee/ranged/magic) and to include, for every weapon: name, description, damage, a small set of stats (e.g., accuracy, recoil, range, handling), and an image path (served from frontend static assets). Keep all weapon data static in the frontend (no backend canister calls).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-6"
+          "msg-4"
         ],
         "quotes": [
-          "...if it is its own specialized tab then yes do all hazards."
+          "yes, all, and static"
         ]
       },
       "acceptanceCriteria": [
-        "A new tab component exists (e.g., frontend/src/tabs/HazardTab.tsx) and is used by App.tsx for the hazard tab content.",
-        "The Hazard tab includes an \"ALL HAZARDS\" panel that lists, at minimum, the existing hazard categories currently supported by the UI store/panels: fire/temperature, biohazard, radiation, electrical, toxic gas.",
-        "The Hazard tab includes an \"ENVIRONMENTAL STATUS\" panel with multiple indicators (not just hazard %), such as temperature and life-support related readouts, shown with clear labels and nominal/warning/critical styling consistent with existing HUD panels.",
-        "UI uses English labels for all user-facing text."
+        "Every weapon entry includes fields for name, description, damage, stats, and image path.",
+        "Weapon data is defined locally in the frontend (e.g., a constant in WeaponsTab or a small local module) and does not fetch from the backend.",
+        "User-facing labels/descriptions are in English."
       ]
     },
     {
-      "id": "REQ-8",
-      "text": "Add live-updating simulated statistics on the Hazard tab, including continuously changing hazard levels and derived statistics (e.g., trends and aggregates) without requiring manual user input.",
+      "id": "REQ-3",
+      "text": "Enhance the WEAPON DETAILS panel in `frontend/src/tabs/WeaponsTab.tsx` to display the selected weapon’s image, description, damage, and stats in addition to the existing ammo type and fire rate controls (where applicable). For weapons that do not use ammo or fire rate (e.g., melee), the UI should show sensible static values and/or disable/hide irrelevant controls without breaking layout.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-6"
+          "msg-3",
+          "msg-4"
         ],
         "quotes": [
-          "and do simulated statistics."
+          "add weapon sections and info in the weapons tab",
+          "yes, all, and static"
         ]
       },
       "acceptanceCriteria": [
-        "Hazard values displayed on the Hazard tab change automatically over time (simulation) while the app is running.",
-        "The tab displays at least: (1) an aggregate hazard/severity value and (2) per-hazard trend indicators (e.g., rising/falling/steady) computed from recent simulated history.",
-        "Simulation updates do not break existing hazard alert monitoring (frontend/src/state/hazardAlerts.ts) and can trigger critical flashing/voice behavior when simulated hazards exceed the existing thresholds."
+        "Selecting a weapon shows its image, description, damage, and stats in the details panel.",
+        "Ammo type and fire rate controls behave correctly for weapons that support them.",
+        "Weapons that do not support ammo/fire rate do not cause empty select dropdowns or runtime errors."
       ]
     },
     {
-      "id": "REQ-9",
-      "text": "Expand hazard data plumbing so the Hazard tab can show detailed hazard statuses (text) and include electrical hazard level alongside the other existing hazard levels.",
-      "target": "both",
+      "id": "REQ-4",
+      "text": "Add the required weapon images as static assets under `frontend/public/assets/generated/` and reference them from the Weapons tab weapon data so each weapon entry can render an image thumbnail/preview.",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-6"
+          "msg-4"
         ],
         "quotes": [
-          "make a hazard TAB with everything... do all hazards"
+          "yes, all, and static"
         ]
       },
       "acceptanceCriteria": [
-        "Backend exposes a single method or an updated existing method that returns all five hazard levels (fire, bio, radiation, electrical, gas) in one response (electrical must be included; it is currently not returned by getHazardData).",
-        "Frontend includes a React Query hook (in frontend/src/hooks/useQueries.ts) to fetch the hazard statuses (backend getAllHazardStatuses) and render them on the Hazard tab.",
-        "Hazard tab shows the backend-provided status text for each hazard (fire/bio/radiation/electrical/gas) when available."
+        "All newly required images exist under `frontend/public/assets/generated/`.",
+        "Weapons tab renders the images using direct static paths (no backend image serving).",
+        "No broken image links appear in the Weapons tab UI."
       ]
     }
   ],
   "constraints": [
-    "Backend must remain a single Motoko actor in backend/main.mo (no additional backend services).",
-    "Do not edit any files under frontend/src/components/ui (compose existing UI components instead).",
-    "Do not edit files listed in frontend.immutablePaths (frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui)."
+    "Do not introduce any new backend canister calls for weapon data; keep weapon entries static in the frontend.",
+    "Do not edit files under `frontend/src/components/ui` or any paths listed as immutable in SYSTEM_CONTEXT.",
+    "Keep all user-facing text in English."
   ],
   "nonGoals": [
-    "Implementing real sensor integration or external data feeds for hazards/environmental status (simulation/local + existing backend values only).",
-    "Adding third-party real-time communication (WebSockets) for hazard updates.",
-    "Redesigning unrelated tabs (Basics/Medical/Info/etc.) beyond what is needed to add the new Hazard tab entry."
+    "Persisting weapon loadouts or weapon definitions to the backend canister.",
+    "Admin/editor UI to modify weapon entries.",
+    "Adding authentication-gated weapon management workflows."
   ],
   "imageRequirements": {
-    "required": [],
+    "required": [
+      "Monochrome sci‑fi crowbar illustration, high-contrast HUD style (weapon-crowbar.dim_512x512.png)",
+      "Monochrome sci‑fi pistol illustration, high-contrast HUD style (weapon-pistol.dim_512x512.png)",
+      "Monochrome sci‑fi shotgun illustration, high-contrast HUD style (weapon-shotgun.dim_512x512.png)",
+      "Monochrome sci‑fi rifle/SMG illustration, high-contrast HUD style (weapon-smg.dim_512x512.png)",
+      "Monochrome gravity/energy device illustration, high-contrast HUD style (weapon-gravity-device.dim_512x512.png)",
+      "Monochrome arcane staff/wand illustration, high-contrast HUD style (weapon-arcane-staff.dim_512x512.png)"
+    ],
     "edits": []
   }
 }

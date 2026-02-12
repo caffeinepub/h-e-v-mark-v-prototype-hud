@@ -6,84 +6,85 @@
 
 @layer base {
   :root {
-    /* Orange-forward OKLCH palette (hue ~40-50, high saturation) */
-    --background: oklch(0.12 0.02 50);
+    --background: oklch(0.12 0.02 60);
     --foreground: oklch(0.92 0.08 50);
-
-    --card: oklch(0.15 0.03 50);
+    
+    --card: oklch(0.15 0.03 60);
     --card-foreground: oklch(0.92 0.08 50);
-
-    --popover: oklch(0.14 0.03 50);
+    
+    --popover: oklch(0.10 0.02 60);
     --popover-foreground: oklch(0.92 0.08 50);
-
-    --primary: oklch(0.68 0.18 45);
-    --primary-foreground: oklch(0.12 0.02 50);
-
-    --secondary: oklch(0.55 0.14 48);
-    --secondary-foreground: oklch(0.12 0.02 50);
-
-    --muted: oklch(0.25 0.04 50);
-    --muted-foreground: oklch(0.65 0.08 50);
-
-    --accent: oklch(0.72 0.20 42);
-    --accent-foreground: oklch(0.12 0.02 50);
-
+    
+    --primary: oklch(0.65 0.20 45);
+    --primary-foreground: oklch(0.10 0.02 60);
+    
+    --secondary: oklch(0.55 0.15 50);
+    --secondary-foreground: oklch(0.10 0.02 60);
+    
+    --muted: oklch(0.25 0.04 60);
+    --muted-foreground: oklch(0.60 0.08 50);
+    
+    --accent: oklch(0.70 0.22 40);
+    --accent-foreground: oklch(0.10 0.02 60);
+    
     --destructive: oklch(0.55 0.22 25);
-    --destructive-foreground: oklch(0.95 0.05 25);
-
-    --success: oklch(0.65 0.16 140);
-    --success-foreground: oklch(0.12 0.02 140);
-
-    --warning: oklch(0.75 0.18 70);
-    --warning-foreground: oklch(0.12 0.02 70);
-
-    --border: oklch(0.28 0.06 50);
-    --input: oklch(0.28 0.06 50);
-    --ring: oklch(0.68 0.18 45);
-
+    --destructive-foreground: oklch(0.95 0.05 50);
+    
+    --success: oklch(0.60 0.15 140);
+    --success-foreground: oklch(0.10 0.02 60);
+    
+    --warning: oklch(0.70 0.18 70);
+    --warning-foreground: oklch(0.10 0.02 60);
+    
+    --border: oklch(0.30 0.06 50);
+    --input: oklch(0.30 0.06 50);
+    --ring: oklch(0.65 0.20 45);
+    
     --radius: 0rem;
-
-    --chart-1: oklch(0.68 0.18 45);
-    --chart-2: oklch(0.55 0.14 48);
-    --chart-3: oklch(0.72 0.20 42);
-    --chart-4: oklch(0.60 0.16 52);
-    --chart-5: oklch(0.50 0.12 46);
+    
+    --hud-glow: oklch(0.65 0.20 45 / 0.4);
+    --hud-glow-intense: oklch(0.70 0.22 40 / 0.6);
+    --critical-glow: oklch(0.55 0.22 25 / 0.5);
   }
 
   .dark {
-    --background: oklch(0.12 0.02 50);
+    --background: oklch(0.12 0.02 60);
     --foreground: oklch(0.92 0.08 50);
-
-    --card: oklch(0.15 0.03 50);
+    
+    --card: oklch(0.15 0.03 60);
     --card-foreground: oklch(0.92 0.08 50);
-
-    --popover: oklch(0.14 0.03 50);
+    
+    --popover: oklch(0.10 0.02 60);
     --popover-foreground: oklch(0.92 0.08 50);
-
-    --primary: oklch(0.68 0.18 45);
-    --primary-foreground: oklch(0.12 0.02 50);
-
-    --secondary: oklch(0.55 0.14 48);
-    --secondary-foreground: oklch(0.12 0.02 50);
-
-    --muted: oklch(0.25 0.04 50);
-    --muted-foreground: oklch(0.65 0.08 50);
-
-    --accent: oklch(0.72 0.20 42);
-    --accent-foreground: oklch(0.12 0.02 50);
-
+    
+    --primary: oklch(0.65 0.20 45);
+    --primary-foreground: oklch(0.10 0.02 60);
+    
+    --secondary: oklch(0.55 0.15 50);
+    --secondary-foreground: oklch(0.10 0.02 60);
+    
+    --muted: oklch(0.25 0.04 60);
+    --muted-foreground: oklch(0.60 0.08 50);
+    
+    --accent: oklch(0.70 0.22 40);
+    --accent-foreground: oklch(0.10 0.02 60);
+    
     --destructive: oklch(0.55 0.22 25);
-    --destructive-foreground: oklch(0.95 0.05 25);
-
-    --success: oklch(0.65 0.16 140);
-    --success-foreground: oklch(0.12 0.02 140);
-
-    --warning: oklch(0.75 0.18 70);
-    --warning-foreground: oklch(0.12 0.02 70);
-
-    --border: oklch(0.28 0.06 50);
-    --input: oklch(0.28 0.06 50);
-    --ring: oklch(0.68 0.18 45);
+    --destructive-foreground: oklch(0.95 0.05 50);
+    
+    --success: oklch(0.60 0.15 140);
+    --success-foreground: oklch(0.10 0.02 60);
+    
+    --warning: oklch(0.70 0.18 70);
+    --warning-foreground: oklch(0.10 0.02 60);
+    
+    --border: oklch(0.30 0.06 50);
+    --input: oklch(0.30 0.06 50);
+    --ring: oklch(0.65 0.20 45);
+    
+    --hud-glow: oklch(0.65 0.20 45 / 0.4);
+    --hud-glow-intense: oklch(0.70 0.22 40 / 0.6);
+    --critical-glow: oklch(0.55 0.22 25 / 0.5);
   }
 }
 
@@ -93,12 +94,13 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'Share Tech Mono', 'Courier New', monospace;
-    font-feature-settings: 'kern' 1;
+    font-family: 'Share Tech Mono', monospace;
+    font-feature-settings: "kern" 1;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+  
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Orbitron', sans-serif;
     font-weight: 700;
@@ -106,81 +108,11 @@
   }
 }
 
-/* HUD Layout & Global Effects */
-.hud-container {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  background: var(--background);
-}
-
-.hud-content {
-  position: relative;
-  z-index: 10;
-  width: 100%;
-  height: 100%;
-  padding: 1rem;
-}
-
-/* Tab System */
-.hud-tabs {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  gap: 0.75rem;
-}
-
-.hud-tabs-list {
-  display: flex;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  background: oklch(0.18 0.04 50 / 0.6);
-  border: 2px solid var(--border);
-  backdrop-filter: blur(8px);
-  flex-wrap: wrap;
-}
-
-.hud-tab-trigger {
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 600;
-  font-size: 0.875rem;
-  letter-spacing: 0.1em;
-  padding: 0.5rem 1rem;
-  background: oklch(0.20 0.04 50 / 0.4);
-  border: 2px solid oklch(0.35 0.08 50);
-  color: oklch(0.75 0.12 50);
-  cursor: pointer;
-  transition: all 0.15s ease;
-  position: relative;
-}
-
-.hud-tab-trigger:hover {
-  background: oklch(0.25 0.06 50 / 0.6);
-  border-color: oklch(0.68 0.18 45);
-  color: oklch(0.85 0.16 48);
-  box-shadow: 0 0 12px oklch(0.68 0.18 45 / 0.3);
-}
-
-.hud-tab-trigger[data-state="active"] {
-  background: oklch(0.68 0.18 45 / 0.2);
-  border-color: oklch(0.68 0.18 45);
-  color: oklch(0.92 0.18 45);
-  box-shadow: 0 0 16px oklch(0.68 0.18 45 / 0.4), inset 0 0 8px oklch(0.68 0.18 45 / 0.2);
-}
-
-.hud-tab-content {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 0.5rem;
-  animation: tabFadeIn 0.2s ease;
-}
-
-@keyframes tabFadeIn {
+/* Tab transitions */
+@keyframes tab-fade-in {
   from {
     opacity: 0;
-    transform: translateY(4px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -188,13 +120,124 @@
   }
 }
 
+.tab-content {
+  animation: tab-fade-in 0.3s ease-out;
+  padding: 1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab-content {
+    animation: none;
+  }
+}
+
+/* Micro-interactions */
+button, .clickable {
+  transition: all 0.15s ease;
+}
+
+button:hover:not(:disabled), .clickable:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+}
+
+button:active:not(:disabled), .clickable:active {
+  transform: translateY(0);
+  filter: brightness(0.95);
+}
+
+button:focus-visible, .clickable:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button, .clickable {
+    transition: none;
+  }
+  button:hover:not(:disabled), .clickable:hover {
+    transform: none;
+  }
+  button:active:not(:disabled), .clickable:active {
+    transform: none;
+  }
+}
+
+/* HUD Global Effects */
+.hud-bloom-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at var(--pointer-x, 50%) var(--pointer-y, 50%),
+    var(--hud-glow-intense) 0%,
+    transparent 40%
+  );
+  opacity: calc(var(--pointer-intensity, 0) * 0.3);
+  mix-blend-mode: screen;
+  transition: opacity 0.3s ease;
+  z-index: 9998;
+}
+
+.hud-critical-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% 50%,
+    var(--critical-glow) 0%,
+    transparent 60%
+  );
+  opacity: 0;
+  mix-blend-mode: screen;
+  z-index: 9997;
+}
+
+.hud-critical-overlay.active {
+  animation: critical-pulse 1s ease-in-out infinite;
+}
+
+@keyframes critical-pulse {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.5; }
+}
+
+.hud-presence-glow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at var(--pointer-x, 50%) var(--pointer-y, 50%),
+    var(--hud-glow) 0%,
+    transparent 50%
+  );
+  opacity: calc(var(--pointer-intensity, 0) * 0.2);
+  mix-blend-mode: screen;
+  transition: opacity 0.5s ease;
+  z-index: 9996;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hud-critical-overlay.active {
+    animation: none;
+    opacity: 0.3;
+  }
+  .hud-bloom-overlay,
+  .hud-presence-glow {
+    opacity: 0 !important;
+  }
+}
+
 /* Tactical Panel Styling */
 .tactical-panel {
-  background: oklch(0.16 0.03 50 / 0.7);
-  border: 2px solid oklch(0.35 0.08 50);
-  padding: 1rem;
-  backdrop-filter: blur(4px);
+  background: linear-gradient(
+    135deg,
+    oklch(0.15 0.03 60 / 0.9) 0%,
+    oklch(0.12 0.02 60 / 0.95) 100%
+  );
+  border: 2px solid var(--border);
   position: relative;
+  overflow: hidden;
   margin-bottom: 1rem;
 }
 
@@ -202,11 +245,24 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: url('/assets/generated/hud-panel-texture.dim_2048x2048.png');
+  background-image: url('/assets/generated/hud-panel-texture.dim_2048x2048.png');
   background-size: 512px 512px;
-  opacity: 0.08;
+  opacity: 0.03;
   pointer-events: none;
   mix-blend-mode: overlay;
+}
+
+.tactical-panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    oklch(0.65 0.20 45 / 0.02) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
 }
 
 .hud-panel-title {
@@ -214,342 +270,547 @@
   font-weight: 700;
   font-size: 0.875rem;
   letter-spacing: 0.15em;
-  color: oklch(0.72 0.20 42);
-  margin-bottom: 0.75rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid oklch(0.35 0.08 50);
-  text-shadow: 0 0 8px oklch(0.72 0.20 42 / 0.4);
-}
-
-.hud-panel-content {
+  color: var(--primary);
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid var(--border);
+  background: linear-gradient(
+    90deg,
+    oklch(0.65 0.20 45 / 0.1) 0%,
+    transparent 100%
+  );
   position: relative;
   z-index: 1;
 }
 
-/* Hazard List Styling */
-.hazards-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.hazard-row {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
-  background: oklch(0.18 0.03 50 / 0.5);
-  border: 1px solid oklch(0.30 0.06 50);
-  transition: all 0.15s ease;
-}
-
-.hazard-row:hover {
-  background: oklch(0.22 0.04 50 / 0.6);
-  border-color: oklch(0.68 0.18 45);
-  box-shadow: 0 0 8px oklch(0.68 0.18 45 / 0.2);
-}
-
-.hazard-row-detailed {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+.hud-panel-content {
   padding: 1rem;
-  background: oklch(0.18 0.03 50 / 0.5);
-  border: 2px solid oklch(0.30 0.06 50);
-  transition: all 0.15s ease;
+  position: relative;
+  z-index: 1;
 }
 
-.hazard-row-detailed:hover {
-  background: oklch(0.22 0.04 50 / 0.6);
-  border-color: oklch(0.68 0.18 45);
-  box-shadow: 0 0 12px oklch(0.68 0.18 45 / 0.3);
-}
-
-.hazard-icon {
-  font-size: 1.5rem;
-  width: 2rem;
-  height: 2rem;
+/* Tactical Readouts */
+.tactical-readouts-container {
   display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.tactical-readout-item {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.glyph-icon {
-  color: oklch(0.72 0.20 42);
-  text-shadow: 0 0 8px oklch(0.72 0.20 42 / 0.5);
-}
-
-.hazard-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.hazard-info-detailed {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.375rem;
-}
-
-.hazard-label {
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 600;
+  padding: 0.5rem 0.75rem;
+  background: oklch(0.10 0.02 60 / 0.5);
+  border-left: 3px solid var(--primary);
+  font-family: 'Share Tech Mono', monospace;
   font-size: 0.875rem;
-  letter-spacing: 0.08em;
-  color: oklch(0.85 0.12 50);
-}
-
-.hazard-status-text {
-  font-size: 0.75rem;
-  color: oklch(0.65 0.08 50);
   letter-spacing: 0.05em;
+  transition: all 0.2s ease;
 }
 
-.hazard-backend-status {
-  font-size: 0.75rem;
-  color: oklch(0.68 0.18 45);
-  letter-spacing: 0.05em;
-  font-style: italic;
+.tactical-readout-item:hover {
+  background: oklch(0.12 0.02 60 / 0.7);
+  border-left-color: var(--accent);
 }
 
-.hazard-metrics {
+.tactical-readout-label {
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+
+.tactical-readout-value {
+  color: var(--primary);
+  font-weight: 700;
+  text-shadow: 0 0 8px var(--hud-glow);
+}
+
+/* Tactical Control Rows */
+.tactical-control-row {
   display: flex;
+  justify-content: space-between;
   align-items: center;
+  padding: 0.75rem;
+  background: oklch(0.10 0.02 60 / 0.5);
+  border: 1px solid var(--border);
   gap: 1rem;
 }
 
-.hazard-trend {
-  display: flex;
-  align-items: center;
-  color: oklch(0.68 0.18 45);
+.tactical-control-info {
+  flex: 1;
 }
 
-.hazard-level-value {
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 700;
-  font-size: 1.125rem;
-  color: oklch(0.72 0.20 42);
-  min-width: 3.5rem;
-  text-align: right;
-}
-
-.hazard-status-badge {
+.tactical-control-label {
   font-family: 'Orbitron', sans-serif;
   font-weight: 600;
   font-size: 0.75rem;
   letter-spacing: 0.1em;
-  padding: 0.25rem 0.5rem;
-  border: 1px solid;
-  min-width: 5rem;
-  text-align: center;
+  color: var(--primary);
+  margin-bottom: 0.25rem;
 }
 
-/* Status Classes */
-.status-nominal {
-  border-color: oklch(0.65 0.16 140);
-  color: oklch(0.75 0.16 140);
+.tactical-control-desc {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  letter-spacing: 0.02em;
 }
 
-.status-nominal .hazard-level-value,
-.status-nominal .glyph-icon {
-  color: oklch(0.75 0.16 140);
-  text-shadow: 0 0 8px oklch(0.75 0.16 140 / 0.4);
+/* Weapons Grid */
+.weapons-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
 }
 
-.status-warning {
-  border-color: oklch(0.75 0.18 70);
-  color: oklch(0.85 0.18 70);
+@media (min-width: 768px) {
+  .weapons-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
-.status-warning .hazard-level-value,
-.status-warning .glyph-icon {
-  color: oklch(0.85 0.18 70);
-  text-shadow: 0 0 8px oklch(0.85 0.18 70 / 0.4);
+@media (min-width: 1024px) {
+  .weapons-grid {
+    grid-template-columns: 2fr 1fr;
+  }
 }
 
-.status-critical {
-  border-color: oklch(0.55 0.22 25);
-  color: oklch(0.85 0.22 25);
+/* Weapon Category Sections */
+.weapon-category-section {
+  margin-bottom: 1.5rem;
 }
 
-.status-critical .hazard-level-value,
-.status-critical .glyph-icon {
-  color: oklch(0.85 0.22 25);
-  text-shadow: 0 0 8px oklch(0.85 0.22 25 / 0.5);
+.weapon-category-section:last-child {
+  margin-bottom: 0;
 }
 
-/* Aggregate Hazard Display */
-.aggregate-hazard-display {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 1.5rem;
-  background: oklch(0.18 0.03 50 / 0.6);
-  border: 3px solid;
-  transition: all 0.2s ease;
-}
-
-.aggregate-value {
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 900;
-  font-size: 3rem;
-  letter-spacing: 0.05em;
-  text-shadow: 0 0 16px currentColor;
-}
-
-.aggregate-status {
+.weapon-category-title {
   font-family: 'Orbitron', sans-serif;
   font-weight: 700;
-  font-size: 1.25rem;
+  font-size: 0.75rem;
   letter-spacing: 0.15em;
+  color: var(--accent);
+  padding: 0.5rem 0.75rem;
+  background: oklch(0.10 0.02 60 / 0.5);
+  border-left: 3px solid var(--accent);
+  margin-bottom: 0.75rem;
 }
 
-/* Environmental Status Grid */
-.env-status-grid {
+.weapon-category-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.75rem;
+}
+
+/* Weapon Cards */
+.weapon-card {
+  background: oklch(0.10 0.02 60 / 0.5);
+  border: 2px solid var(--border);
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.weapon-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    var(--primary) 0%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.weapon-card:hover {
+  border-color: var(--primary);
+  background: oklch(0.12 0.02 60 / 0.7);
+}
+
+.weapon-card:hover::before {
+  opacity: 0.05;
+}
+
+.weapon-card.selected {
+  border-color: var(--accent);
+  background: oklch(0.15 0.03 60 / 0.9);
+  box-shadow: 0 0 16px var(--hud-glow);
+}
+
+.weapon-card.selected::before {
+  opacity: 0.1;
+}
+
+.weapon-card-image {
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+  background: oklch(0.08 0.02 60 / 0.5);
+  border: 1px solid var(--border);
+  position: relative;
+  z-index: 1;
+}
+
+.weapon-card-image img {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px var(--hud-glow));
+}
+
+.weapon-card-name {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--foreground);
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.weapon-card.selected .weapon-card-name {
+  color: var(--accent);
+  text-shadow: 0 0 8px var(--hud-glow);
+}
+
+/* Weapon Details Container */
+.weapon-details-container {
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
 }
 
-.env-status-section {
-  background: oklch(0.18 0.03 50 / 0.4);
-  border: 1px solid oklch(0.30 0.06 50);
+.weapon-details-image {
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: oklch(0.08 0.02 60 / 0.5);
+  border: 2px solid var(--border);
   padding: 1rem;
 }
 
-.env-section-title {
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 600;
-  font-size: 0.75rem;
-  letter-spacing: 0.12em;
-  color: oklch(0.68 0.18 45);
-  margin-bottom: 0.75rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid oklch(0.30 0.06 50);
+.weapon-details-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 12px var(--hud-glow-intense));
 }
 
-.env-readouts {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.env-readout {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem;
-  background: oklch(0.16 0.02 50 / 0.3);
-  border-left: 2px solid oklch(0.35 0.08 50);
-  transition: all 0.15s ease;
-}
-
-.env-readout:hover {
-  background: oklch(0.20 0.03 50 / 0.5);
-  border-left-color: oklch(0.68 0.18 45);
-}
-
-.env-label {
+.weapon-description {
   font-size: 0.875rem;
-  color: oklch(0.70 0.10 50);
-  letter-spacing: 0.05em;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+  padding: 0.75rem;
+  background: oklch(0.10 0.02 60 / 0.5);
+  border-left: 3px solid var(--secondary);
+  font-style: italic;
 }
 
-.env-value {
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 600;
-  font-size: 0.875rem;
-  letter-spacing: 0.05em;
-}
-
-/* Tab Content Wrapper */
-.tab-content {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-/* Stat Panel */
-.stat-panel {
+/* Weapon Stats Grid */
+.weapon-stats-grid {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   padding: 0.75rem;
-  background: oklch(0.18 0.03 50 / 0.5);
-  border: 1px solid oklch(0.30 0.06 50);
+  background: oklch(0.10 0.02 60 / 0.5);
+  border: 1px solid var(--border);
 }
 
-.stat-label {
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  color: oklch(0.65 0.08 50);
-  text-transform: uppercase;
+.weapon-stat-item {
+  display: grid;
+  grid-template-columns: 80px 1fr 40px;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.stat-value {
+.weapon-stat-label {
   font-family: 'Orbitron', sans-serif;
-  font-weight: 700;
-  font-size: 1.25rem;
-  color: oklch(0.72 0.20 42);
+  font-weight: 600;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--muted-foreground);
 }
 
-.stat-unit {
-  font-size: 0.875rem;
-  margin-left: 0.25rem;
-  color: oklch(0.65 0.08 50);
-}
-
-.stat-max {
-  font-size: 0.875rem;
-  color: oklch(0.55 0.08 50);
-}
-
-.stat-bar {
-  height: 4px;
-  background: oklch(0.25 0.04 50);
-  border: 1px solid oklch(0.30 0.06 50);
+.weapon-stat-bar {
+  height: 8px;
+  background: oklch(0.08 0.02 60 / 0.8);
+  border: 1px solid var(--border);
+  position: relative;
   overflow: hidden;
 }
 
-.stat-bar-fill {
+.weapon-stat-fill {
   height: 100%;
-  background: oklch(0.68 0.18 45);
-  box-shadow: 0 0 8px oklch(0.68 0.18 45 / 0.6);
+  background: linear-gradient(
+    90deg,
+    var(--primary) 0%,
+    var(--accent) 100%
+  );
+  box-shadow: 0 0 8px var(--hud-glow);
   transition: width 0.3s ease;
 }
 
-/* Reduced Motion */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+.weapon-stat-value {
+  font-family: 'Share Tech Mono', monospace;
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: var(--primary);
+  text-align: right;
+}
+
+/* Hazards Tab Styles */
+.hazards-container {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 1024px) {
+  .hazards-container {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
-/* Landscape Mode */
-@media (orientation: landscape) and (max-height: 600px) {
-  .hud-content {
-    padding: 0.5rem;
-  }
-  
-  .hud-tabs {
-    gap: 0.5rem;
-  }
-  
-  .tactical-panel {
-    padding: 0.75rem;
-    margin-bottom: 0.75rem;
-  }
-  
-  .hud-panel-title {
-    font-size: 0.75rem;
-    margin-bottom: 0.5rem;
-  }
+.hazard-detail-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.hazard-detail-card {
+  background: oklch(0.10 0.02 60 / 0.5);
+  border: 2px solid var(--border);
+  border-left: 4px solid var(--primary);
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.hazard-detail-card:hover {
+  border-left-color: var(--accent);
+  background: oklch(0.12 0.02 60 / 0.7);
+}
+
+.hazard-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  background: oklch(0.08 0.02 60 / 0.5);
+  border-bottom: 1px solid var(--border);
+}
+
+.hazard-detail-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.1em;
+  color: var(--foreground);
+}
+
+.hazard-detail-glyph {
+  font-size: 1.25rem;
+  color: var(--primary);
+}
+
+.hazard-detail-level {
+  font-family: 'Share Tech Mono', monospace;
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--accent);
+  text-shadow: 0 0 8px var(--hud-glow);
+}
+
+.hazard-detail-content {
+  padding: 1rem;
+}
+
+.hazard-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.hazard-metric-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  background: oklch(0.08 0.02 60 / 0.5);
+  border: 1px solid var(--border);
+}
+
+.hazard-metric-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  color: var(--muted-foreground);
+}
+
+.hazard-metric-value {
+  font-family: 'Share Tech Mono', monospace;
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--primary);
+}
+
+.hazard-trend-indicator {
+  font-size: 0.75rem;
+  color: var(--success);
+}
+
+.hazard-trend-indicator.rising {
+  color: var(--warning);
+}
+
+.hazard-trend-indicator.critical {
+  color: var(--destructive);
+}
+
+/* Environmental Status */
+.env-status-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.env-status-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: oklch(0.10 0.02 60 / 0.5);
+  border-left: 3px solid var(--primary);
+}
+
+.env-status-label {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: var(--muted-foreground);
+}
+
+.env-status-value {
+  font-family: 'Share Tech Mono', monospace;
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--primary);
+}
+
+/* Statistics Cards */
+.stats-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.stat-summary-card {
+  padding: 1rem;
+  background: oklch(0.10 0.02 60 / 0.5);
+  border: 2px solid var(--border);
+  border-top: 3px solid var(--primary);
+  transition: all 0.2s ease;
+}
+
+.stat-summary-card:hover {
+  border-top-color: var(--accent);
+  background: oklch(0.12 0.02 60 / 0.7);
+}
+
+.stat-card-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--muted-foreground);
+  margin-bottom: 0.5rem;
+}
+
+.stat-card-value {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--primary);
+  text-shadow: 0 0 8px var(--hud-glow);
+}
+
+.stat-card-unit {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  margin-left: 0.25rem;
+}
+
+/* Event Timeline */
+.event-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.event-timeline-item {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: oklch(0.10 0.02 60 / 0.5);
+  border-left: 3px solid var(--border);
+  transition: all 0.2s ease;
+}
+
+.event-timeline-item:hover {
+  background: oklch(0.12 0.02 60 / 0.7);
+  border-left-color: var(--primary);
+}
+
+.event-timeline-time {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  min-width: 60px;
+}
+
+.event-timeline-content {
+  flex: 1;
+}
+
+.event-timeline-title {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  color: var(--foreground);
+  margin-bottom: 0.25rem;
+}
+
+.event-timeline-desc {
+  font-size: 0.7rem;
+  color: var(--muted-foreground);
+}
+
+.event-timeline-severity {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.125rem 0.5rem;
+  background: oklch(0.08 0.02 60 / 0.5);
+  border: 1px solid var(--border);
+  color: var(--primary);
+}
+
+.event-timeline-severity.warning {
+  color: var(--warning);
+  border-color: var(--warning);
+}
+
+.event-timeline-severity.critical {
+  color: var(--destructive);
+  border-color: var(--destructive);
 }
