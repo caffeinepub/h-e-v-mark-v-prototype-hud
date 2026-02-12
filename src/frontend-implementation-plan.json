@@ -1,104 +1,95 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Categorized static Weapons tab with weapon details and thumbnails",
+  "title": "Dedicated Hazard tab with comprehensive hazards, environmental status, and simulated statistics",
   "requirements": [
     {
-      "id": "REQ-1",
-      "summary": "Update Weapons tab to render three labeled sections (MELEE/RANGED/MAGIC) with clickable weapon entries that drive selection.",
+      "id": "REQ-6",
+      "summary": "Add a new HAZARD tab to the main tab navigation for both STANDARD and TACTICAL display modes.",
       "acceptanceCriteria": [
-        "Weapons tab displays three sections labeled MELEE, RANGED, and MAGIC.",
-        "Each section renders multiple weapon entries (not just a single item).",
-        "Clicking an entry selects that weapon and updates the weapon details panel."
+        "A new TabsTrigger labeled \"HAZARD\" is present alongside existing tabs in frontend/src/App.tsx.",
+        "Selecting the HAZARD tab shows a corresponding <TabsContent value=\"hazard\"> with the Hazard tab UI.",
+        "Tab switching continues to use the existing uiSfx.tabSwitch() behavior."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/tabs/WeaponsTab.tsx",
+          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Refactor the loadout area into three clearly labeled sections (MELEE, RANGED, MAGIC) that each render a grid/list of weapon entry cards and call the existing selection handler when clicked. Keep tab layout consistent with existing Tactical/HUD panel patterns and ensure selection styling remains clear. Continue using the existing shadcn-ui Select component for consistency where dropdown controls remain (Verify the component's usage instructions before implementing)."
+          "description": "Wire a new \"HAZARD\" tab into both STANDARD and TACTICAL TabsLists and TabsContent blocks, update TabValue to include \"hazard\", and render the new HazardTab component while keeping existing uiSfx.tabSwitch() behavior. Use the shadcn-ui Tabs (Tabs/TabsList/TabsTrigger/TabsContent) composition already present; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/tabs/HazardTab.tsx",
+          "operation": "create",
+          "description": "Create the HazardTab component used by App.tsx as the content for value=\"hazard\" in both display modes (component must be navigable via tab selection; no orphan UI)."
         }
       ]
     },
     {
-      "id": "REQ-2",
-      "summary": "Replace/extend static WEAPONS data with categorized weapon definitions including name/description/damage/stats/image path (frontend-only).",
+      "id": "REQ-7",
+      "summary": "Implement the Hazard tab UI with an All Hazards section and a detailed Environmental Status section.",
       "acceptanceCriteria": [
-        "Every weapon entry includes fields for name, description, damage, stats, and image path.",
-        "Weapon data is defined locally in the frontend (e.g., a constant in WeaponsTab or a small local module) and does not fetch from the backend.",
-        "User-facing labels/descriptions are in English."
+        "A new tab component exists (e.g., frontend/src/tabs/HazardTab.tsx) and is used by App.tsx for the hazard tab content.",
+        "The Hazard tab includes an \"ALL HAZARDS\" panel that lists, at minimum, the existing hazard categories currently supported by the UI store/panels: fire/temperature, biohazard, radiation, electrical, toxic gas.",
+        "The Hazard tab includes an \"ENVIRONMENTAL STATUS\" panel with multiple indicators (not just hazard %), such as temperature and life-support related readouts, shown with clear labels and nominal/warning/critical styling consistent with existing HUD panels.",
+        "UI uses English labels for all user-facing text."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/lib/weaponsData.ts",
-          "operation": "create",
-          "description": "Create a small frontend-only static module exporting categorized weapon data (melee/ranged/magic). Each weapon should include: id, name (English), description (English), damage (static display value), a small stats object (e.g., accuracy/recoil/range/handling as numbers or labeled values), imagePath (pointing to frontend/public assets), plus fields indicating whether ammo type and fire rate controls apply (and the allowed values when they do). No backend calls. Ensure imagePath values reference the exact generated files under frontend/public/assets/generated/."
+          "path": "frontend/src/tabs/HazardTab.tsx",
+          "operation": "modify",
+          "description": "Implement the Hazard tab layout with two major panels/sections: (1) \"ALL HAZARDS\" showing fire/temperature, biohazard, radiation, electrical, and toxic gas (reuse existing hazard store values and existing HUD panel patterns), and (2) \"ENVIRONMENTAL STATUS\" with multiple clearly labeled readouts (e.g., temperature, life support, power/environment protection) using nominal/warning/critical styling consistent with existing HUD panels. Prefer composing existing HUD panel components (e.g., HudPanel/StatPanel) rather than creating new UI primitives. If any shadcn-ui components are used (e.g., badges/separators), verify the component's usage instructions before implementing."
         },
         {
-          "path": "frontend/src/tabs/WeaponsTab.tsx",
+          "path": "frontend/src/index.css",
           "operation": "modify",
-          "description": "Replace the inline WEAPONS constant with imports from the new static data module, update lookups for selected weapon, and ensure the tab renders categorized sections from that module. Ensure all user-facing labels/descriptions remain English and do not introduce any backend canister calls for weapon data."
+          "description": "Add any Hazard-tab-specific layout utility classes (e.g., grid/stack for the Hazard tab) while keeping styling consistent with the existing HUD/tactical-panel design language. Do not modify files under frontend/src/components/ui."
         }
       ]
     },
     {
-      "id": "REQ-3",
-      "summary": "Enhance Weapon Details panel to show image/description/damage/stats and handle ammo/fire-rate controls only when applicable.",
+      "id": "REQ-8",
+      "summary": "Add live-updating simulated hazard statistics (auto-changing levels, aggregate severity, and per-hazard trends) that can drive existing critical alert behaviors.",
       "acceptanceCriteria": [
-        "Selecting a weapon shows its image, description, damage, and stats in the details panel.",
-        "Ammo type and fire rate controls behave correctly for weapons that support them.",
-        "Weapons that do not support ammo/fire rate do not cause empty select dropdowns or runtime errors."
+        "Hazard values displayed on the Hazard tab change automatically over time (simulation) while the app is running.",
+        "The tab displays at least: (1) an aggregate hazard/severity value and (2) per-hazard trend indicators (e.g., rising/falling/steady) computed from recent simulated history.",
+        "Simulation updates do not break existing hazard alert monitoring (frontend/src/state/hazardAlerts.ts) and can trigger critical flashing/voice behavior when simulated hazards exceed the existing thresholds."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/tabs/WeaponsTab.tsx",
+          "path": "frontend/src/hooks/useHazardSimulation.ts",
+          "operation": "create",
+          "description": "Create a hook that continuously simulates hazard level changes over time, maintains a small rolling history per hazard to compute trend indicators, and updates the existing hazards store so the existing hazard alert monitor can respond to simulated critical levels."
+        },
+        {
+          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Extend the WEAPON DETAILS panel to render the selected weapon’s thumbnail image, English description, damage, and stats. Preserve existing ammo type and fire rate controls, but conditionally disable/hide them (or replace with sensible static readouts like 'NONE'/'N/A') for weapons that do not support those controls, ensuring no empty dropdowns and no runtime errors. Continue using the existing shadcn-ui Select component for ammo/fire-rate controls where applicable (Verify the component's usage instructions before implementing)."
+          "description": "Mount the hazard simulation hook once at the app level (so simulation runs without manual user input and continues while the app is running), ensuring it does not interfere with existing tab switching behavior. If any shadcn-ui components are adjusted while wiring, verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/tabs/HazardTab.tsx",
+          "operation": "modify",
+          "description": "Render live-updating simulated values, including an aggregate severity value and per-hazard trend indicators derived from recent simulated history, using clear English labels and existing HUD styling patterns."
         }
       ]
     },
     {
-      "id": "REQ-4",
-      "summary": "Add required weapon images as generated static assets and wire them into weapon data for thumbnails/previews.",
+      "id": "REQ-9",
+      "summary": "Fetch and display backend-provided hazard status text for all hazards (including electrical) and plumb hazard status queries into the Hazard tab.",
       "acceptanceCriteria": [
-        "All newly required images exist under `frontend/public/assets/generated/`.",
-        "Weapons tab renders the images using direct static paths (no backend image serving).",
-        "No broken image links appear in the Weapons tab UI."
+        "Backend exposes a single method or an updated existing method that returns all five hazard levels (fire, bio, radiation, electrical, gas) in one response (electrical must be included; it is currently not returned by getHazardData).",
+        "Frontend includes a React Query hook (in frontend/src/hooks/useQueries.ts) to fetch the hazard statuses (backend getAllHazardStatuses) and render them on the Hazard tab.",
+        "Hazard tab shows the backend-provided status text for each hazard (fire/bio/radiation/electrical/gas) when available."
       ],
       "file_operations": [
         {
-          "path": "frontend/public/assets/generated/weapon-crowbar.dim_512x512.png",
-          "operation": "create",
-          "description": "Add generated static image asset for the crowbar weapon at frontend/public/assets/generated/weapon-crowbar.dim_512x512.png and ensure it is referenced by at least one weapon entry in the static weapons data."
-        },
-        {
-          "path": "frontend/public/assets/generated/weapon-pistol.dim_512x512.png",
-          "operation": "create",
-          "description": "Add generated static image asset for the pistol weapon at frontend/public/assets/generated/weapon-pistol.dim_512x512.png and ensure it is referenced by at least one weapon entry in the static weapons data."
-        },
-        {
-          "path": "frontend/public/assets/generated/weapon-shotgun.dim_512x512.png",
-          "operation": "create",
-          "description": "Add generated static image asset for the shotgun weapon at frontend/public/assets/generated/weapon-shotgun.dim_512x512.png and ensure it is referenced by at least one weapon entry in the static weapons data."
-        },
-        {
-          "path": "frontend/public/assets/generated/weapon-smg.dim_512x512.png",
-          "operation": "create",
-          "description": "Add generated static image asset for the rifle/SMG weapon at frontend/public/assets/generated/weapon-smg.dim_512x512.png and ensure it is referenced by at least one weapon entry in the static weapons data."
-        },
-        {
-          "path": "frontend/public/assets/generated/weapon-gravity-device.dim_512x512.png",
-          "operation": "create",
-          "description": "Add generated static image asset for the gravity/energy device weapon at frontend/public/assets/generated/weapon-gravity-device.dim_512x512.png and ensure it is referenced by at least one weapon entry in the static weapons data."
-        },
-        {
-          "path": "frontend/public/assets/generated/weapon-arcane-staff.dim_512x512.png",
-          "operation": "create",
-          "description": "Add generated static image asset for the arcane staff/wand weapon at frontend/public/assets/generated/weapon-arcane-staff.dim_512x512.png and ensure it is referenced by at least one weapon entry in the static weapons data."
-        },
-        {
-          "path": "frontend/src/lib/weaponsData.ts",
+          "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Ensure all weapon entries reference the exact new static asset paths (frontend/public/assets/generated/weapon-crowbar.dim_512x512.png, frontend/public/assets/generated/weapon-pistol.dim_512x512.png, frontend/public/assets/generated/weapon-shotgun.dim_512x512.png, frontend/public/assets/generated/weapon-smg.dim_512x512.png, frontend/public/assets/generated/weapon-gravity-device.dim_512x512.png, frontend/public/assets/generated/weapon-arcane-staff.dim_512x512.png) and that the Weapons tab UI uses those paths directly so there are no broken image links."
+          "description": "Add a React Query hook to fetch backend hazard status text via the existing backend actor method getAllHazardStatuses(), returning status strings for fire/bio/radiation/electrical/gas for use in the Hazard tab."
+        },
+        {
+          "path": "frontend/src/tabs/HazardTab.tsx",
+          "operation": "modify",
+          "description": "Use the new React Query hook from frontend/src/hooks/useQueries.ts to display backend-provided hazard status text for fire, bio, radiation, electrical, and gas alongside the hazard level UI when available, with English labels and consistent nominal/warning/critical styling."
         }
       ]
     }

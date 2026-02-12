@@ -75,3 +75,66 @@ export function useToggleModule() {
     },
   });
 }
+
+export function useGetAllHazardStatuses() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery({
+    queryKey: ['hazardStatuses'],
+    queryFn: async () => {
+      if (!actor) return null;
+      const statuses = await actor.getAllHazardStatuses();
+      return {
+        fire: statuses.fire,
+        bio: statuses.bio,
+        radiation: statuses.radiation,
+        electrical: statuses.electrical,
+        gas: statuses.gas,
+      };
+    },
+    enabled: !!actor && !isFetching,
+    refetchInterval: 5000, // Refresh every 5 seconds
+  });
+}
+
+export function useGetLifeSupportInfo() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery({
+    queryKey: ['lifeSupportInfo'],
+    queryFn: async () => {
+      if (!actor) return null;
+      return await actor.getLifeSupportInfo();
+    },
+    enabled: !!actor && !isFetching,
+    refetchInterval: 5000,
+  });
+}
+
+export function useGetEnvProtectionInfo() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery({
+    queryKey: ['envProtectionInfo'],
+    queryFn: async () => {
+      if (!actor) return null;
+      return await actor.getEnvProtectionInfo();
+    },
+    enabled: !!actor && !isFetching,
+    refetchInterval: 5000,
+  });
+}
+
+export function useGetPowerInfo() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery({
+    queryKey: ['powerInfo'],
+    queryFn: async () => {
+      if (!actor) return null;
+      return await actor.getPowerInfo();
+    },
+    enabled: !!actor && !isFetching,
+    refetchInterval: 5000,
+  });
+}

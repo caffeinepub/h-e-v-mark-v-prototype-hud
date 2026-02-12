@@ -2,10 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-the-weapons-tab-ui-frontend-src-tabs-weaponstab-tsx-to-include-three-clearly-labeled-weapon-sections-melee-ranged-and-magic-each-showing-a-list-grid-of-weapon-entries-that-the-user-can-click-to-select",
-      "featureTitle": "Update the Weapons tab UI (`frontend/src/tabs/WeaponsTab.tsx`) to include three clearly labeled weapon sections: MELEE, RANGED, and MAGIC, each showing a list/grid of weapon entries that the user can click to select.",
+      "featureId": "feature-add-a-new-dedicated-hazard-tab-to-the-main-tab-navigation-and-render-it-in-both-standard-and-tactical-display-modes",
+      "featureTitle": "Add a new dedicated \"HAZARD\" tab to the main tab navigation and render it in both STANDARD and TACTICAL display modes.",
       "files": [
-        "frontend/src/tabs/WeaponsTab.tsx"
+        "frontend/src/App.tsx",
+        "frontend/src/tabs/HazardTab.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -15,16 +16,16 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-1"
+        "REQ-6"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-replace-extend-the-current-weapons-static-data-in-frontend-src-tabs-weaponstab-tsx-to-be-categorized-melee-ranged-magic-and-to-include-for-every-weapon-name-description-damage-a-small-set-of-stats-e-g-accuracy-recoil-range-handling-and-an-image-path-served-from-frontend-static-assets-keep-all-weapon-data-static-in-the-frontend-no-backend-canister-calls",
-      "featureTitle": "Replace/extend the current `WEAPONS` static data in `frontend/src/tabs/WeaponsTab.tsx` to be categorized (melee/ranged/magic) and to include, for every weapon: name, description, damage, a small set of stats (e.g., accuracy, recoil, range, handling), and an image path (served from frontend static assets). Keep all weapon data static in the frontend (no backend canister calls).",
+      "featureId": "feature-implement-a-new-hazard-tab-ui-new-component-file-under-frontend-src-tabs-that-presents-a-an-all-hazards-section-containing-all-hazard-categories-and-b-an-environmental-status-section-with-detailed-status-indicators",
+      "featureTitle": "Implement a new Hazard tab UI (new component file under frontend/src/tabs) that presents (a) an \"All Hazards\" section containing all hazard categories and (b) an \"Environmental Status\" section with detailed status indicators.",
       "files": [
-        "frontend/src/lib/weaponsData.ts",
-        "frontend/src/tabs/WeaponsTab.tsx"
+        "frontend/src/index.css",
+        "frontend/src/tabs/HazardTab.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -34,15 +35,17 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-2"
+        "REQ-7"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-enhance-the-weapon-details-panel-in-frontend-src-tabs-weaponstab-tsx-to-display-the-selected-weapon-s-image-description-damage-and-stats-in-addition-to-the-existing-ammo-type-and-fire-rate-controls-where-applicable-for-weapons-that-do-not-use-ammo-or-fire-rate-e-g-melee-the-ui-should-show-sensible-static-values-and-or-disable-hide-irrelevant-controls-without-breaking-layout",
-      "featureTitle": "Enhance the WEAPON DETAILS panel in `frontend/src/tabs/WeaponsTab.tsx` to display the selected weapon’s image, description, damage, and stats in addition to the existing ammo type and fire rate controls (where applicable). For weapons that do not use ammo or fire rate (e.g., melee), the UI should show sensible static values and/or disable/hide irrelevant controls without breaking layout.",
+      "featureId": "feature-add-live-updating-simulated-statistics-on-the-hazard-tab-including-continuously-changing-hazard-levels-and-derived-statistics-e-g-trends-and-aggregates-without-requiring-manual-user-input",
+      "featureTitle": "Add live-updating simulated statistics on the Hazard tab, including continuously changing hazard levels and derived statistics (e.g., trends and aggregates) without requiring manual user input.",
       "files": [
-        "frontend/src/tabs/WeaponsTab.tsx"
+        "frontend/src/App.tsx",
+        "frontend/src/hooks/useHazardSimulation.ts",
+        "frontend/src/tabs/HazardTab.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -52,15 +55,16 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-3"
+        "REQ-8"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-the-required-weapon-images-as-static-assets-under-frontend-public-assets-generated-and-reference-them-from-the-weapons-tab-weapon-data-so-each-weapon-entry-can-render-an-image-thumbnail-preview",
-      "featureTitle": "Add the required weapon images as static assets under `frontend/public/assets/generated/` and reference them from the Weapons tab weapon data so each weapon entry can render an image thumbnail/preview.",
+      "featureId": "feature-expand-hazard-data-plumbing-so-the-hazard-tab-can-show-detailed-hazard-statuses-text-and-include-electrical-hazard-level-alongside-the-other-existing-hazard-levels",
+      "featureTitle": "Expand hazard data plumbing so the Hazard tab can show detailed hazard statuses (text) and include electrical hazard level alongside the other existing hazard levels.",
       "files": [
-        "frontend/src/lib/weaponsData.ts"
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/tabs/HazardTab.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -70,7 +74,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-4"
+        "REQ-9"
       ],
       "confidence": "high"
     }

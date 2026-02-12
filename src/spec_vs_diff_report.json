@@ -1,55 +1,83 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-12T03:29:32.662Z",
-  "summary": "REQ-1/2/3 appear implemented in WeaponsTab via categorized sections, static weapon dataset with images/stats, and an enhanced details panel. REQ-4 (adding required image assets under frontend/public/assets/generated/) is not evidenced in the diff summary. Several unrelated UI/feature enhancements appear in the diff summary (CSS/theme overhaul, new/expanded tabs and HUD/boot/audio features) that were not requested.",
+  "generatedAt": "2026-02-12T02:26:50.988Z",
+  "summary": "Diff adds a new HazardTab component, hazard simulation hook, Zustand hazard state with trends/aggregate, and wires a new HAZARD tab trigger into App.tsx (at least in TACTICAL mode). It also adds a React Query hook for getAllHazardStatuses and additional queries for environmental subsystems. However, the diff evidence is incomplete/truncated for (a) STANDARD-mode tab rendering and (b) backend methods/level-plumbing required by REQ-9, and there are substantial unrelated UI/styling/feature changes not requested.",
   "missing_requirements": [
     {
-      "id": "REQ-4",
-      "requirement": "Add the required weapon images as static assets under `frontend/public/assets/generated/` and reference them from the Weapons tab weapon data so each weapon entry can render an image thumbnail/preview.",
-      "reason": "The diff summary shows weapon image paths referenced from `/assets/generated/...` in the static data, but does not show any added files under `frontend/public/assets/generated/` (no PNG assets listed as added/modified), so the required images' presence cannot be verified.",
+      "id": "REQ-6",
+      "requirement": "Render the new \"HAZARD\" tab in both STANDARD and TACTICAL display modes.",
+      "reason": "App.tsx evidence shows the HAZARD tab trigger in the TACTICAL display-mode branch, but the diff is truncated before showing whether the STANDARD branch includes the HAZARD TabsTrigger and corresponding TabsContent.",
       "evidence": [
-        "frontend/src/lib/weaponsData.ts (references `/assets/generated/weapon-*.dim_512x512.png`)",
-        "file-diff summary (ADDED FILES lists only `frontend/src/lib/weaponsData.ts`; no `frontend/public/assets/generated/*` assets listed)"
+        "frontend/src/App.tsx (truncated; shows TACTICAL branch with HAZARD trigger, STANDARD branch not shown)"
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "requirement": "Simulation updates do not break existing hazard alert monitoring (frontend/src/state/hazardAlerts.ts) and can trigger critical flashing/voice behavior when simulated hazards exceed existing thresholds.",
+      "reason": "The diff adds a separate hazardsState store and a simulation hook that updates it, but provides no evidence of integration with (or non-breaking behavior for) the existing hazard alert monitoring module, nor evidence that simulated values feed into the alert/voice/flashing pipeline.",
+      "evidence": [
+        "frontend/src/hooks/useHazardSimulation.ts",
+        "frontend/src/state/hazardsState.ts"
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "requirement": "Backend exposes a single method or updated existing method that returns all five hazard levels (fire, bio, radiation, electrical, gas) in one response (including electrical).",
+      "reason": "backend/main.mo shows new types/fields including electrical, but the diff is truncated before any actor method definitions are shown; there is no explicit evidence of a method returning all five hazard levels in one response.",
+      "evidence": [
+        "backend/main.mo (truncated; type/state additions shown, method definitions not shown)"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Global UI theme/font changes and added HUD/interaction effects in CSS (not requested by weapon tab requirements).",
-      "reason": "BuildRequest focuses on Weapons tab sections/data/details and adding weapon images; it does not request global typography, color token, animation, or HUD effect changes.",
+      "description": "Global orange-forward theme/palette and broad HUD styling changes (including tab styling) unrelated to adding a Hazard tab.",
+      "reason": "BuildRequest focuses on adding a Hazard tab and hazard/environment status plumbing; it does not request a global color palette redesign.",
       "evidence": [
-        "frontend/src/index.css"
+        "frontend/src/index.css",
+        "frontend-file-summaries.txt (mentions enhanced orange saturation and styling changes across multiple components)"
       ]
     },
     {
-      "description": "Addition of a new HAZARDS tab and related tab-management behavior changes in the main app.",
-      "reason": "BuildRequest requests only Weapons tab updates; it does not mention adding new tabs or changing tab routing/management.",
+      "description": "Enhanced multi-stage boot sequence overlay with CRT effects and added audio playback behaviors.",
+      "reason": "Not requested; non-goal includes avoiding redesign of unrelated tabs/features beyond what is needed for the Hazard tab entry.",
       "evidence": [
-        "frontend-file-summaries.txt (frontend/src/App.tsx mentions \"new HAZARDS tab\" and tab management changes)"
+        "frontend-file-summaries.txt (BootSequenceOverlay described as enhanced with stages/effects/audio)"
       ]
     },
     {
-      "description": "Enhanced multi-stage boot sequence overlay with CRT effects and audio playback.",
-      "reason": "Boot sequence/CRT/audio overlay work is unrelated to the specified Weapons tab weapon sections/data/details/images.",
+      "description": "Ambience player expanded with loop toggle, volume slider, and custom track import functionality.",
+      "reason": "Not requested by any requirement (REQ-6 to REQ-9).",
       "evidence": [
-        "frontend-file-summaries.txt (frontend/src/components/boot/BootSequenceOverlay.tsx)"
+        "frontend-file-summaries.txt (frontend/src/components/audio/AmbiencePlayer.tsx summary)"
       ]
     },
     {
-      "description": "Ambience player with playlist controls and custom track import.",
-      "reason": "Audio player features are not part of the Weapons tab scope and were not requested.",
+      "description": "Command parser extended with additional commands (/voice, /display, /system_restart, /reboot).",
+      "reason": "Not requested; unrelated to Hazard tab and hazard plumbing.",
       "evidence": [
-        "frontend-file-summaries.txt (frontend/src/components/audio/AmbiencePlayer.tsx)"
+        "frontend-file-summaries.txt (frontend/src/lib/commands.ts summary)"
+      ]
+    },
+    {
+      "description": "Broad refactors/styling adjustments across multiple existing tabs (Basics/Info/Weapons/Settings/Utilities) beyond what is needed to add the new Hazard tab entry.",
+      "reason": "Non-goals explicitly call out not redesigning unrelated tabs beyond what is needed to add the new tab entry; the diff summary indicates multiple unrelated modifications.",
+      "evidence": [
+        "frontend-file-summaries.txt (summaries for BasicsTab, InfoTab, WeaponsTab, SettingsTab, UtilitiesTab indicate styling/behavior updates)"
       ]
     }
   ],
   "confidence": 0.62,
   "changed_files": [
+    "backend/main.mo",
     "frontend-file-summaries.txt",
+    "frontend/src/App.tsx",
+    "frontend/src/hooks/useHazardSimulation.ts",
+    "frontend/src/hooks/useQueries.ts",
     "frontend/src/index.css",
-    "frontend/src/lib/weaponsData.ts",
-    "frontend/src/tabs/WeaponsTab.tsx",
+    "frontend/src/state/hazardsState.ts",
+    "frontend/src/tabs/HazardTab.tsx",
     "project_state.json"
   ]
 }

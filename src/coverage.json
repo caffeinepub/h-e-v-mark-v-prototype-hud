@@ -1,7 +1,7 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-12T03:29:32.665Z",
+  "generatedAt": "2026-02-12T02:26:50.991Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
@@ -11,79 +11,77 @@
     "implemented": 4,
     "items": [
       {
-        "id": "REQ-1",
-        "summary": "Update the Weapons tab UI (`frontend/src/tabs/WeaponsTab.tsx`) to include three clearly labeled weapon sections: MELEE, RANGED, and MAGIC, each showing a list/grid of weapon entries that the user can click to select.",
+        "id": "REQ-6",
+        "summary": "Add a new dedicated \"HAZARD\" tab to the main tab navigation and render it in both STANDARD and TACTICAL display modes.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/tabs/WeaponsTab.tsx"
+          "frontend/src/App.tsx",
+          "frontend/src/tabs/HazardTab.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/tabs/WeaponsTab.tsx"
+          "frontend/src/App.tsx",
+          "frontend/src/tabs/HazardTab.tsx"
         ]
       },
       {
-        "id": "REQ-2",
-        "summary": "Replace/extend the current `WEAPONS` static data in `frontend/src/tabs/WeaponsTab.tsx` to be categorized (melee/ranged/magic) and to include, for every weapon: name, description, damage, a small set of stats (e.g., accuracy, recoil, range, handling), and an image path (served from frontend static assets). Keep all weapon data static in the frontend (no backend canister calls).",
+        "id": "REQ-7",
+        "summary": "Implement a new Hazard tab UI (new component file under frontend/src/tabs) that presents (a) an \"All Hazards\" section containing all hazard categories and (b) an \"Environmental Status\" section with detailed status indicators.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/lib/weaponsData.ts",
-          "frontend/src/tabs/WeaponsTab.tsx"
+          "frontend/src/tabs/HazardTab.tsx",
+          "frontend/src/index.css"
         ],
         "matchedFiles": [
-          "frontend/src/lib/weaponsData.ts",
-          "frontend/src/tabs/WeaponsTab.tsx"
+          "frontend/src/tabs/HazardTab.tsx",
+          "frontend/src/index.css"
         ]
       },
       {
-        "id": "REQ-3",
-        "summary": "Enhance the WEAPON DETAILS panel in `frontend/src/tabs/WeaponsTab.tsx` to display the selected weapon’s image, description, damage, and stats in addition to the existing ammo type and fire rate controls (where applicable). For weapons that do not use ammo or fire rate (e.g., melee), the UI should show sensible static values and/or disable/hide irrelevant controls without breaking layout.",
+        "id": "REQ-8",
+        "summary": "Add live-updating simulated statistics on the Hazard tab, including continuously changing hazard levels and derived statistics (e.g., trends and aggregates) without requiring manual user input.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/tabs/WeaponsTab.tsx"
+          "frontend/src/hooks/useHazardSimulation.ts",
+          "frontend/src/App.tsx",
+          "frontend/src/tabs/HazardTab.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/tabs/WeaponsTab.tsx"
+          "frontend/src/hooks/useHazardSimulation.ts",
+          "frontend/src/App.tsx",
+          "frontend/src/tabs/HazardTab.tsx"
         ]
       },
       {
-        "id": "REQ-4",
-        "summary": "Add the required weapon images as static assets under `frontend/public/assets/generated/` and reference them from the Weapons tab weapon data so each weapon entry can render an image thumbnail/preview.",
+        "id": "REQ-9",
+        "summary": "Expand hazard data plumbing so the Hazard tab can show detailed hazard statuses (text) and include electrical hazard level alongside the other existing hazard levels.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/public/assets/generated/weapon-crowbar.dim_512x512.png",
-          "frontend/public/assets/generated/weapon-pistol.dim_512x512.png",
-          "frontend/public/assets/generated/weapon-shotgun.dim_512x512.png",
-          "frontend/public/assets/generated/weapon-smg.dim_512x512.png",
-          "frontend/public/assets/generated/weapon-gravity-device.dim_512x512.png",
-          "frontend/public/assets/generated/weapon-arcane-staff.dim_512x512.png",
-          "frontend/src/lib/weaponsData.ts"
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/tabs/HazardTab.tsx"
         ],
         "matchedFiles": [
-          "frontend/public/assets/generated/weapon-crowbar.dim_512x512.png",
-          "frontend/public/assets/generated/weapon-pistol.dim_512x512.png",
-          "frontend/public/assets/generated/weapon-shotgun.dim_512x512.png",
-          "frontend/public/assets/generated/weapon-smg.dim_512x512.png",
-          "frontend/public/assets/generated/weapon-gravity-device.dim_512x512.png",
-          "frontend/public/assets/generated/weapon-arcane-staff.dim_512x512.png",
-          "frontend/src/lib/weaponsData.ts"
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/tabs/HazardTab.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/public/assets/generated/weapon-arcane-staff.dim_512x512.png",
-    "frontend/public/assets/generated/weapon-crowbar.dim_512x512.png",
-    "frontend/public/assets/generated/weapon-gravity-device.dim_512x512.png",
-    "frontend/public/assets/generated/weapon-pistol.dim_512x512.png",
-    "frontend/public/assets/generated/weapon-shotgun.dim_512x512.png",
-    "frontend/public/assets/generated/weapon-smg.dim_512x512.png",
+    "frontend/src/App.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useHazardSimulation.ts",
+    "frontend/src/hooks/useQueries.ts",
     "frontend/src/index.css",
-    "frontend/src/lib/weaponsData.ts",
-    "frontend/src/tabs/WeaponsTab.tsx",
+    "frontend/src/state/hazardsState.ts",
+    "frontend/src/tabs/HazardTab.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",
