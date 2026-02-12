@@ -1,143 +1,95 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Propagate Tactical tab panel styling, interaction polish, and layout conventions to all tabs",
+  "title": "Dedicated Hazard tab with comprehensive hazards, environmental status, and simulated statistics",
   "requirements": [
     {
-      "id": "REQ-1",
-      "summary": "Restyle BASICS, MEDICAL, INFO, UTILITIES, WEAPONS, and SETTINGS primary sections to match Tactical tab panel look by reusing existing Tactical CSS patterns.",
+      "id": "REQ-6",
+      "summary": "Add a new HAZARD tab to the main tab navigation for both STANDARD and TACTICAL display modes.",
       "acceptanceCriteria": [
-        "Each non-tactical tab renders its main content inside card/panel containers that visually match the Tactical tab panels (border weight, glow, texture, and overall density).",
-        "The updated non-tactical tabs no longer appear as mostly-unstyled content blocks; they present information as structured, Tactical-style panels/sections.",
-        "No user-facing text is changed away from English."
+        "A new TabsTrigger labeled \"HAZARD\" is present alongside existing tabs in frontend/src/App.tsx.",
+        "Selecting the HAZARD tab shows a corresponding <TabsContent value=\"hazard\"> with the Hazard tab UI.",
+        "Tab switching continues to use the existing uiSfx.tabSwitch() behavior."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/index.css",
+          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Refactor/reuse Tactical tab panel styling by introducing shared HUD panel variants that mirror `.tactical-panel` (bordered inset-glow look, textured panel background, dense typography) and apply them via class composition for non-tactical tabs; keep `.tactical-panel` behavior unchanged."
+          "description": "Wire a new \"HAZARD\" tab into both STANDARD and TACTICAL TabsLists and TabsContent blocks, update TabValue to include \"hazard\", and render the new HazardTab component while keeping existing uiSfx.tabSwitch() behavior. Use the shadcn-ui Tabs (Tabs/TabsList/TabsTrigger/TabsContent) composition already present; verify the component's usage instructions before implementing."
         },
         {
-          "path": "frontend/src/tabs/BasicsTab.tsx",
-          "operation": "modify",
-          "description": "Wrap BASICS tab primary sections (stats, hazards, vitals) into Tactical-style panel containers by applying existing Tactical panel class patterns (e.g., reuse `.tactical-panel` on `HudPanel` wrappers) without changing displayed text or data logic."
-        },
-        {
-          "path": "frontend/src/tabs/MedicalTab.tsx",
-          "operation": "modify",
-          "description": "Update MEDICAL tab layout so its main readouts are placed inside one or more Tactical-style panel containers (reuse `.tactical-panel` look) without changing medical copy or calculations."
-        },
-        {
-          "path": "frontend/src/tabs/InfoTab.tsx",
-          "operation": "modify",
-          "description": "Apply Tactical-style panel classes to INFO tab primary panels (subsystems/log/console sections) so they match Tactical tab visual density and textured panel treatment."
-        },
-        {
-          "path": "frontend/src/tabs/UtilitiesTab.tsx",
-          "operation": "modify",
-          "description": "Apply Tactical-style panel classes to UTILITIES tab primary panels (modules and ambience) and adjust internal section wrappers so content reads as structured Tactical-style sections."
-        },
-        {
-          "path": "frontend/src/tabs/WeaponsTab.tsx",
-          "operation": "modify",
-          "description": "Apply Tactical-style panel classes to WEAPONS tab primary panels (loadout/details/ammunition) so the overall panel framing matches Tactical tab panels."
-        },
-        {
-          "path": "frontend/src/tabs/SettingsTab.tsx",
-          "operation": "modify",
-          "description": "Apply Tactical-style panel classes to SETTINGS tab primary sections so all settings groups render inside Tactical-like textured/glowing panels while preserving all existing labels and descriptions."
+          "path": "frontend/src/tabs/HazardTab.tsx",
+          "operation": "create",
+          "description": "Create the HazardTab component used by App.tsx as the content for value=\"hazard\" in both display modes (component must be navigable via tab selection; no orphan UI)."
         }
       ]
     },
     {
-      "id": "REQ-2",
-      "summary": "Propagate Tactical tab hover/transition/emphasis interaction polish to comparable interactive elements across non-tactical tabs while preserving all behaviors and audio cues.",
+      "id": "REQ-7",
+      "summary": "Implement the Hazard tab UI with an All Hazards section and a detailed Environmental Status section.",
       "acceptanceCriteria": [
-        "Interactive rows and controls in non-tactical tabs have visible hover/focus/active feedback comparable in intensity and style to Tactical tab elements (e.g., border-color shift, background tint, transition).",
-        "Any existing animations already present in the codebase for the Tactical tab (e.g., pulse/glow emphasis patterns) are reused consistently where they make sense in other tabs, without introducing distracting motion.",
-        "All existing click/toggle behaviors, audio cues, and store updates continue to work as before."
+        "A new tab component exists (e.g., frontend/src/tabs/HazardTab.tsx) and is used by App.tsx for the hazard tab content.",
+        "The Hazard tab includes an \"ALL HAZARDS\" panel that lists, at minimum, the existing hazard categories currently supported by the UI store/panels: fire/temperature, biohazard, radiation, electrical, toxic gas.",
+        "The Hazard tab includes an \"ENVIRONMENTAL STATUS\" panel with multiple indicators (not just hazard %), such as temperature and life-support related readouts, shown with clear labels and nominal/warning/critical styling consistent with existing HUD panels.",
+        "UI uses English labels for all user-facing text."
       ],
       "file_operations": [
         {
+          "path": "frontend/src/tabs/HazardTab.tsx",
+          "operation": "modify",
+          "description": "Implement the Hazard tab layout with two major panels/sections: (1) \"ALL HAZARDS\" showing fire/temperature, biohazard, radiation, electrical, and toxic gas (reuse existing hazard store values and existing HUD panel patterns), and (2) \"ENVIRONMENTAL STATUS\" with multiple clearly labeled readouts (e.g., temperature, life support, power/environment protection) using nominal/warning/critical styling consistent with existing HUD panels. Prefer composing existing HUD panel components (e.g., HudPanel/StatPanel) rather than creating new UI primitives. If any shadcn-ui components are used (e.g., badges/separators), verify the component's usage instructions before implementing."
+        },
+        {
           "path": "frontend/src/index.css",
           "operation": "modify",
-          "description": "Create shared interaction classes modeled after Tactical patterns (e.g., similar to `.tactical-contact-item` hover/transition and existing `pulse`/glow keyframes) and map them onto existing non-tactical element classNames (buttons/rows/toggles/select triggers) via CSS selectors; do not change functional JS behavior."
-        },
-        {
-          "path": "frontend/src/tabs/UtilitiesTab.tsx",
-          "operation": "modify",
-          "description": "Add Tactical-style interactive row classes to module rows so hover/focus/active feedback matches Tactical intensity while keeping toggle handlers, audio cues, and store updates unchanged."
-        },
-        {
-          "path": "frontend/src/tabs/WeaponsTab.tsx",
-          "operation": "modify",
-          "description": "Apply Tactical-style interaction classes to weapon slot buttons and select controls (trigger/rows) to match Tactical hover/transition polish; preserve selection logic and sounds."
-        },
-        {
-          "path": "frontend/src/tabs/SettingsTab.tsx",
-          "operation": "modify",
-          "description": "Apply Tactical-style interaction classes to setting rows and key controls (switch/select/slider area) so hover/focus states feel consistent with Tactical; preserve confirmation modal behavior and audio cues."
-        },
-        {
-          "path": "frontend/src/components/info/SuitSubsystemReadouts.tsx",
-          "operation": "modify",
-          "description": "Ensure INFO subsystem interactive values (currently `.interactive`) receive Tactical-style hover/focus/emphasis styling via className adjustments (if needed) while keeping click/confirm flows and logging/audio unchanged."
-        },
-        {
-          "path": "frontend/src/components/hazards/EnvironmentalHazardsPanel.tsx",
-          "operation": "modify",
-          "description": "Add Tactical-style hover/active polish to hazard rows where appropriate (read-only rows can still have subtle emphasis on hover) without changing hazard status text or logic."
-        },
-        {
-          "path": "frontend/src/components/info/SystemLogView.tsx",
-          "operation": "modify",
-          "description": "Apply Tactical-style list-row hover/focus styling to log entries (where appropriate) while maintaining scroll behavior and rendering logic."
-        },
-        {
-          "path": "frontend/src/components/info/CommandConsole.tsx",
-          "operation": "modify",
-          "description": "Apply Tactical-style emphasis/hover/focus styling to console history rows and console input/submit areas using className hooks, preserving command execution, auto-scroll, and audio cues."
+          "description": "Add any Hazard-tab-specific layout utility classes (e.g., grid/stack for the Hazard tab) while keeping styling consistent with the existing HUD/tactical-panel design language. Do not modify files under frontend/src/components/ui."
         }
       ]
     },
     {
-      "id": "REQ-3",
-      "summary": "Standardize tab content padding, spacing, and overflow/scrolling to match Tactical tab container conventions across STANDARD and TACTICAL display modes.",
+      "id": "REQ-8",
+      "summary": "Add live-updating simulated hazard statistics (auto-changing levels, aggregate severity, and per-hazard trends) that can drive existing critical alert behaviors.",
       "acceptanceCriteria": [
-        "All tabs have consistent outer padding and spacing rules comparable to `.tactical-tab` (scaled padding, consistent section gaps).",
-        "In both STANDARD and TACTICAL display modes, tab content remains usable (no clipped content; scrolling works where needed).",
-        "The TACTICAL tab visibility/behavior remains unchanged (still conditional on Tactical Mode being enabled)."
+        "Hazard values displayed on the Hazard tab change automatically over time (simulation) while the app is running.",
+        "The tab displays at least: (1) an aggregate hazard/severity value and (2) per-hazard trend indicators (e.g., rising/falling/steady) computed from recent simulated history.",
+        "Simulation updates do not break existing hazard alert monitoring (frontend/src/state/hazardAlerts.ts) and can trigger critical flashing/voice behavior when simulated hazards exceed the existing thresholds."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "Introduce/adjust shared `.tab-content` layout rules so all tabs follow Tactical-like container conventions (padding scaled by `--hud-scale`, consistent internal gaps, and predictable overflow/scroll behavior); ensure `.tactical-tab` remains unchanged and remains the reference implementation."
+          "path": "frontend/src/hooks/useHazardSimulation.ts",
+          "operation": "create",
+          "description": "Create a hook that continuously simulates hazard level changes over time, maintains a small rolling history per hazard to compute trend indicators, and updates the existing hazards store so the existing hazard alert monitor can respond to simulated critical levels."
         },
         {
-          "path": "frontend/src/tabs/BasicsTab.tsx",
+          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Align BASICS tab grid wrappers with the standardized tab container spacing conventions (consistent gaps and scroll behavior) while preserving landscape/portrait layout logic."
+          "description": "Mount the hazard simulation hook once at the app level (so simulation runs without manual user input and continues while the app is running), ensuring it does not interfere with existing tab switching behavior. If any shadcn-ui components are adjusted while wiring, verify the component's usage instructions before implementing."
         },
         {
-          "path": "frontend/src/tabs/InfoTab.tsx",
+          "path": "frontend/src/tabs/HazardTab.tsx",
           "operation": "modify",
-          "description": "Adjust INFO tab internal spacing to match Tactical conventions (consistent section gaps and container padding) and ensure scroll behavior remains predictable for log/console areas in both display modes."
+          "description": "Render live-updating simulated values, including an aggregate severity value and per-hazard trend indicators derived from recent simulated history, using clear English labels and existing HUD styling patterns."
+        }
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "summary": "Fetch and display backend-provided hazard status text for all hazards (including electrical) and plumb hazard status queries into the Hazard tab.",
+      "acceptanceCriteria": [
+        "Backend exposes a single method or an updated existing method that returns all five hazard levels (fire, bio, radiation, electrical, gas) in one response (electrical must be included; it is currently not returned by getHazardData).",
+        "Frontend includes a React Query hook (in frontend/src/hooks/useQueries.ts) to fetch the hazard statuses (backend getAllHazardStatuses) and render them on the Hazard tab.",
+        "Hazard tab shows the backend-provided status text for each hazard (fire/bio/radiation/electrical/gas) when available."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add a React Query hook to fetch backend hazard status text via the existing backend actor method getAllHazardStatuses(), returning status strings for fire/bio/radiation/electrical/gas for use in the Hazard tab."
         },
         {
-          "path": "frontend/src/tabs/UtilitiesTab.tsx",
+          "path": "frontend/src/tabs/HazardTab.tsx",
           "operation": "modify",
-          "description": "Normalize UTILITIES tab layout spacing (panel gaps and internal padding) to match Tactical container conventions and ensure content scrolls instead of clipping when needed."
-        },
-        {
-          "path": "frontend/src/tabs/WeaponsTab.tsx",
-          "operation": "modify",
-          "description": "Normalize WEAPONS tab grid spacing and overflow so panels keep consistent gaps and the tab scrolls cleanly under both STANDARD and TACTICAL display modes."
-        },
-        {
-          "path": "frontend/src/tabs/SettingsTab.tsx",
-          "operation": "modify",
-          "description": "Normalize SETTINGS tab spacing and scrolling (especially long settings lists) to align with Tactical container padding/gaps and ensure no clipped content."
+          "description": "Use the new React Query hook from frontend/src/hooks/useQueries.ts to display backend-provided hazard status text for fire, bio, radiation, electrical, and gas alongside the hazard level UI when available, with English labels and consistent nominal/warning/critical styling."
         }
       ]
     }

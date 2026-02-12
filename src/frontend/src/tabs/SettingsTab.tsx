@@ -32,7 +32,7 @@ export function SettingsTab() {
   const handleVoiceToggle = (checked: boolean) => {
     setVoiceEnabled(checked);
     addEntry('system', `VOICE FEEDBACK: ${checked ? 'ENABLED' : 'DISABLED'}`);
-    uiSfx.toggle();
+    uiSfx.settingsChange();
     if (checked) {
       hevVoice.voiceSystemEnabled();
     }
@@ -41,13 +41,13 @@ export function SettingsTab() {
   const handleDisplayModeChange = (value: string) => {
     setDisplayMode(value as 'TACTICAL' | 'STANDARD' | 'MINIMAL');
     addEntry('system', `DISPLAY MODE: ${value}`);
-    uiSfx.toggle();
+    uiSfx.settingsChange();
     hevVoice.displayModeChanged(value as 'TACTICAL' | 'STANDARD' | 'MINIMAL');
   };
 
   const handleColorSchemeChange = (value: string) => {
     setHudColorScheme(value as 'AMBER' | 'BLUE' | 'GREEN' | 'PINK');
-    uiSfx.toggle();
+    uiSfx.settingsChange();
   };
 
   const handleUIScaleChange = (value: number[]) => {
@@ -56,13 +56,13 @@ export function SettingsTab() {
 
   const handleLandscapeModeToggle = () => {
     toggleLandscapeMode();
-    uiSfx.toggle();
+    uiSfx.settingsChange();
   };
 
   const handleTacticalModeToggle = (checked: boolean) => {
     setTacticalModeEnabled(checked);
     addEntry('system', `TACTICAL MODE: ${checked ? 'ENABLED' : 'DISABLED'}`);
-    uiSfx.toggle();
+    uiSfx.settingsChange();
     if (checked) {
       hevVoice.moduleEnabled('TACTICAL MODE');
     } else {
@@ -73,7 +73,6 @@ export function SettingsTab() {
   const handleSystemRestart = () => {
     setShowRestartModal(false);
     addEntry('system', 'SYSTEM RESTART INITIATED');
-    uiSfx.buttonClick();
     
     setTimeout(() => {
       resetInfoSettings();

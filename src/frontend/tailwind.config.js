@@ -12,6 +12,13 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      borderWidth: {
+        '3': '3px',
+        '6': '6px',
+      },
+      letterSpacing: {
+        tactical: '0.15em',
+      },
       colors: {
         background: "oklch(var(--background))",
         foreground: "oklch(var(--foreground))",
@@ -46,17 +53,16 @@ export default {
         border: "oklch(var(--border))",
         input: "oklch(var(--input))",
         ring: "oklch(var(--ring))",
-      },
-      fontFamily: {
-        mono: ['"Courier New"', 'monospace'],
-      },
-      letterSpacing: {
-        tactical: '0.1em',
-      },
-      borderWidth: {
-        '3': '3px',
+        warning: {
+          DEFAULT: "oklch(var(--warning))",
+          foreground: "oklch(var(--warning-foreground))",
+        },
+        critical: {
+          DEFAULT: "oklch(var(--critical))",
+          foreground: "oklch(var(--critical-foreground))",
+        },
       },
     },
   },
-  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography"), require("@tailwindcss/container-queries")],
-}
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
+};

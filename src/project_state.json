@@ -1,34 +1,43 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Enhance the UI by applying the exact visual styling and animations from the Tactics tab across all tabs to improve overall visual appeal.",
+  "summary": "Project includes a dedicated Hazard tab UI showing comprehensive environmental hazard status indicators and live-updating simulated statistics.",
   "architectural_notes": [
-    "Use the Tactics tab as the baseline design/animation pattern to be replicated across all other tabs for consistent look and feel."
+    "Hazard tab is a specialized, dedicated tab (not combined with other UI roles) and should include all hazard categories.",
+    "Environmental and hazard statistics should be simulated and live-updating (not static placeholders)."
   ],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-update-the-basics-medical-info-utilities-weapons-and-settings-tabs-to-use-the-same-visual-styling-as-the-tactical-tab-by-reusing-the-existing-tactical-tab-css-patterns-e-g-tactical-panel-bordered-inset-glow-panel-look-textured-panel-background-and-dense-hud-typography-for-their-primary-panels-and-sections",
-      "title": "Update the BASICS, MEDICAL, INFO, UTILITIES, WEAPONS, and SETTINGS tabs to use the same visual styling as the TACTICAL tab by reusing the existing Tactical tab CSS patterns (e.g., `.tactical-panel`, bordered/inset-glow panel look, textured panel background, and dense HUD typography) for their primary panels and sections.",
+      "id": "feature-add-a-new-dedicated-hazard-tab-to-the-main-tab-navigation-and-render-it-in-both-standard-and-tactical-display-modes",
+      "title": "Add a new dedicated \"HAZARD\" tab to the main tab navigation and render it in both STANDARD and TACTICAL display modes.",
       "reqIds": [
-        "REQ-1"
+        "REQ-6"
       ],
       "version": 1
     },
     {
-      "id": "feature-apply-the-same-interaction-polish-used-in-the-tactical-tab-hover-states-subtle-transitions-and-emphasis-effects-such-as-glow-pulse-where-appropriate-to-comparable-interactive-elements-in-all-other-tabs-e-g-list-rows-toggles-buttons-and-panel-sub-rows-while-preserving-existing-functionality",
-      "title": "Apply the same interaction polish used in the Tactical tab (hover states, subtle transitions, and emphasis effects such as glow/pulse where appropriate) to comparable interactive elements in all other tabs (e.g., list rows, toggles, buttons, and panel sub-rows) while preserving existing functionality.",
+      "id": "feature-implement-a-new-hazard-tab-ui-new-component-file-under-frontend-src-tabs-that-presents-a-an-all-hazards-section-containing-all-hazard-categories-and-b-an-environmental-status-section-with-detailed-status-indicators",
+      "title": "Implement a new Hazard tab UI (new component file under frontend/src/tabs) that presents (a) an \"All Hazards\" section containing all hazard categories and (b) an \"Environmental Status\" section with detailed status indicators.",
       "reqIds": [
-        "REQ-2"
+        "REQ-7"
       ],
       "version": 1
     },
     {
-      "id": "feature-standardize-tab-content-layout-spacing-and-scrolling-so-that-all-tabs-follow-the-tactical-tab-content-container-conventions-padding-scaled-by-hud-scale-consistent-internal-gaps-and-predictable-overflow-behavior-across-standard-and-tactical-display-modes",
-      "title": "Standardize tab content layout spacing and scrolling so that all tabs follow the Tactical tab content container conventions (padding scaled by `--hud-scale`, consistent internal gaps, and predictable overflow behavior) across STANDARD and TACTICAL display modes.",
+      "id": "feature-add-live-updating-simulated-statistics-on-the-hazard-tab-including-continuously-changing-hazard-levels-and-derived-statistics-e-g-trends-and-aggregates-without-requiring-manual-user-input",
+      "title": "Add live-updating simulated statistics on the Hazard tab, including continuously changing hazard levels and derived statistics (e.g., trends and aggregates) without requiring manual user input.",
       "reqIds": [
-        "REQ-3"
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-expand-hazard-data-plumbing-so-the-hazard-tab-can-show-detailed-hazard-statuses-text-and-include-electrical-hazard-level-alongside-the-other-existing-hazard-levels",
+      "title": "Expand hazard data plumbing so the Hazard tab can show detailed hazard statuses (text) and include electrical hazard level alongside the other existing hazard levels.",
+      "reqIds": [
+        "REQ-9"
       ],
       "version": 1
     }
@@ -36,12 +45,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Apply the exact Tactics-tab visual style and animations to all tabs to make the UI more visually appealing.",
+      "summary": "Create a dedicated Hazard tab with detailed UI showing all hazard categories, environmental status indicators, and live-updating simulated statistics",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Apply Tactical tab visual styling and animations across all tabs",
+  "projectName": "Add dedicated Hazard tab with comprehensive hazards, environmental status, and simulated statistics",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

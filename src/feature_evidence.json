@@ -2,16 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-the-basics-medical-info-utilities-weapons-and-settings-tabs-to-use-the-same-visual-styling-as-the-tactical-tab-by-reusing-the-existing-tactical-tab-css-patterns-e-g-tactical-panel-bordered-inset-glow-panel-look-textured-panel-background-and-dense-hud-typography-for-their-primary-panels-and-sections",
-      "featureTitle": "Update the BASICS, MEDICAL, INFO, UTILITIES, WEAPONS, and SETTINGS tabs to use the same visual styling as the TACTICAL tab by reusing the existing Tactical tab CSS patterns (e.g., `.tactical-panel`, bordered/inset-glow panel look, textured panel background, and dense HUD typography) for their primary panels and sections.",
+      "featureId": "feature-add-a-new-dedicated-hazard-tab-to-the-main-tab-navigation-and-render-it-in-both-standard-and-tactical-display-modes",
+      "featureTitle": "Add a new dedicated \"HAZARD\" tab to the main tab navigation and render it in both STANDARD and TACTICAL display modes.",
       "files": [
-        "frontend/src/index.css",
-        "frontend/src/tabs/BasicsTab.tsx",
-        "frontend/src/tabs/InfoTab.tsx",
-        "frontend/src/tabs/MedicalTab.tsx",
-        "frontend/src/tabs/SettingsTab.tsx",
-        "frontend/src/tabs/UtilitiesTab.tsx",
-        "frontend/src/tabs/WeaponsTab.tsx"
+        "frontend/src/App.tsx",
+        "frontend/src/tabs/HazardTab.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -21,21 +16,16 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-1"
+        "REQ-6"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-apply-the-same-interaction-polish-used-in-the-tactical-tab-hover-states-subtle-transitions-and-emphasis-effects-such-as-glow-pulse-where-appropriate-to-comparable-interactive-elements-in-all-other-tabs-e-g-list-rows-toggles-buttons-and-panel-sub-rows-while-preserving-existing-functionality",
-      "featureTitle": "Apply the same interaction polish used in the Tactical tab (hover states, subtle transitions, and emphasis effects such as glow/pulse where appropriate) to comparable interactive elements in all other tabs (e.g., list rows, toggles, buttons, and panel sub-rows) while preserving existing functionality.",
+      "featureId": "feature-implement-a-new-hazard-tab-ui-new-component-file-under-frontend-src-tabs-that-presents-a-an-all-hazards-section-containing-all-hazard-categories-and-b-an-environmental-status-section-with-detailed-status-indicators",
+      "featureTitle": "Implement a new Hazard tab UI (new component file under frontend/src/tabs) that presents (a) an \"All Hazards\" section containing all hazard categories and (b) an \"Environmental Status\" section with detailed status indicators.",
       "files": [
-        "frontend/src/components/hazards/EnvironmentalHazardsPanel.tsx",
-        "frontend/src/components/info/CommandConsole.tsx",
-        "frontend/src/components/info/SuitSubsystemReadouts.tsx",
         "frontend/src/index.css",
-        "frontend/src/tabs/SettingsTab.tsx",
-        "frontend/src/tabs/UtilitiesTab.tsx",
-        "frontend/src/tabs/WeaponsTab.tsx"
+        "frontend/src/tabs/HazardTab.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -45,20 +35,17 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-2"
+        "REQ-7"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-standardize-tab-content-layout-spacing-and-scrolling-so-that-all-tabs-follow-the-tactical-tab-content-container-conventions-padding-scaled-by-hud-scale-consistent-internal-gaps-and-predictable-overflow-behavior-across-standard-and-tactical-display-modes",
-      "featureTitle": "Standardize tab content layout spacing and scrolling so that all tabs follow the Tactical tab content container conventions (padding scaled by `--hud-scale`, consistent internal gaps, and predictable overflow behavior) across STANDARD and TACTICAL display modes.",
+      "featureId": "feature-add-live-updating-simulated-statistics-on-the-hazard-tab-including-continuously-changing-hazard-levels-and-derived-statistics-e-g-trends-and-aggregates-without-requiring-manual-user-input",
+      "featureTitle": "Add live-updating simulated statistics on the Hazard tab, including continuously changing hazard levels and derived statistics (e.g., trends and aggregates) without requiring manual user input.",
       "files": [
-        "frontend/src/index.css",
-        "frontend/src/tabs/BasicsTab.tsx",
-        "frontend/src/tabs/InfoTab.tsx",
-        "frontend/src/tabs/SettingsTab.tsx",
-        "frontend/src/tabs/UtilitiesTab.tsx",
-        "frontend/src/tabs/WeaponsTab.tsx"
+        "frontend/src/App.tsx",
+        "frontend/src/hooks/useHazardSimulation.ts",
+        "frontend/src/tabs/HazardTab.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -68,7 +55,26 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-3"
+        "REQ-8"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-expand-hazard-data-plumbing-so-the-hazard-tab-can-show-detailed-hazard-statuses-text-and-include-electrical-hazard-level-alongside-the-other-existing-hazard-levels",
+      "featureTitle": "Expand hazard data plumbing so the Hazard tab can show detailed hazard statuses (text) and include electrical hazard level alongside the other existing hazard levels.",
+      "files": [
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/tabs/HazardTab.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-9"
       ],
       "confidence": "high"
     }

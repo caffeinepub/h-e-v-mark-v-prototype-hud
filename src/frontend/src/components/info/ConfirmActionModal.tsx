@@ -8,6 +8,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { uiSfx } from '../../audio/uiSfx';
 
 interface ConfirmActionModalProps {
   open: boolean;
@@ -27,11 +28,13 @@ export function ConfirmActionModal({
   onCancel,
 }: ConfirmActionModalProps) {
   const handleConfirm = () => {
+    uiSfx.confirmAccept();
     onConfirm();
     onOpenChange(false);
   };
 
   const handleCancel = () => {
+    uiSfx.confirmCancel();
     onCancel?.();
     onOpenChange(false);
   };

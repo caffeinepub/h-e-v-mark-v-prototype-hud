@@ -5,8 +5,6 @@ import Nat "mo:core/Nat";
 import Runtime "mo:core/Runtime";
 import Iter "mo:core/Iter";
 
-
-
 actor {
   type Stats = {
     var health : Nat;
@@ -423,6 +421,36 @@ actor {
     };
   };
 
+  public shared ({ caller }) func getDetailedHazardSummary() : async {
+    fireStatus : Text;
+    bioStatus : Text;
+    radStatus : Text;
+    electricalStatus : Text;
+    gasStatus : Text;
+    hazardLevels : {
+      fire : Nat;
+      bio : Nat;
+      rad : Nat;
+      electrical : Nat;
+      gas : Nat;
+    };
+  } {
+    {
+      fireStatus = envHazards.fire.status;
+      bioStatus = envHazards.bio.status;
+      radStatus = envHazards.radiation.status;
+      gasStatus = envHazards.gas.status;
+      electricalStatus = envHazards.electrical.status;
+      hazardLevels = {
+        fire = envHazards.levels.fire;
+        bio = envHazards.levels.bio;
+        rad = envHazards.levels.radiation;
+        electrical = envHazards.levels.electrical;
+        gas = envHazards.levels.gas;
+      };
+    };
+  };
+
   //////////////////////////////////////////////////////////////////////////
   /////////////////////// Suit Functions ///////////////////////////////////
   //////////////////////////////////////////////////////////////////////////
@@ -488,3 +516,4 @@ actor {
   };
 
 };
+

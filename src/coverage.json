@@ -1,100 +1,87 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-12T01:15:23.604Z",
+  "generatedAt": "2026-02-12T02:26:50.991Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 3,
-    "implemented": 3,
+    "total": 4,
+    "implemented": 4,
     "items": [
       {
-        "id": "REQ-1",
-        "summary": "Update the BASICS, MEDICAL, INFO, UTILITIES, WEAPONS, and SETTINGS tabs to use the same visual styling as the TACTICAL tab by reusing the existing Tactical tab CSS patterns (e.g., `.tactical-panel`, bordered/inset-glow panel look, textured panel background, and dense HUD typography) for their primary panels and sections.",
+        "id": "REQ-6",
+        "summary": "Add a new dedicated \"HAZARD\" tab to the main tab navigation and render it in both STANDARD and TACTICAL display modes.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/index.css",
-          "frontend/src/tabs/BasicsTab.tsx",
-          "frontend/src/tabs/MedicalTab.tsx",
-          "frontend/src/tabs/InfoTab.tsx",
-          "frontend/src/tabs/UtilitiesTab.tsx",
-          "frontend/src/tabs/WeaponsTab.tsx",
-          "frontend/src/tabs/SettingsTab.tsx"
+          "frontend/src/App.tsx",
+          "frontend/src/tabs/HazardTab.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/index.css",
-          "frontend/src/tabs/BasicsTab.tsx",
-          "frontend/src/tabs/MedicalTab.tsx",
-          "frontend/src/tabs/InfoTab.tsx",
-          "frontend/src/tabs/UtilitiesTab.tsx",
-          "frontend/src/tabs/WeaponsTab.tsx",
-          "frontend/src/tabs/SettingsTab.tsx"
+          "frontend/src/App.tsx",
+          "frontend/src/tabs/HazardTab.tsx"
         ]
       },
       {
-        "id": "REQ-2",
-        "summary": "Apply the same interaction polish used in the Tactical tab (hover states, subtle transitions, and emphasis effects such as glow/pulse where appropriate) to comparable interactive elements in all other tabs (e.g., list rows, toggles, buttons, and panel sub-rows) while preserving existing functionality.",
+        "id": "REQ-7",
+        "summary": "Implement a new Hazard tab UI (new component file under frontend/src/tabs) that presents (a) an \"All Hazards\" section containing all hazard categories and (b) an \"Environmental Status\" section with detailed status indicators.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/index.css",
-          "frontend/src/tabs/UtilitiesTab.tsx",
-          "frontend/src/tabs/WeaponsTab.tsx",
-          "frontend/src/tabs/SettingsTab.tsx",
-          "frontend/src/components/info/SuitSubsystemReadouts.tsx",
-          "frontend/src/components/hazards/EnvironmentalHazardsPanel.tsx",
-          "frontend/src/components/info/SystemLogView.tsx",
-          "frontend/src/components/info/CommandConsole.tsx"
+          "frontend/src/tabs/HazardTab.tsx",
+          "frontend/src/index.css"
         ],
         "matchedFiles": [
-          "frontend/src/index.css",
-          "frontend/src/tabs/UtilitiesTab.tsx",
-          "frontend/src/tabs/WeaponsTab.tsx",
-          "frontend/src/tabs/SettingsTab.tsx",
-          "frontend/src/components/info/SuitSubsystemReadouts.tsx",
-          "frontend/src/components/hazards/EnvironmentalHazardsPanel.tsx",
-          "frontend/src/components/info/CommandConsole.tsx"
+          "frontend/src/tabs/HazardTab.tsx",
+          "frontend/src/index.css"
         ]
       },
       {
-        "id": "REQ-3",
-        "summary": "Standardize tab content layout spacing and scrolling so that all tabs follow the Tactical tab content container conventions (padding scaled by `--hud-scale`, consistent internal gaps, and predictable overflow behavior) across STANDARD and TACTICAL display modes.",
+        "id": "REQ-8",
+        "summary": "Add live-updating simulated statistics on the Hazard tab, including continuously changing hazard levels and derived statistics (e.g., trends and aggregates) without requiring manual user input.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/index.css",
-          "frontend/src/tabs/BasicsTab.tsx",
-          "frontend/src/tabs/InfoTab.tsx",
-          "frontend/src/tabs/UtilitiesTab.tsx",
-          "frontend/src/tabs/WeaponsTab.tsx",
-          "frontend/src/tabs/SettingsTab.tsx"
+          "frontend/src/hooks/useHazardSimulation.ts",
+          "frontend/src/App.tsx",
+          "frontend/src/tabs/HazardTab.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/index.css",
-          "frontend/src/tabs/BasicsTab.tsx",
-          "frontend/src/tabs/InfoTab.tsx",
-          "frontend/src/tabs/UtilitiesTab.tsx",
-          "frontend/src/tabs/WeaponsTab.tsx",
-          "frontend/src/tabs/SettingsTab.tsx"
+          "frontend/src/hooks/useHazardSimulation.ts",
+          "frontend/src/App.tsx",
+          "frontend/src/tabs/HazardTab.tsx"
+        ]
+      },
+      {
+        "id": "REQ-9",
+        "summary": "Expand hazard data plumbing so the Hazard tab can show detailed hazard statuses (text) and include electrical hazard level alongside the other existing hazard levels.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/tabs/HazardTab.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/tabs/HazardTab.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/components/hazards/EnvironmentalHazardsPanel.tsx",
-    "frontend/src/components/info/CommandConsole.tsx",
-    "frontend/src/components/info/SuitSubsystemReadouts.tsx",
+    "frontend/src/App.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useHazardSimulation.ts",
+    "frontend/src/hooks/useQueries.ts",
     "frontend/src/index.css",
-    "frontend/src/tabs/BasicsTab.tsx",
-    "frontend/src/tabs/InfoTab.tsx",
-    "frontend/src/tabs/MedicalTab.tsx",
-    "frontend/src/tabs/SettingsTab.tsx",
-    "frontend/src/tabs/UtilitiesTab.tsx",
-    "frontend/src/tabs/WeaponsTab.tsx",
+    "frontend/src/state/hazardsState.ts",
+    "frontend/src/tabs/HazardTab.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

@@ -24,6 +24,23 @@ export interface _SERVICE {
   >,
   'getBioStatus' : ActorMethod<[], string>,
   'getCommunicationInfo' : ActorMethod<[], [boolean, string, string, boolean]>,
+  'getDetailedHazardSummary' : ActorMethod<
+    [],
+    {
+      'radStatus' : string,
+      'fireStatus' : string,
+      'electricalStatus' : string,
+      'gasStatus' : string,
+      'bioStatus' : string,
+      'hazardLevels' : {
+        'bio' : bigint,
+        'gas' : bigint,
+        'rad' : bigint,
+        'fire' : bigint,
+        'electrical' : bigint,
+      },
+    }
+  >,
   'getElectricalStatus' : ActorMethod<[], string>,
   'getEnvProtectionInfo' : ActorMethod<[], [boolean, bigint, bigint, string]>,
   'getFireStatus' : ActorMethod<[], string>,

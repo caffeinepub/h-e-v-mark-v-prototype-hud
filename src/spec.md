@@ -1,11 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Apply the Tactical tab’s visual styling, interaction polish, and layout/scroll conventions across all other tabs for a consistent HUD look and feel.
+**Goal:** Add a dedicated HAZARD tab that consolidates all hazard categories, environmental status readouts, and live simulated hazard statistics in both STANDARD and TACTICAL modes.
 
 **Planned changes:**
-- Update BASICS, MEDICAL, INFO, UTILITIES, WEAPONS, and SETTINGS tab primary panels/sections to reuse Tactical tab styling patterns (panel borders/inset-glow, textured backgrounds, dense HUD typography).
-- Apply Tactical-style hover/focus/active feedback and subtle transitions (including any existing Tactical pulse/glow emphasis patterns where appropriate) to comparable interactive elements in non-tactical tabs, without changing behavior.
-- Standardize spacing and overflow/scrolling to match Tactical tab container conventions (padding scaled by `--hud-scale`, consistent gaps, predictable scrolling) across STANDARD and TACTICAL display modes, while keeping Tactical tab visibility/behavior unchanged.
+- Add a new main navigation tab trigger labeled “HAZARD” and corresponding tab content, preserving existing tab-switch SFX behavior.
+- Create a new Hazard tab component (under `frontend/src/tabs`) that renders an “ALL HAZARDS” section (fire/temperature, biohazard, radiation, electrical, toxic gas) and an “ENVIRONMENTAL STATUS” section with multiple labeled indicators styled consistently with existing HUD panels.
+- Implement live-updating simulated hazard statistics on the Hazard tab, including an aggregate severity value and per-hazard trend indicators derived from recent simulated history, while keeping compatibility with existing hazard alert monitoring/threshold behaviors.
+- Expand hazard data plumbing so a single backend method returns all five hazard levels in one response (including electrical) and add a frontend React Query hook to fetch and render backend-provided status text per hazard when available.
 
-**User-visible outcome:** All tabs (not just TACTICAL) present content in cohesive Tactical-style HUD panels with consistent hover/transition feedback and reliable spacing/scrolling across display modes.
+**User-visible outcome:** Users can open a new HAZARD tab (in both display modes) to view all hazard categories, detailed environmental status indicators, and automatically updating simulated hazard levels with aggregate and trend statistics, with existing critical alert behaviors still functioning.

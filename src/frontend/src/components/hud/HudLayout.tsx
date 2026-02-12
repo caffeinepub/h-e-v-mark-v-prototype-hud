@@ -1,88 +1,116 @@
-import { ReactNode, useEffect, useState } from 'react';
-import { useUIStore } from '../../state/uiState';
+import { useRef, useEffect } from 'react';
 import { useInfoSettingsStore } from '../../state/infoSettingsState';
-import { useAlertState } from '../../state/hazardAlerts';
+import { useUIStore } from '../../state/uiState';
 import { useViewportOrientation } from '../../hooks/useViewportOrientation';
-import { cn } from '@/lib/utils';
+import { useAlertState } from '../../state/hazardAlerts';
+import { useHudPresence } from '../../hooks/useHudPresence';
+import { HudGlobalEffects } from './HudGlobalEffects';
+import { SiX, SiGithub } from 'react-icons/si';
+import { Heart } from 'lucide-react';
 
 interface HudLayoutProps {
-  children: ReactNode;
-  displayMode?: 'TACTICAL' | 'STANDARD' | 'MINIMAL';
+  children: React.ReactNode;
 }
 
-export function HudLayout({ children, displayMode = 'STANDARD' }: HudLayoutProps) {
-  const { landscapeModeEnabled } = useUIStore();
+export function HudLayout({ children }: HudLayoutProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const { hudColorScheme, uiScale } = useInfoSettingsStore();
+  const { landscapeModeEnabled } = useUIStore();
+  const isLandscape = useViewportOrientation();
   const { isCriticalFlashing } = useAlertState();
-  const isLandscapeOrientation = useViewportOrientation();
-  const isWideViewport = typeof window !== 'undefined' && window.innerWidth >= 1024;
-  
-  // Track viewport height for ultra-compact tier
-  const [viewportHeight, setViewportHeight] = useState(
-    typeof window !== 'undefined' ? window.innerHeight : 600
-  );
 
+  // Apply HUD presence tracking for reactive effects
+  useHudPresence(containerRef);
+
+  // Apply UI scale CSS variable
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (containerRef.current) {
+      containerRef.current.style.setProperty('--hud-scale', uiScale.toString());
+    }
+  }, [uiScale]);
 
-    const handleResize = () => {
-      setViewportHeight(window.innerHeight);
-    };
+  // Determine if landscape layout should be active
+  const shouldUseLandscape = landscapeModeEnabled || isLandscape;
+  
+  // Check if viewport is ultra-compact (short landscape)
+  const isUltraCompact = typeof window !== 'undefined' && 
+    window.innerHeight <= 480 && 
+    window.innerWidth > window.innerHeight;
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-  
-  // Apply landscape layout when:
-  // 1. Landscape mode is enabled AND
-  // 2. Either device is in landscape orientation OR viewport is wide (desktop)
-  const useLandscapeLayout = landscapeModeEnabled && (isLandscapeOrientation || isWideViewport);
-  
-  // Ultra-compact tier for very short landscape viewports
-  const isUltraCompact = useLandscapeLayout && viewportHeight <= 480;
+  const schemeClass = `hud-scheme-${hudColorScheme.toLowerCase()}`;
+  const landscapeClass = shouldUseLandscape ? 'hud-landscape' : '';
+  const compactClass = isUltraCompact ? 'hud-ultra-compact' : '';
+  const criticalClass = isCriticalFlashing ? 'hud-critical-alert' : '';
+
+  const currentYear = new Date().getFullYear();
+  const appIdentifier = typeof window !== 'undefined' 
+    ? encodeURIComponent(window.location.hostname)
+    : 'hev-suit-hud';
 
   return (
     <div 
-      className={cn(
-        'hud-container',
-        isCriticalFlashing && 'hud-critical-alert',
-        `display-mode-${displayMode.toLowerCase()}`,
-        `hud-scheme-${hudColorScheme.toLowerCase()}`
-      )}
-      style={{
-        '--hud-scale': uiScale,
-      } as React.CSSProperties}
+      ref={containerRef}
+      className={`hud-container ${schemeClass} ${landscapeClass} ${compactClass} ${criticalClass}`}
     >
+      {/* CRT Overlay */}
       <div className="hud-crt-overlay" />
+      
+      {/* Scanlines */}
       <div className="hud-scanlines" />
-      <div className={cn(
-        'hud-layout',
-        useLandscapeLayout ? 'landscape' : 'portrait',
-        isUltraCompact && 'ultra-compact'
-      )}>
+
+      {/* Global Effects (bloom, critical, presence) */}
+      <HudGlobalEffects isCriticalFlashing={isCriticalFlashing} />
+
+      {/* Main Layout */}
+      <div className="hud-layout">
         <header className="hud-header">
           <div className="hud-header-content">
-            <div className="hud-title">H.E.V MARK V PROTOTYPE</div>
-            <div className="hud-user">OPERATOR: LEON KRYWIAK | BLACK MESA RESEARCH FACILITY</div>
+            <h1 className="hud-title">H.E.V SUIT INTERFACE</h1>
+            <div className="hud-user">OPERATOR: GORDON FREEMAN</div>
           </div>
         </header>
+
         <main className="hud-main">
           {children}
         </main>
+
         <footer className="hud-footer">
           <div className="hud-footer-content">
-            <span className="text-xs opacity-60">© {new Date().getFullYear()} BLACK MESA RESEARCH FACILITY - ANOMALOUS MATERIALS DIVISION</span>
-            <span className="text-xs opacity-60">
-              Built with ❤️ using{' '}
+            <div className="hud-footer-left">
+              © {currentYear} BLACK MESA RESEARCH FACILITY
+            </div>
+            <div className="hud-footer-center">
+              Built with <Heart className="inline w-4 h-4 text-primary" fill="currentColor" /> using{' '}
               <a 
-                href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(typeof window !== 'undefined' ? window.location.hostname : 'hev-prototype')}`}
+                href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${appIdentifier}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hud-link"
               >
                 caffeine.ai
               </a>
-            </span>
+            </div>
+            <div className="hud-footer-right">
+              <a 
+                href="https://twitter.com/blackmesa" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hud-link"
+                aria-label="Twitter"
+              >
+                <SiX className="inline w-4 h-4" />
+              </a>
+              {' '}
+              <a 
+                href="https://github.com/blackmesa" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hud-link"
+                aria-label="GitHub"
+              >
+                <SiGithub className="inline w-4 h-4" />
+              </a>
+            </div>
           </div>
         </footer>
       </div>
