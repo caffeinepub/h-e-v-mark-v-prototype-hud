@@ -2,10 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-set-the-app-s-default-display-mode-to-standard-the-mode-after-tactical-on-first-load-and-after-a-settings-reset-without-requiring-the-user-to-manually-switch-from-tactical",
-      "featureTitle": "Set the app’s default display mode to \"STANDARD\" (the mode after Tactical) on first load and after a settings reset, without requiring the user to manually switch from Tactical.",
+      "featureId": "feature-update-the-hud-tab-bar-so-all-tabs-are-reachable-on-small-screens-by-reducing-each-tab-s-visual-width-and-supporting-horizontal-overflow-scrolling-e-g-when-the-full-tab-set-exceeds-viewport-width",
+      "featureTitle": "Update the HUD tab bar so all tabs are reachable on small screens by reducing each tab’s visual width and supporting horizontal overflow scrolling (e.g., when the full tab set exceeds viewport width).",
       "files": [
-        "frontend/src/state/infoSettingsState.ts"
+        "frontend/src/index.css"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -20,14 +20,10 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-an-android-installable-pwa-experience-apk-like-install-flow-by-adding-the-required-web-app-manifest-icons-and-service-worker-so-the-app-can-be-installed-to-an-android-home-screen-from-a-supported-browser",
-      "featureTitle": "Add an Android-installable PWA experience (APK-like install flow) by adding the required web app manifest, icons, and service worker so the app can be installed to an Android home screen from a supported browser.",
+      "featureId": "feature-add-a-compact-rendering-mode-for-hudtabsbar-that-at-small-widths-shows-only-the-tab-name-label-and-removes-reduces-secondary-micro-text-so-each-tab-consumes-less-space-while-remaining-readable",
+      "featureTitle": "Add a compact rendering mode for `HudTabsBar` that, at small widths, shows only the tab name (label) and removes/reduces secondary micro-text so each tab consumes less space while remaining readable.",
       "files": [
-        "frontend/index.html",
-        "frontend/public/manifest.webmanifest",
-        "frontend/public/service-worker.js",
-        "frontend/src/App.tsx",
-        "frontend/src/pwa/registerServiceWorker.ts"
+        "frontend/src/index.css"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -38,45 +34,6 @@
       ],
       "testIds": [
         "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-improve-mobile-support-with-responsive-ui-scaling-and-layout-adjustments-so-the-hud-is-readable-and-usable-on-common-phone-screen-sizes-portrait-and-landscape-while-preserving-the-existing-ui-style",
-      "featureTitle": "Improve mobile support with responsive UI scaling and layout adjustments so the HUD is readable and usable on common phone screen sizes (portrait and landscape), while preserving the existing UI style.",
-      "files": [
-        "frontend/src/components/hud/HudLayout.tsx",
-        "frontend/src/hooks/useAutoUiScale.ts",
-        "frontend/src/index.css"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-optimize-controls-for-touch-devices-across-the-app-tap-targets-touch-interactions-and-removal-of-hover-only-affordances-so-the-interface-is-comfortable-to-use-on-mobile",
-      "featureTitle": "Optimize controls for touch devices across the app (tap targets, touch interactions, and removal of hover-only affordances) so the interface is comfortable to use on mobile.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/index.css"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-4"
       ],
       "confidence": "high"
     }

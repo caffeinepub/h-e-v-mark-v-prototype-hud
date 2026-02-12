@@ -12,11 +12,11 @@ export function BasicsTab() {
   };
 
   return (
-    <div className="tab-content">
-      <div className="basics-grid">
-        <div className="tactical-panel">
-          <div className="hud-panel-title">CORE STATISTICS</div>
-          <div className="hud-panel-content">
+    <div className="tab-content-compact">
+      <div className="basics-grid-compact">
+        <div className="hud-panel-compact">
+          <div className="hud-panel-title-compact">CORE STATISTICS</div>
+          <div className="hud-panel-content-compact">
             <StatPanel
               label="HEALTH"
               value={stats.health}

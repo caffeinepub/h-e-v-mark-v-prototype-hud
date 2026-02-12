@@ -1,122 +1,47 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Default STANDARD mode, add installable Android PWA, and improve mobile scaling + touch UX",
+  "title": "Compact, scrollable HUD tabs for small screens",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Default to STANDARD display mode on first load and after SYSTEM RESTART resets.",
+      "summary": "Make HUD tabs horizontally scrollable and reduce per-tab width so all tabs remain reachable on small screens.",
       "acceptanceCriteria": [
-        "A fresh app load (no prior in-memory state) starts in STANDARD display mode.",
-        "Using the existing \"SYSTEM RESTART\" action resets the display mode to STANDARD.",
-        "All user-facing labels remain in English (e.g., \"STANDARD\")."
+        "On narrow/mobile-sized viewports, the tab bar does not prevent access to the Settings tab (it is reachable via horizontal scroll/drag).",
+        "The tab bar does not overflow outside the viewport; extra tabs remain accessible via horizontal scrolling.",
+        "No regression on desktop widths: tabs remain visible/usable without requiring scrolling when space permits."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/state/infoSettingsState.ts",
+          "path": "frontend/src/components/hud/HudTabsBar.tsx",
           "operation": "modify",
-          "description": "Update the settings store initialState so displayMode defaults to \"STANDARD\" (and therefore resets to STANDARD when reset() is invoked by SYSTEM RESTART)."
+          "description": "Adjust the HudTabsBar markup/classes to support an overflow-x scrolling tab list (including touch/pointer horizontal drag scrolling) and to ensure tab triggers size to content (reduced padding/min-width) rather than forcing equal-width tabs."
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Add/adjust CSS for HudTabsBar (e.g., `hud-tabs-list-enhanced` / `hud-tab-trigger-enhanced` and related sub-elements) to enable horizontal overflow scrolling within the viewport, prevent layout overflow, hide/trim scrollbars appropriately, and tighten spacing so more tabs fit on small screens while remaining usable on desktop."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Add PWA manifest, icons, and service worker registration to enable Android install + offline app shell caching.",
+      "summary": "Add a compact visual mode for HudTabsBar at small widths that shows only the primary tab label and removes micro-text.",
       "acceptanceCriteria": [
-        "The app includes a valid web app manifest and is linked from the HTML entrypoint.",
-        "The app registers a service worker that enables offline-capable caching of the app shell (at minimum: HTML, JS bundle(s), CSS, and static assets required to render the UI).",
-        "On Android Chrome (or equivalent), the browser offers an install option (\"Add to Home screen\" / install prompt) and the installed app launches in standalone/app-like mode.",
-        "PWA icons are provided in appropriate sizes and referenced by the manifest."
+        "At small widths, tab triggers display only the primary label (e.g., BASICS, MEDICAL, …, SETTINGS) and do not render the micro indicator line.",
+        "Tab labels remain legible and do not overlap adjacent tabs; truncation/ellipsis behavior is acceptable if needed.",
+        "Switching tabs still works identically (click/tap) and active styling remains clearly indicated."
       ],
       "file_operations": [
         {
-          "path": "frontend/public/manifest.webmanifest",
-          "operation": "create",
-          "description": "Create a web app manifest configured for standalone display mode, with app name/short_name, start_url/scope, theme/background colors, and icon references for Android installability."
-        },
-        {
-          "path": "frontend/public/pwa/icon-192.png",
-          "operation": "create",
-          "description": "Add a 192x192 PWA icon asset referenced by the manifest."
-        },
-        {
-          "path": "frontend/public/pwa/icon-512.png",
-          "operation": "create",
-          "description": "Add a 512x512 PWA icon asset referenced by the manifest."
-        },
-        {
-          "path": "frontend/public/pwa/icon-512-maskable.png",
-          "operation": "create",
-          "description": "Add a 512x512 maskable PWA icon asset referenced by the manifest (purpose: \"maskable\") for better Android icon rendering."
-        },
-        {
-          "path": "frontend/index.html",
+          "path": "frontend/src/components/hud/HudTabsBar.tsx",
           "operation": "modify",
-          "description": "Link the manifest and add PWA-related meta tags (including theme-color) in the HTML head so Android Chrome recognizes the app as installable."
-        },
-        {
-          "path": "frontend/public/service-worker.js",
-          "operation": "create",
-          "description": "Create a service worker that pre-caches an app-shell set (HTML, manifest, icons, and critical static assets) and provides offline-capable caching behavior for same-origin GET requests."
-        },
-        {
-          "path": "frontend/src/pwa/registerServiceWorker.ts",
-          "operation": "create",
-          "description": "Add a small helper to register the service worker on supported browsers and report registration failures (no UI text changes)."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Call the service worker registration helper during app startup (after boot overlay completion is acceptable) to enable installability and offline caching. Use existing shadcn-ui composition already present in this file; verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Improve mobile readability via automatic responsive scaling and safe-area-aware layout adjustments without affecting desktop.",
-      "acceptanceCriteria": [
-        "UI scale is automatically optimized for small screens (in addition to the existing manual UI scale slider), without breaking desktop layout.",
-        "Key navigation elements (tabs list, headers/footers, primary controls) remain readable and do not overflow/clamp on narrow widths.",
-        "The layout respects mobile safe areas (e.g., notch/gesture areas) so critical controls are not obscured.",
-        "No changes are required to backend APIs to achieve the scaling improvements."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useAutoUiScale.ts",
-          "operation": "create",
-          "description": "Implement a lightweight hook that derives an automatic scale multiplier from viewport size/orientation (e.g., based on innerWidth/innerHeight breakpoints) and updates on resize/orientation changes."
-        },
-        {
-          "path": "frontend/src/components/hud/HudLayout.tsx",
-          "operation": "modify",
-          "description": "Incorporate the auto scale hook to compute an effective HUD scale (manual uiScale * auto multiplier) and apply it via CSS variables on the HUD container; also add safe-area inset CSS variables/classes as needed for mobile."
+          "description": "Introduce a compact rendering behavior for HudTabsBar (e.g., by adding a compact-mode class or structure that allows hiding the micro line and optionally reducing non-label elements at small widths) while keeping tab values and switching logic unchanged."
         },
         {
           "path": "frontend/src/index.css",
           "operation": "modify",
-          "description": "Adjust global HUD CSS to (1) use the effective scale variable for font/layout sizing, (2) add safe-area padding for header/footer/tab bars/content using env(safe-area-inset-*), and (3) refine narrow-width layout so tabs/header/footer remain readable without overflow."
-        }
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "summary": "Make interactions touch-friendly by increasing tap targets, removing hover-only affordances on touch devices, and preserving desktop mouse/keyboard behavior.",
-      "acceptanceCriteria": [
-        "Interactive controls meet touch-friendly sizing (e.g., comfortably tappable triggers/buttons) without requiring zoom.",
-        "Tab switching and other primary interactions work reliably via touch (no dependence on hover to discover or operate controls).",
-        "Scrolling areas (e.g., tab content panels/logs) remain scrollable and do not conflict with touch interactions.",
-        "Any touch interactions added do not regress mouse/keyboard behavior on desktop."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "Update CSS for touch devices: increase minimum sizes/padding for primary controls (e.g., tab triggers), add touch-action where appropriate, add iOS momentum scrolling for scroll areas, and gate hover-specific effects behind hover-capable media queries to avoid hover-only affordances on touch."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Ensure primary navigation controls (TabsList/TabsTrigger from shadcn-ui) remain reliably tappable on touch by applying any necessary class adjustments or wrappers consistent with existing styling. Verify the component's usage instructions before implementing."
+          "description": "Implement responsive compact styling for HudTabsBar at small widths (via media queries and/or a compact-mode class): hide `.tab-trigger-micro` (micro indicator line), ensure `.tab-trigger-label` remains readable with nowrap + ellipsis as needed, and keep active-state styling clearly visible."
         }
       ]
     }

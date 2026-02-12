@@ -1,12 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Default the app to STANDARD display mode, make it installable as an Android PWA, and improve mobile readability and touch usability.
+**Goal:** Make the HUD tab bar usable on small screens so all tabs (including Settings) remain reachable.
 
 **Planned changes:**
-- Set STANDARD as the default display mode on first load and after the existing SYSTEM RESTART/settings reset flow.
-- Add PWA support: web app manifest, appropriate icon set, and a service worker to cache the app shell for offline-capable startup.
-- Improve mobile responsive scaling and layout so HUD and core UI elements remain readable/usable on common phone sizes (portrait and landscape), including safe-area handling.
-- Make controls touch-friendly across the app (larger tap targets, remove hover-only interactions, ensure reliable tab switching and scrolling on touch) without regressing desktop mouse/keyboard behavior.
+- Update `HudTabsBar` layout to reduce tab visual width and support horizontal overflow scrolling on narrow/mobile viewports.
+- Add a compact rendering mode for small widths that shows only the primary tab label and removes/reduces secondary micro-text/indicator line.
+- Ensure desktop behavior remains unchanged (no unnecessary scrolling when space permits) while keeping tab switching and active styling consistent.
 
-**User-visible outcome:** On a fresh load (and after SYSTEM RESTART) the app opens in STANDARD mode, can be installed to an Android home screen and run standalone, and is easier to read and operate on phones with improved scaling and touch controls.
+**User-visible outcome:** On small screens, users can horizontally scroll/drag the HUD tabs and reliably reach the Settings tab; on larger screens, tabs remain fully visible and work as before.

@@ -1,40 +1,26 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Project focused on an Android-installable PWA experience, with \"Standard mode\" set as default and improved mobile UX (UI scaling + touch-optimized controls).",
+  "summary": "New project",
   "architectural_notes": [],
-  "known_issues": [],
-  "isFixRequest": false,
+  "known_issues": [
+    "Tabs are too large/labels too long, preventing access to Settings and tabs at the back"
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-set-the-app-s-default-display-mode-to-standard-the-mode-after-tactical-on-first-load-and-after-a-settings-reset-without-requiring-the-user-to-manually-switch-from-tactical",
-      "title": "Set the app’s default display mode to \"STANDARD\" (the mode after Tactical) on first load and after a settings reset, without requiring the user to manually switch from Tactical.",
+      "id": "feature-update-the-hud-tab-bar-so-all-tabs-are-reachable-on-small-screens-by-reducing-each-tab-s-visual-width-and-supporting-horizontal-overflow-scrolling-e-g-when-the-full-tab-set-exceeds-viewport-width",
+      "title": "Update the HUD tab bar so all tabs are reachable on small screens by reducing each tab’s visual width and supporting horizontal overflow scrolling (e.g., when the full tab set exceeds viewport width).",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-add-an-android-installable-pwa-experience-apk-like-install-flow-by-adding-the-required-web-app-manifest-icons-and-service-worker-so-the-app-can-be-installed-to-an-android-home-screen-from-a-supported-browser",
-      "title": "Add an Android-installable PWA experience (APK-like install flow) by adding the required web app manifest, icons, and service worker so the app can be installed to an Android home screen from a supported browser.",
+      "id": "feature-add-a-compact-rendering-mode-for-hudtabsbar-that-at-small-widths-shows-only-the-tab-name-label-and-removes-reduces-secondary-micro-text-so-each-tab-consumes-less-space-while-remaining-readable",
+      "title": "Add a compact rendering mode for `HudTabsBar` that, at small widths, shows only the tab name (label) and removes/reduces secondary micro-text so each tab consumes less space while remaining readable.",
       "reqIds": [
         "REQ-2"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-improve-mobile-support-with-responsive-ui-scaling-and-layout-adjustments-so-the-hud-is-readable-and-usable-on-common-phone-screen-sizes-portrait-and-landscape-while-preserving-the-existing-ui-style",
-      "title": "Improve mobile support with responsive UI scaling and layout adjustments so the HUD is readable and usable on common phone screen sizes (portrait and landscape), while preserving the existing UI style.",
-      "reqIds": [
-        "REQ-3"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-optimize-controls-for-touch-devices-across-the-app-tap-targets-touch-interactions-and-removal-of-hover-only-affordances-so-the-interface-is-comfortable-to-use-on-mobile",
-      "title": "Optimize controls for touch devices across the app (tap targets, touch interactions, and removal of hover-only affordances) so the interface is comfortable to use on mobile.",
-      "reqIds": [
-        "REQ-4"
       ],
       "version": 1
     }
@@ -42,24 +28,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Provide an Android-installable PWA experience (APK-like install flow) for the app",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "Set \"Standard mode\" (mode after Tactical) as the default mode",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "Improve mobile support: responsive UI scaling and touch-optimized controls",
+      "summary": "Reduce tab size and/or shorten tab labels so all tabs (e.g., Settings) are reachable/visible",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Make Standard display mode default, add Android-installable PWA, and improve mobile UI scaling + touch controls",
+  "projectName": "Make HUD tabs compact so all tabs (including Settings) are reachable",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

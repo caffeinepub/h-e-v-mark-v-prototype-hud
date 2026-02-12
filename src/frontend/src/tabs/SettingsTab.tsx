@@ -1,224 +1,267 @@
-import { useState } from 'react';
 import { useInfoSettingsStore } from '../state/infoSettingsState';
-import { useUIStore } from '../state/uiState';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
-import { Slider } from '@/components/ui/slider';
-import { Button } from '@/components/ui/button';
-import { ConfirmActionModal } from '../components/info/ConfirmActionModal';
-import { uiSfx } from '../audio/uiSfx';
-import { hevVoice } from '../audio/hevVoice';
+import { useSuitStore } from '../state/suitState';
+import { useWeaponSystemsStore } from '../state/weaponSystemsState';
+import { useHazardsStore } from '../state/hazardsState';
 import { useLogStore } from '../state/systemLog';
+import { HudSwitch } from '../components/common/HudSwitch';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Slider } from '@/components/ui/slider';
+import { Separator } from '@/components/ui/separator';
+import { hevVoice } from '../audio/hevVoice';
+import { uiSfx } from '../audio/uiSfx';
 
 export function SettingsTab() {
   const {
     voiceEnabled,
     displayMode,
+    radioLinkActive,
+    hudActive,
     hudColorScheme,
     uiScale,
     tacticalModeEnabled,
     setVoiceEnabled,
     setDisplayMode,
+    setRadioLinkActive,
+    setHudActive,
     setHudColorScheme,
     setUiScale,
     setTacticalModeEnabled,
-    reset: resetInfoSettings,
+    reset: resetSettings,
   } = useInfoSettingsStore();
 
-  const { landscapeModeEnabled, toggleLandscapeMode, reset: resetUIState } = useUIStore();
-  const { addEntry } = useLogStore();
-  const [showRestartModal, setShowRestartModal] = useState(false);
+  const { reset: resetSuit } = useSuitStore();
+  const { reset: resetWeapons } = useWeaponSystemsStore();
+  const { reset: resetHazards } = useHazardsStore();
+  const { clear: clearLog } = useLogStore();
 
-  const handleVoiceToggle = (checked: boolean) => {
-    setVoiceEnabled(checked);
-    addEntry('system', `VOICE FEEDBACK: ${checked ? 'ENABLED' : 'DISABLED'}`);
+  const handleVoiceToggle = (enabled: boolean) => {
+    setVoiceEnabled(enabled);
     uiSfx.settingsChange();
-    if (checked) {
+    if (enabled) {
       hevVoice.voiceSystemEnabled();
     }
   };
 
-  const handleDisplayModeChange = (value: string) => {
-    setDisplayMode(value as 'TACTICAL' | 'STANDARD' | 'MINIMAL');
-    addEntry('system', `DISPLAY MODE: ${value}`);
+  const handleDisplayModeChange = (mode: 'TACTICAL' | 'STANDARD' | 'MINIMAL') => {
+    setDisplayMode(mode);
     uiSfx.settingsChange();
-    hevVoice.displayModeChanged(value as 'TACTICAL' | 'STANDARD' | 'MINIMAL');
+    hevVoice.displayModeChanged(mode);
   };
 
-  const handleColorSchemeChange = (value: string) => {
-    setHudColorScheme(value as 'AMBER' | 'BLUE' | 'GREEN' | 'PINK');
+  const handleRadioToggle = (active: boolean) => {
+    setRadioLinkActive(active);
+    uiSfx.settingsChange();
+    hevVoice.radioLinkToggled(active);
+  };
+
+  const handleHudToggle = (active: boolean) => {
+    setHudActive(active);
+    uiSfx.settingsChange();
+    hevVoice.hudToggled(active);
+  };
+
+  const handleColorSchemeChange = (scheme: string) => {
+    setHudColorScheme(scheme as 'AMBER' | 'BLUE' | 'GREEN' | 'PINK');
     uiSfx.settingsChange();
   };
 
-  const handleUIScaleChange = (value: number[]) => {
+  const handleUiScaleChange = (value: number[]) => {
     setUiScale(value[0]);
-  };
-
-  const handleLandscapeModeToggle = () => {
-    toggleLandscapeMode();
     uiSfx.settingsChange();
   };
 
-  const handleTacticalModeToggle = (checked: boolean) => {
-    setTacticalModeEnabled(checked);
-    addEntry('system', `TACTICAL MODE: ${checked ? 'ENABLED' : 'DISABLED'}`);
+  const handleTacticalModeToggle = (enabled: boolean) => {
+    setTacticalModeEnabled(enabled);
     uiSfx.settingsChange();
-    if (checked) {
-      hevVoice.moduleEnabled('TACTICAL MODE');
-    } else {
-      hevVoice.moduleDisabled('TACTICAL MODE');
-    }
   };
 
   const handleSystemRestart = () => {
-    setShowRestartModal(false);
-    addEntry('system', 'SYSTEM RESTART INITIATED');
-    
-    setTimeout(() => {
-      resetInfoSettings();
-      resetUIState();
-      addEntry('system', 'SYSTEM RESTART COMPLETE');
-      hevVoice.moduleEnabled('SYSTEM');
-    }, 1000);
+    resetSettings();
+    resetSuit();
+    resetWeapons();
+    resetHazards();
+    clearLog();
+    uiSfx.confirmAccept();
+    // Play a generic voice confirmation since systemRestarted doesn't exist
+    hevVoice.voiceSystemEnabled();
   };
 
   return (
-    <div className="tab-content">
-      <div className="settings-sections">
-        <div className="settings-section">
-          <div className="settings-section-title">DISPLAY & UI</div>
-          
-          <div className="settings-row">
-            <div className="settings-info">
-              <div className="settings-label">DISPLAY MODE</div>
-              <div className="settings-desc">Select HUD display configuration</div>
-            </div>
-            <Select value={displayMode} onValueChange={handleDisplayModeChange}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="TACTICAL">TACTICAL</SelectItem>
-                <SelectItem value="STANDARD">STANDARD</SelectItem>
-                <SelectItem value="MINIMAL">MINIMAL</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="settings-row">
-            <div className="settings-info">
-              <div className="settings-label">HUD COLOR SCHEME</div>
-              <div className="settings-desc">Customize HUD color palette</div>
-            </div>
-            <Select value={hudColorScheme} onValueChange={handleColorSchemeChange}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="AMBER">AMBER</SelectItem>
-                <SelectItem value="BLUE">BLUE</SelectItem>
-                <SelectItem value="GREEN">GREEN</SelectItem>
-                <SelectItem value="PINK">PINK</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="settings-row">
-            <div className="settings-info">
-              <div className="settings-label">UI SCALE: {uiScale.toFixed(2)}x</div>
-              <div className="settings-desc">Adjust interface size</div>
-            </div>
-            <Slider
-              value={[uiScale]}
-              onValueChange={handleUIScaleChange}
-              min={0.75}
-              max={1.5}
-              step={0.05}
-              className="w-[180px]"
-            />
-          </div>
-
-          <div className="settings-row">
-            <div className="settings-info">
-              <div className="settings-label">LANDSCAPE MODE</div>
-              <div className="settings-desc">Force landscape layout on all devices</div>
-            </div>
-            <Switch checked={landscapeModeEnabled} onCheckedChange={handleLandscapeModeToggle} />
-          </div>
-        </div>
-
-        <div className="settings-section">
-          <div className="settings-section-title">AUDIO & VOICE</div>
-          
-          <div className="settings-row">
-            <div className="settings-info">
-              <div className="settings-label">VOICE FEEDBACK</div>
-              <div className="settings-desc">Enable HEV voice announcements</div>
-            </div>
-            <Switch checked={voiceEnabled} onCheckedChange={handleVoiceToggle} />
-          </div>
-        </div>
-
-        <div className="settings-section">
-          <div className="settings-section-title">TACTICAL SYSTEMS</div>
-          
-          <div className="settings-row">
-            <div className="settings-info">
-              <div className="settings-label">TACTICAL MODE</div>
-              <div className="settings-desc">Enable advanced tactical interface and TACTICAL tab</div>
-            </div>
-            <Switch checked={tacticalModeEnabled} onCheckedChange={handleTacticalModeToggle} />
-          </div>
-        </div>
-
-        <div className="settings-section">
-          <div className="settings-section-title">SYSTEM ACTIONS</div>
-          
-          <div className="settings-row">
-            <div className="settings-info">
-              <div className="settings-label">SYSTEM RESTART</div>
-              <div className="settings-desc">Reset all settings to defaults</div>
-            </div>
-            <Button
-              variant="destructive"
-              onClick={() => setShowRestartModal(true)}
-            >
-              RESTART
-            </Button>
-          </div>
-        </div>
-
-        <div className="settings-section">
-          <div className="settings-section-title">SYSTEM INFORMATION</div>
-          
-          <div className="tactical-panel">
-            <div className="hud-panel-content">
-              <div className="tactical-readouts-container">
-                <div className="tactical-readout-item">
-                  <span className="tactical-readout-label">FIRMWARE VERSION:</span>
-                  <span className="tactical-readout-value">HEV-MK5-2026</span>
+    <div className="tab-content-compact">
+      <div className="settings-grid-compact">
+        {/* Display & UI */}
+        <div className="hud-panel-compact">
+          <div className="hud-panel-title-compact">DISPLAY & UI</div>
+          <div className="hud-panel-content-compact">
+            <div className="settings-section-compact">
+              <div className="setting-row-compact">
+                <div className="setting-info-compact">
+                  <Label htmlFor="hud-active" className="setting-label-compact">HUD STATUS</Label>
+                  <span className="setting-description-compact">Toggle heads-up display</span>
                 </div>
-                <div className="tactical-readout-item">
-                  <span className="tactical-readout-label">BUILD DATE:</span>
-                  <span className="tactical-readout-value">2026-02-12</span>
+                <HudSwitch
+                  id="hud-active"
+                  checked={hudActive}
+                  onCheckedChange={handleHudToggle}
+                />
+              </div>
+
+              <Separator className="my-2" />
+
+              <div className="setting-row-compact">
+                <div className="setting-info-compact">
+                  <Label htmlFor="display-mode" className="setting-label-compact">DISPLAY MODE</Label>
+                  <span className="setting-description-compact">Current: {displayMode}</span>
                 </div>
-                <div className="tactical-readout-item">
-                  <span className="tactical-readout-label">SYSTEM STATUS:</span>
-                  <span className="tactical-readout-value">OPERATIONAL</span>
+                <Select value={displayMode} onValueChange={handleDisplayModeChange}>
+                  <SelectTrigger id="display-mode" className="setting-select-compact">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="MINIMAL">MINIMAL</SelectItem>
+                    <SelectItem value="STANDARD">STANDARD</SelectItem>
+                    <SelectItem value="TACTICAL">TACTICAL</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <Separator className="my-2" />
+
+              <div className="setting-row-compact">
+                <div className="setting-info-compact">
+                  <Label htmlFor="color-scheme" className="setting-label-compact">COLOR SCHEME</Label>
+                  <span className="setting-description-compact">Current: {hudColorScheme}</span>
                 </div>
+                <Select value={hudColorScheme} onValueChange={handleColorSchemeChange}>
+                  <SelectTrigger id="color-scheme" className="setting-select-compact">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="AMBER">AMBER</SelectItem>
+                    <SelectItem value="BLUE">BLUE</SelectItem>
+                    <SelectItem value="GREEN">GREEN</SelectItem>
+                    <SelectItem value="PINK">PINK</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <Separator className="my-2" />
+
+              <div className="setting-row-compact">
+                <div className="setting-info-compact">
+                  <Label htmlFor="ui-scale" className="setting-label-compact">UI SCALE</Label>
+                  <span className="setting-description-compact">{(uiScale * 100).toFixed(0)}%</span>
+                </div>
+                <Slider
+                  id="ui-scale"
+                  min={0.7}
+                  max={1.3}
+                  step={0.1}
+                  value={[uiScale]}
+                  onValueChange={handleUiScaleChange}
+                  className="setting-slider-compact"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Audio & Voice */}
+        <div className="hud-panel-compact">
+          <div className="hud-panel-title-compact">AUDIO & VOICE</div>
+          <div className="hud-panel-content-compact">
+            <div className="settings-section-compact">
+              <div className="setting-row-compact">
+                <div className="setting-info-compact">
+                  <Label htmlFor="voice-enabled" className="setting-label-compact">VOICE SYSTEM</Label>
+                  <span className="setting-description-compact">H.E.V voice announcements</span>
+                </div>
+                <HudSwitch
+                  id="voice-enabled"
+                  checked={voiceEnabled}
+                  onCheckedChange={handleVoiceToggle}
+                />
+              </div>
+
+              <Separator className="my-2" />
+
+              <div className="setting-row-compact">
+                <div className="setting-info-compact">
+                  <Label htmlFor="radio-link" className="setting-label-compact">RADIO LINK</Label>
+                  <span className="setting-description-compact">Communication system</span>
+                </div>
+                <HudSwitch
+                  id="radio-link"
+                  checked={radioLinkActive}
+                  onCheckedChange={handleRadioToggle}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Tactical Systems */}
+        <div className="hud-panel-compact">
+          <div className="hud-panel-title-compact">TACTICAL SYSTEMS</div>
+          <div className="hud-panel-content-compact">
+            <div className="settings-section-compact">
+              <div className="setting-row-compact">
+                <div className="setting-info-compact">
+                  <Label htmlFor="tactical-mode" className="setting-label-compact">TACTICAL MODE</Label>
+                  <span className="setting-description-compact">Enable tactical overlay</span>
+                </div>
+                <HudSwitch
+                  id="tactical-mode"
+                  checked={tacticalModeEnabled}
+                  onCheckedChange={handleTacticalModeToggle}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* System Actions */}
+        <div className="hud-panel-compact">
+          <div className="hud-panel-title-compact">SYSTEM ACTIONS</div>
+          <div className="hud-panel-content-compact">
+            <div className="settings-section-compact">
+              <Button
+                variant="destructive"
+                onClick={handleSystemRestart}
+                className="system-action-btn-compact"
+              >
+                SYSTEM RESTART
+              </Button>
+              <p className="system-action-description-compact">
+                Reset all settings and clear system log
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* System Information */}
+        <div className="hud-panel-compact">
+          <div className="hud-panel-title-compact">SYSTEM INFORMATION</div>
+          <div className="hud-panel-content-compact">
+            <div className="system-info-compact">
+              <div className="system-info-row-compact">
+                <span className="system-info-label-compact">VERSION:</span>
+                <span className="system-info-value-compact">H.E.V MK-V 2.1.0</span>
+              </div>
+              <div className="system-info-row-compact">
+                <span className="system-info-label-compact">BUILD:</span>
+                <span className="system-info-value-compact">2026.02.12</span>
+              </div>
+              <div className="system-info-row-compact">
+                <span className="system-info-label-compact">STATUS:</span>
+                <span className="system-info-value-compact">OPERATIONAL</span>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <ConfirmActionModal
-        open={showRestartModal}
-        onOpenChange={setShowRestartModal}
-        title="CONFIRM SYSTEM RESTART"
-        description="This will reset all settings to their default values. All customizations will be lost. Are you sure you want to proceed?"
-        onConfirm={handleSystemRestart}
-      />
     </div>
   );
 }

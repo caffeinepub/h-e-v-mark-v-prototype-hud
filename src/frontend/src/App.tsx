@@ -4,6 +4,7 @@ import { HudOfflineOverlay } from './components/hud/HudOfflineOverlay';
 import { MinimalHudView } from './components/hud/MinimalHudView';
 import { TacticalHudShell } from './components/hud/TacticalHudShell';
 import { BootSequenceOverlay } from './components/boot/BootSequenceOverlay';
+import { HudTabsBar } from './components/hud/HudTabsBar';
 import { BasicsTab } from './tabs/BasicsTab';
 import { MedicalTab } from './tabs/MedicalTab';
 import { InfoTab } from './tabs/InfoTab';
@@ -12,7 +13,7 @@ import { WeaponsTab } from './tabs/WeaponsTab';
 import { TacticalTab } from './tabs/TacticalTab';
 import { HazardsTab } from './tabs/HazardsTab';
 import { SettingsTab } from './tabs/SettingsTab';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { useInfoSettingsStore } from './state/infoSettingsState';
 import { uiSfx } from './audio/uiSfx';
 import { registerServiceWorker } from './pwa/registerServiceWorker';
@@ -66,34 +67,7 @@ function App() {
       <HudLayout>
         <TacticalHudShell>
           <Tabs value={activeTab} onValueChange={handleTabChange} className="hud-tabs">
-            <TabsList className="hud-tabs-list">
-              <TabsTrigger value="basics" className="hud-tab-trigger">
-                BASICS
-              </TabsTrigger>
-              <TabsTrigger value="medical" className="hud-tab-trigger">
-                MEDICAL
-              </TabsTrigger>
-              <TabsTrigger value="info" className="hud-tab-trigger">
-                INFO
-              </TabsTrigger>
-              <TabsTrigger value="utilities" className="hud-tab-trigger">
-                UTILITIES
-              </TabsTrigger>
-              <TabsTrigger value="weapons" className="hud-tab-trigger">
-                WEAPONS
-              </TabsTrigger>
-              <TabsTrigger value="hazards" className="hud-tab-trigger">
-                HAZARDS
-              </TabsTrigger>
-              {tacticalModeEnabled && (
-                <TabsTrigger value="tactical" className="hud-tab-trigger">
-                  TACTICAL
-                </TabsTrigger>
-              )}
-              <TabsTrigger value="settings" className="hud-tab-trigger">
-                SETTINGS
-              </TabsTrigger>
-            </TabsList>
+            <HudTabsBar showTactical={tacticalModeEnabled} />
 
             <TabsContent value="basics" className="hud-tab-content">
               <BasicsTab />
@@ -140,34 +114,7 @@ function App() {
       {!hudActive && <HudOfflineOverlay />}
       
       <Tabs value={activeTab} onValueChange={handleTabChange} className="hud-tabs">
-        <TabsList className="hud-tabs-list">
-          <TabsTrigger value="basics" className="hud-tab-trigger">
-            BASICS
-          </TabsTrigger>
-          <TabsTrigger value="medical" className="hud-tab-trigger">
-            MEDICAL
-          </TabsTrigger>
-          <TabsTrigger value="info" className="hud-tab-trigger">
-            INFO
-          </TabsTrigger>
-          <TabsTrigger value="utilities" className="hud-tab-trigger">
-            UTILITIES
-          </TabsTrigger>
-          <TabsTrigger value="weapons" className="hud-tab-trigger">
-            WEAPONS
-          </TabsTrigger>
-          <TabsTrigger value="hazards" className="hud-tab-trigger">
-            HAZARDS
-          </TabsTrigger>
-          {tacticalModeEnabled && (
-            <TabsTrigger value="tactical" className="hud-tab-trigger">
-              TACTICAL
-            </TabsTrigger>
-          )}
-          <TabsTrigger value="settings" className="hud-tab-trigger">
-            SETTINGS
-          </TabsTrigger>
-        </TabsList>
+        <HudTabsBar showTactical={tacticalModeEnabled} />
 
         <TabsContent value="basics" className="hud-tab-content">
           <BasicsTab />

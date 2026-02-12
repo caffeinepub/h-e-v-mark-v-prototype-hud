@@ -1,68 +1,81 @@
 import { useSuitStore } from '../state/suitState';
-import { useActor } from '../hooks/useActor';
-import { Switch } from '@/components/ui/switch';
+import { useToggleModule } from '../hooks/useQueries';
+import { HudSwitch } from '../components/common/HudSwitch';
+import { Label } from '@/components/ui/label';
 import { AmbiencePlayer } from '../components/audio/AmbiencePlayer';
-import { uiSfx } from '../audio/uiSfx';
 import { hevVoice } from '../audio/hevVoice';
+import { uiSfx } from '../audio/uiSfx';
+
+type ModuleKey = keyof typeof initialModules;
+
+const initialModules = {
+  helmet: { label: 'HELMET', description: 'Heads-up display and protection' },
+  respirator: { label: 'RESPIRATOR', description: 'Air filtration system' },
+  longJump: { label: 'LONG JUMP', description: 'Enhanced mobility module' },
+  flashlight: { label: 'FLASHLIGHT', description: 'Tactical illumination' },
+  advancedMedical: { label: 'ADVANCED MEDICAL', description: 'Enhanced healing systems' },
+  radiationShield: { label: 'RADIATION SHIELD', description: 'Radiation protection' },
+  defibrillator: { label: 'DEFIBRILLATOR', description: 'Emergency cardiac response' },
+  shieldBoost: { label: 'SHIELD BOOST', description: 'Temporary armor enhancement' },
+  hazardSystem: { label: 'HAZARD SYSTEM', description: 'Environmental monitoring' },
+  moduleSync: { label: 'MODULE SYNC', description: 'System synchronization' },
+};
 
 export function UtilitiesTab() {
-  const { modules, toggleModule } = useSuitStore();
-  const { actor } = useActor();
+  const { modules } = useSuitStore();
+  const toggleModule = useToggleModule();
 
-  const handleToggle = async (moduleName: keyof typeof modules, label: string) => {
-    if (!actor) return;
+  const handleToggle = (moduleKey: ModuleKey) => {
+    const willBeEnabled = !modules[moduleKey];
+    const moduleLabel = initialModules[moduleKey].label;
     
-    try {
-      const wasEnabled = modules[moduleName];
-      toggleModule(moduleName);
-      uiSfx.toggle();
-      if (wasEnabled) {
-        hevVoice.moduleDisabled(label);
-      } else {
-        hevVoice.moduleEnabled(label);
-      }
-    } catch (error) {
-      console.error('Failed to toggle module:', error);
-    }
+    toggleModule.mutate(moduleKey, {
+      onSuccess: () => {
+        uiSfx.toggle();
+        if (willBeEnabled) {
+          hevVoice.moduleEnabled(moduleLabel);
+        } else {
+          hevVoice.moduleDisabled(moduleLabel);
+        }
+      },
+    });
   };
 
-  const modulesList: Array<{ key: keyof typeof modules; label: string; desc: string }> = [
-    { key: 'helmet', label: 'HELMET SEAL', desc: 'Environmental protection and HUD integration' },
-    { key: 'respirator', label: 'RESPIRATOR', desc: 'Air filtration and toxin removal' },
-    { key: 'longJump', label: 'LONG JUMP MODULE', desc: 'Enhanced mobility and jump distance' },
-    { key: 'flashlight', label: 'FLASHLIGHT', desc: 'Illumination system for low-light environments' },
-    { key: 'advancedMedical', label: 'ADVANCED MEDICAL', desc: 'Automated trauma response and morphine administration' },
-    { key: 'radiationShield', label: 'RADIATION SHIELD', desc: 'Active radiation protection system' },
-    { key: 'defibrillator', label: 'DEFIBRILLATOR', desc: 'Emergency cardiac response system' },
-    { key: 'shieldBoost', label: 'SHIELD BOOST', desc: 'Temporary armor enhancement' },
-    { key: 'hazardSystem', label: 'HAZARD DETECTION', desc: 'Environmental threat monitoring' },
-    { key: 'moduleSync', label: 'MODULE SYNC', desc: 'Cross-system integration and optimization' },
-  ];
-
   return (
-    <div className="tab-content">
-      <div className="utilities-grid">
-        <div className="tactical-panel">
-          <div className="hud-panel-title">SUIT MODULES</div>
-          <div className="hud-panel-content">
-            {modulesList.map(({ key, label, desc }) => (
-              <div key={key} className="module-row">
-                <div className="module-info">
-                  <div className="module-label">{label}</div>
-                  <div className="module-desc">{desc}</div>
-                </div>
-                <Switch
-                  checked={modules[key]}
-                  onCheckedChange={() => handleToggle(key, label)}
-                />
-              </div>
-            ))}
+    <div className="tab-content-compact">
+      <div className="utilities-grid-compact">
+        <div className="hud-panel-compact">
+          <div className="hud-panel-title-compact">MODULE CONTROLS</div>
+          <div className="hud-panel-content-compact">
+            <div className="modules-list-compact">
+              {(Object.keys(initialModules) as ModuleKey[]).map((key) => {
+                const module = initialModules[key];
+                const isActive = modules[key];
+                
+                return (
+                  <div key={key} className="module-row-compact">
+                    <div className="module-info-compact">
+                      <Label htmlFor={key} className="module-label-compact">
+                        {module.label}
+                      </Label>
+                      <span className="module-description-compact">{module.description}</span>
+                    </div>
+                    <HudSwitch
+                      id={key}
+                      checked={isActive}
+                      onCheckedChange={() => handleToggle(key)}
+                      disabled={toggleModule.isPending}
+                    />
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
 
-        <div className="tactical-panel">
-          <div className="hud-panel-title">AMBIENCE PLAYER</div>
-          <div className="hud-panel-content">
+        <div className="hud-panel-compact">
+          <div className="hud-panel-title-compact">AMBIENCE PLAYER</div>
+          <div className="hud-panel-content-compact">
             <AmbiencePlayer />
           </div>
         </div>

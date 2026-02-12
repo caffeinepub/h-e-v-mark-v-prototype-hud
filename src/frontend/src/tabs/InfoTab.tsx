@@ -1,12 +1,14 @@
 import { SuitSubsystemReadouts } from '../components/info/SuitSubsystemReadouts';
 import { SystemLogView } from '../components/info/SystemLogView';
 import { CommandConsole } from '../components/info/CommandConsole';
-import { HudPanel } from '../components/hud/Panels';
+import { OperatorProfilePanel } from '../components/info/OperatorProfilePanel';
 
 export function InfoTab() {
   return (
     <div className="tab-content">
       <div className="info-tab-layout">
+        <OperatorProfilePanel />
+        
         <SuitSubsystemReadouts />
         
         <div className="tactical-panel">
