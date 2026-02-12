@@ -1,0 +1,95 @@
+{
+  "kind": "build_request",
+  "title": "Apply Tactical tab visual styling and animations across all tabs",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Update the BASICS, MEDICAL, INFO, UTILITIES, WEAPONS, and SETTINGS tabs to use the same visual styling as the TACTICAL tab by reusing the existing Tactical tab CSS patterns (e.g., `.tactical-panel`, bordered/inset-glow panel look, textured panel background, and dense HUD typography) for their primary panels and sections.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "recent-messages-4",
+          "recent-messages-6",
+          "recent-messages-7"
+        ],
+        "quotes": [
+          "everything  except tactics is still so bland. make it more visually appealing like the tactics tab",
+          "all",
+          "yes"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Each non-tactical tab renders its main content inside card/panel containers that visually match the Tactical tab panels (border weight, glow, texture, and overall density).",
+        "The updated non-tactical tabs no longer appear as mostly-unstyled content blocks; they present information as structured, Tactical-style panels/sections.",
+        "No user-facing text is changed away from English."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Apply the same interaction polish used in the Tactical tab (hover states, subtle transitions, and emphasis effects such as glow/pulse where appropriate) to comparable interactive elements in all other tabs (e.g., list rows, toggles, buttons, and panel sub-rows) while preserving existing functionality.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "recent-messages-4",
+          "recent-messages-7"
+        ],
+        "quotes": [
+          "everything  except tactics is still so bland. make it more visually appealing like the tactics tab",
+          "yes"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Interactive rows and controls in non-tactical tabs have visible hover/focus/active feedback comparable in intensity and style to Tactical tab elements (e.g., border-color shift, background tint, transition).",
+        "Any existing animations already present in the codebase for the Tactical tab (e.g., pulse/glow emphasis patterns) are reused consistently where they make sense in other tabs, without introducing distracting motion.",
+        "All existing click/toggle behaviors, audio cues, and store updates continue to work as before."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Standardize tab content layout spacing and scrolling so that all tabs follow the Tactical tab content container conventions (padding scaled by `--hud-scale`, consistent internal gaps, and predictable overflow behavior) across STANDARD and TACTICAL display modes.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "recent-messages-4",
+          "recent-messages-7"
+        ],
+        "quotes": [
+          "make it more visually appealing like the tactics tab",
+          "yes"
+        ]
+      },
+      "acceptanceCriteria": [
+        "All tabs have consistent outer padding and spacing rules comparable to `.tactical-tab` (scaled padding, consistent section gaps).",
+        "In both STANDARD and TACTICAL display modes, tab content remains usable (no clipped content; scrolling works where needed).",
+        "The TACTICAL tab visibility/behavior remains unchanged (still conditional on Tactical Mode being enabled)."
+      ]
+    }
+  ],
+  "constraints": [
+    "Do not modify any files under `frontend/src/components/ui` (Shadcn components are read-only).",
+    "Do not edit `frontend/src/hooks/useInternetIdentity.ts`, `frontend/src/hooks/useInternetIdentity.tsx`, `frontend/src/hooks/useActor.ts`, or `frontend/src/main.tsx` (immutable paths).",
+    "Keep the backend architecture unchanged (single Motoko actor); this request is UI-only unless a UI dependency is discovered."
+  ],
+  "nonGoals": [
+    "Do not add new tabs, new backend features, or new domain functionality (this is a visual/UX polish pass only).",
+    "Do not change the Tactical Mode toggle logic or the conditional visibility of the TACTICAL tab.",
+    "Do not replace the overall HUD/CRT aesthetic; only propagate the Tactical tab’s existing look and motion patterns to the other tabs."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [
+      "Use the exact Tactical tab visual style and animations for all tabs."
+    ],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
+  }
+}

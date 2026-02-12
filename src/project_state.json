@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "Enhance the UI by applying the exact visual styling and animations from the Tactics tab across all tabs to improve overall visual appeal.",
+  "architectural_notes": [
+    "Use the Tactics tab as the baseline design/animation pattern to be replicated across all other tabs for consistent look and feel."
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-update-the-basics-medical-info-utilities-weapons-and-settings-tabs-to-use-the-same-visual-styling-as-the-tactical-tab-by-reusing-the-existing-tactical-tab-css-patterns-e-g-tactical-panel-bordered-inset-glow-panel-look-textured-panel-background-and-dense-hud-typography-for-their-primary-panels-and-sections",
+      "title": "Update the BASICS, MEDICAL, INFO, UTILITIES, WEAPONS, and SETTINGS tabs to use the same visual styling as the TACTICAL tab by reusing the existing Tactical tab CSS patterns (e.g., `.tactical-panel`, bordered/inset-glow panel look, textured panel background, and dense HUD typography) for their primary panels and sections.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-apply-the-same-interaction-polish-used-in-the-tactical-tab-hover-states-subtle-transitions-and-emphasis-effects-such-as-glow-pulse-where-appropriate-to-comparable-interactive-elements-in-all-other-tabs-e-g-list-rows-toggles-buttons-and-panel-sub-rows-while-preserving-existing-functionality",
+      "title": "Apply the same interaction polish used in the Tactical tab (hover states, subtle transitions, and emphasis effects such as glow/pulse where appropriate) to comparable interactive elements in all other tabs (e.g., list rows, toggles, buttons, and panel sub-rows) while preserving existing functionality.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-standardize-tab-content-layout-spacing-and-scrolling-so-that-all-tabs-follow-the-tactical-tab-content-container-conventions-padding-scaled-by-hud-scale-consistent-internal-gaps-and-predictable-overflow-behavior-across-standard-and-tactical-display-modes",
+      "title": "Standardize tab content layout spacing and scrolling so that all tabs follow the Tactical tab content container conventions (padding scaled by `--hud-scale`, consistent internal gaps, and predictable overflow behavior) across STANDARD and TACTICAL display modes.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Apply the exact Tactics-tab visual style and animations to all tabs to make the UI more visually appealing.",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "projectName": "Apply Tactical tab visual styling and animations across all tabs",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

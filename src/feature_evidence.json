@@ -1,0 +1,76 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-update-the-basics-medical-info-utilities-weapons-and-settings-tabs-to-use-the-same-visual-styling-as-the-tactical-tab-by-reusing-the-existing-tactical-tab-css-patterns-e-g-tactical-panel-bordered-inset-glow-panel-look-textured-panel-background-and-dense-hud-typography-for-their-primary-panels-and-sections",
+      "featureTitle": "Update the BASICS, MEDICAL, INFO, UTILITIES, WEAPONS, and SETTINGS tabs to use the same visual styling as the TACTICAL tab by reusing the existing Tactical tab CSS patterns (e.g., `.tactical-panel`, bordered/inset-glow panel look, textured panel background, and dense HUD typography) for their primary panels and sections.",
+      "files": [
+        "frontend/src/index.css",
+        "frontend/src/tabs/BasicsTab.tsx",
+        "frontend/src/tabs/InfoTab.tsx",
+        "frontend/src/tabs/MedicalTab.tsx",
+        "frontend/src/tabs/SettingsTab.tsx",
+        "frontend/src/tabs/UtilitiesTab.tsx",
+        "frontend/src/tabs/WeaponsTab.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-apply-the-same-interaction-polish-used-in-the-tactical-tab-hover-states-subtle-transitions-and-emphasis-effects-such-as-glow-pulse-where-appropriate-to-comparable-interactive-elements-in-all-other-tabs-e-g-list-rows-toggles-buttons-and-panel-sub-rows-while-preserving-existing-functionality",
+      "featureTitle": "Apply the same interaction polish used in the Tactical tab (hover states, subtle transitions, and emphasis effects such as glow/pulse where appropriate) to comparable interactive elements in all other tabs (e.g., list rows, toggles, buttons, and panel sub-rows) while preserving existing functionality.",
+      "files": [
+        "frontend/src/components/hazards/EnvironmentalHazardsPanel.tsx",
+        "frontend/src/components/info/CommandConsole.tsx",
+        "frontend/src/components/info/SuitSubsystemReadouts.tsx",
+        "frontend/src/index.css",
+        "frontend/src/tabs/SettingsTab.tsx",
+        "frontend/src/tabs/UtilitiesTab.tsx",
+        "frontend/src/tabs/WeaponsTab.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-standardize-tab-content-layout-spacing-and-scrolling-so-that-all-tabs-follow-the-tactical-tab-content-container-conventions-padding-scaled-by-hud-scale-consistent-internal-gaps-and-predictable-overflow-behavior-across-standard-and-tactical-display-modes",
+      "featureTitle": "Standardize tab content layout spacing and scrolling so that all tabs follow the Tactical tab content container conventions (padding scaled by `--hud-scale`, consistent internal gaps, and predictable overflow behavior) across STANDARD and TACTICAL display modes.",
+      "files": [
+        "frontend/src/index.css",
+        "frontend/src/tabs/BasicsTab.tsx",
+        "frontend/src/tabs/InfoTab.tsx",
+        "frontend/src/tabs/SettingsTab.tsx",
+        "frontend/src/tabs/UtilitiesTab.tsx",
+        "frontend/src/tabs/WeaponsTab.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

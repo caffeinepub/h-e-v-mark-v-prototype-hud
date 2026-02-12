@@ -1,0 +1,1630 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 0rem;
+    
+    /* H.E.V Amber-Orange (hue ~50, deep saturation) */
+    --background: 0.12 0.02 50;
+    --foreground: 0.85 0.15 50;
+    
+    --card: 0.15 0.03 50;
+    --card-foreground: 0.85 0.15 50;
+    
+    --popover: 0.15 0.03 50;
+    --popover-foreground: 0.85 0.15 50;
+    
+    --primary: 0.70 0.20 50;
+    --primary-foreground: 0.15 0.03 50;
+    
+    --secondary: 0.25 0.08 50;
+    --secondary-foreground: 0.85 0.15 50;
+    
+    --muted: 0.20 0.05 50;
+    --muted-foreground: 0.60 0.12 50;
+    
+    --accent: 0.65 0.18 50;
+    --accent-foreground: 0.15 0.03 50;
+    
+    --destructive: 0.55 0.25 25;
+    --destructive-foreground: 0.95 0.05 50;
+    
+    --border: 0.35 0.10 50;
+    --input: 0.30 0.08 50;
+    --ring: 0.70 0.20 50;
+    
+    --warning: 0.65 0.22 60;
+    --warning-foreground: 0.15 0.03 50;
+    
+    --critical: 0.55 0.25 25;
+    --critical-foreground: 0.95 0.05 50;
+
+    /* Default UI scale */
+    --hud-scale: 1;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.02em;
+  }
+}
+
+/* HUD Color Schemes */
+.hud-scheme-blue {
+  --primary: 0.60 0.20 240;
+  --accent: 0.55 0.18 240;
+  --border: 0.40 0.12 240;
+  --ring: 0.60 0.20 240;
+  --foreground: 0.80 0.15 240;
+  --muted-foreground: 0.55 0.12 240;
+}
+
+.hud-scheme-green {
+  --primary: 0.65 0.20 140;
+  --accent: 0.60 0.18 140;
+  --border: 0.40 0.12 140;
+  --ring: 0.65 0.20 140;
+  --foreground: 0.80 0.15 140;
+  --muted-foreground: 0.55 0.12 140;
+}
+
+.hud-scheme-pink {
+  --primary: 0.65 0.20 340;
+  --accent: 0.60 0.18 340;
+  --border: 0.40 0.12 340;
+  --ring: 0.65 0.20 340;
+  --foreground: 0.80 0.15 340;
+  --muted-foreground: 0.55 0.12 340;
+}
+
+/* HUD Container */
+.hud-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: oklch(var(--background));
+  color: oklch(var(--foreground));
+}
+
+/* CRT Overlay */
+.hud-crt-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/assets/generated/crt-overlay.dim_2048x2048.png');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 1000;
+  mix-blend-mode: overlay;
+}
+
+/* Scanlines */
+.hud-scanlines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    oklch(0 0 0 / 0.08) 2px,
+    oklch(0 0 0 / 0.08) 4px
+  );
+  pointer-events: none;
+  z-index: 999;
+  animation: scanline-drift 8s linear infinite;
+}
+
+@keyframes scanline-drift {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(4px); }
+}
+
+/* Critical Alert Flash */
+.hud-critical-alert {
+  animation: critical-flash 0.8s ease-in-out infinite;
+}
+
+@keyframes critical-flash {
+  0%, 100% { 
+    filter: brightness(1);
+  }
+  50% { 
+    filter: brightness(1.4);
+  }
+}
+
+/* HUD Layout with Global Scale */
+.hud-layout {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+  font-size: calc(1rem * var(--hud-scale));
+}
+
+.hud-header {
+  padding: calc(0.75rem * var(--hud-scale)) calc(1rem * var(--hud-scale));
+  border-bottom: calc(2px * var(--hud-scale)) solid oklch(var(--border));
+  background: oklch(var(--card));
+}
+
+.hud-header-content {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.25rem * var(--hud-scale));
+}
+
+.hud-title {
+  font-size: calc(1.125rem * var(--hud-scale));
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: oklch(var(--primary));
+  text-shadow: 0 0 8px oklch(var(--primary) / 0.5);
+}
+
+.hud-user {
+  font-size: calc(0.75rem * var(--hud-scale));
+  letter-spacing: 0.05em;
+  opacity: 0.7;
+}
+
+.hud-main {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.hud-footer {
+  padding: calc(0.5rem * var(--hud-scale)) calc(1rem * var(--hud-scale));
+  border-top: calc(2px * var(--hud-scale)) solid oklch(var(--border));
+  background: oklch(var(--card));
+}
+
+.hud-footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: calc(0.5rem * var(--hud-scale));
+}
+
+.hud-link {
+  color: oklch(var(--primary));
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.hud-link:hover {
+  opacity: 0.7;
+}
+
+/* Boot Sequence Overlay */
+.boot-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: oklch(0.05 0.01 50);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 1s ease-out;
+}
+
+.boot-fade-out {
+  opacity: 0;
+}
+
+.boot-crt-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(ellipse at center, transparent 0%, oklch(0 0 0 / 0.3) 100%);
+  animation: boot-flicker 0.15s infinite;
+}
+
+@keyframes boot-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.95; }
+}
+
+.boot-crt-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/assets/generated/crt-overlay.dim_2048x2048.png');
+  background-size: cover;
+  opacity: 0.25;
+  mix-blend-mode: overlay;
+}
+
+.boot-scanlines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    oklch(0 0 0 / 0.15) 2px,
+    oklch(0 0 0 / 0.15) 3px
+  );
+  animation: boot-scanline-move 8s linear infinite;
+}
+
+@keyframes boot-scanline-move {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(3px); }
+}
+
+.boot-noise {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    repeating-linear-gradient(0deg, transparent, transparent 2px, oklch(0.5 0 0 / 0.03) 2px, oklch(0.5 0 0 / 0.03) 4px),
+    repeating-linear-gradient(90deg, transparent, transparent 2px, oklch(0.5 0 0 / 0.03) 2px, oklch(0.5 0 0 / 0.03) 4px);
+  animation: boot-noise-anim 0.2s infinite;
+}
+
+@keyframes boot-noise-anim {
+  0%, 100% { opacity: 0.05; }
+  50% { opacity: 0.08; }
+}
+
+.boot-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  max-width: 90%;
+}
+
+.boot-text {
+  opacity: 0;
+  animation: boot-text-fade-in 0.5s ease-out forwards;
+}
+
+.boot-text-visible {
+  opacity: 1;
+}
+
+@keyframes boot-text-fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.boot-logo {
+  font-size: 4rem;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  color: oklch(var(--primary));
+  text-shadow: 
+    0 0 20px oklch(var(--primary) / 0.8),
+    0 0 40px oklch(var(--primary) / 0.5),
+    0 0 60px oklch(var(--primary) / 0.3);
+  margin-bottom: 1rem;
+  animation: boot-logo-glow 2s ease-in-out infinite;
+}
+
+@keyframes boot-logo-glow {
+  0%, 100% { 
+    text-shadow: 
+      0 0 20px oklch(var(--primary) / 0.8),
+      0 0 40px oklch(var(--primary) / 0.5),
+      0 0 60px oklch(var(--primary) / 0.3);
+  }
+  50% { 
+    text-shadow: 
+      0 0 30px oklch(var(--primary) / 1),
+      0 0 50px oklch(var(--primary) / 0.7),
+      0 0 70px oklch(var(--primary) / 0.5);
+  }
+}
+
+.boot-subtitle {
+  font-size: 1rem;
+  letter-spacing: 0.15em;
+  color: oklch(var(--foreground));
+  margin-bottom: 2rem;
+  opacity: 0.8;
+}
+
+.boot-status {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.boot-line {
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+  color: oklch(var(--foreground));
+  text-align: left;
+  opacity: 0.7;
+  font-family: 'Courier New', monospace;
+}
+
+.boot-line-typed {
+  animation: boot-line-appear 0.3s ease-out;
+}
+
+@keyframes boot-line-appear {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 0.7; transform: translateX(0); }
+}
+
+.boot-ready {
+  color: oklch(var(--primary));
+  font-weight: 700;
+  opacity: 1;
+  text-shadow: 0 0 10px oklch(var(--primary) / 0.5);
+  margin-top: 1rem;
+  animation: boot-ready-pulse 1s ease-in-out infinite;
+}
+
+@keyframes boot-ready-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.boot-progress {
+  width: 100%;
+  height: 4px;
+  background: oklch(var(--border));
+  margin-top: 1rem;
+  border: 1px solid oklch(var(--border));
+  overflow: hidden;
+}
+
+.boot-progress-bar {
+  height: 100%;
+  background: oklch(var(--primary));
+  box-shadow: 0 0 10px oklch(var(--primary) / 0.8);
+  transition: width 0.2s ease-out;
+}
+
+/* Shared Tab Content Layout */
+.tab-content {
+  width: 100%;
+  height: 100%;
+  padding: calc(1rem * var(--hud-scale));
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Tactical Tab - Expanded Grid */
+.tactical-tab {
+  width: 100%;
+  height: 100%;
+  padding: calc(1rem * var(--hud-scale));
+  overflow-y: auto;
+}
+
+.tactical-tab-grid-expanded {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: calc(1rem * var(--hud-scale));
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .tactical-tab-grid-expanded {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .tactical-tab-grid-expanded {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Tactical Panel Styling - Shared for all tabs */
+.tactical-panel {
+  background: oklch(var(--card));
+  border: 2px solid oklch(var(--border));
+  box-shadow: 
+    inset 0 0 20px oklch(var(--primary) / 0.05),
+    0 0 10px oklch(var(--border) / 0.3);
+  background-image: url('/assets/generated/hud-panel-texture.dim_2048x2048.png');
+  background-size: cover;
+  background-blend-mode: overlay;
+  transition: all 0.2s;
+}
+
+/* HUD Panel - Apply tactical styling */
+.hud-panel {
+  background: oklch(var(--card));
+  border: 2px solid oklch(var(--border));
+  padding: calc(1rem * var(--hud-scale));
+  box-shadow: 
+    inset 0 0 20px oklch(var(--primary) / 0.05),
+    0 0 10px oklch(var(--border) / 0.3);
+  background-image: url('/assets/generated/hud-panel-texture.dim_2048x2048.png');
+  background-size: cover;
+  background-blend-mode: overlay;
+}
+
+.hud-panel-title {
+  font-size: calc(0.875rem * var(--hud-scale));
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: oklch(var(--primary));
+  text-shadow: 0 0 6px oklch(var(--primary) / 0.4);
+  margin-bottom: calc(0.75rem * var(--hud-scale));
+  padding-bottom: calc(0.5rem * var(--hud-scale));
+  border-bottom: 2px solid oklch(var(--border));
+}
+
+.hud-panel-content {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.5rem * var(--hud-scale));
+}
+
+/* Stat Panel */
+.stat-panel {
+  padding: calc(0.75rem * var(--hud-scale));
+  border: 2px solid oklch(var(--border));
+  background: linear-gradient(135deg, oklch(var(--card)) 0%, oklch(var(--background)) 100%);
+  box-shadow: inset 0 1px 0 oklch(var(--primary) / 0.1);
+  position: relative;
+  transition: all 0.2s;
+}
+
+.stat-panel::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: oklch(var(--primary));
+  box-shadow: 0 0 8px oklch(var(--primary) / 0.6);
+}
+
+.stat-panel:hover {
+  background: oklch(var(--accent) / 0.1);
+  border-color: oklch(var(--accent));
+}
+
+.stat-label {
+  font-size: calc(0.75rem * var(--hud-scale));
+  letter-spacing: 0.05em;
+  color: oklch(var(--muted-foreground));
+  display: block;
+  margin-bottom: calc(0.25rem * var(--hud-scale));
+}
+
+.stat-value {
+  font-size: calc(1.25rem * var(--hud-scale));
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: oklch(var(--primary));
+  text-shadow: 0 0 6px oklch(var(--primary) / 0.4);
+}
+
+.stat-unit {
+  font-size: calc(0.875rem * var(--hud-scale));
+  opacity: 0.7;
+  margin-left: calc(0.25rem * var(--hud-scale));
+}
+
+.stat-max {
+  font-size: calc(0.875rem * var(--hud-scale));
+  opacity: 0.5;
+}
+
+.stat-bar {
+  width: 100%;
+  height: 4px;
+  background: oklch(var(--border));
+  margin-top: calc(0.5rem * var(--hud-scale));
+  overflow: hidden;
+  border: 1px solid oklch(var(--border));
+}
+
+.stat-bar-fill {
+  height: 100%;
+  background: oklch(var(--primary));
+  box-shadow: 0 0 8px oklch(var(--primary) / 0.6);
+  transition: width 0.3s ease;
+}
+
+.status-nominal .stat-bar-fill {
+  background: oklch(0.65 0.20 140);
+  box-shadow: 0 0 8px oklch(0.65 0.20 140 / 0.6);
+}
+
+.status-warning .stat-bar-fill {
+  background: oklch(var(--warning));
+  box-shadow: 0 0 8px oklch(var(--warning) / 0.6);
+}
+
+.status-critical .stat-bar-fill {
+  background: oklch(var(--critical));
+  box-shadow: 0 0 8px oklch(var(--critical) / 0.6);
+}
+
+/* Vitals Panel */
+.vitals-panel {
+  background: oklch(var(--card));
+}
+
+.vitals-status {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.75rem * var(--hud-scale));
+}
+
+.vitals-indicator {
+  display: flex;
+  align-items: center;
+  gap: calc(0.5rem * var(--hud-scale));
+  padding: calc(0.75rem * var(--hud-scale));
+  border: 2px solid oklch(var(--border));
+  background: linear-gradient(135deg, oklch(var(--card)) 0%, oklch(var(--background)) 100%);
+}
+
+.vitals-icon {
+  font-size: calc(1.5rem * var(--hud-scale));
+  color: oklch(var(--primary));
+}
+
+.status-nominal .vitals-icon {
+  color: oklch(0.65 0.20 140);
+  animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+.status-warning .vitals-icon {
+  color: oklch(var(--warning));
+  animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+.status-critical .vitals-icon {
+  color: oklch(var(--critical));
+  animation: pulse-glow 1s ease-in-out infinite;
+}
+
+.vitals-text {
+  font-size: calc(0.875rem * var(--hud-scale));
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: oklch(var(--foreground));
+}
+
+.vitals-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: calc(0.5rem * var(--hud-scale));
+}
+
+.vitals-item {
+  display: flex;
+  justify-content: space-between;
+  padding: calc(0.5rem * var(--hud-scale));
+  border: 1px solid oklch(var(--border));
+  background: oklch(var(--background));
+}
+
+.vitals-item-label {
+  font-size: calc(0.75rem * var(--hud-scale));
+  letter-spacing: 0.05em;
+  color: oklch(var(--muted-foreground));
+}
+
+.vitals-item-value {
+  font-size: calc(0.875rem * var(--hud-scale));
+  font-weight: 700;
+  color: oklch(var(--primary));
+}
+
+/* Tactical Readouts */
+.tactical-readouts-container {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.75rem * var(--hud-scale));
+}
+
+.tactical-readout-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: calc(0.75rem * var(--hud-scale));
+  border: 2px solid oklch(var(--border));
+  background: linear-gradient(135deg, oklch(var(--card)) 0%, oklch(var(--background)) 100%);
+  box-shadow: inset 0 1px 0 oklch(var(--primary) / 0.1);
+  position: relative;
+  transition: all 0.2s;
+}
+
+.tactical-readout-item:hover {
+  background: oklch(var(--accent) / 0.1);
+  border-color: oklch(var(--accent));
+}
+
+.tactical-readout-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: oklch(var(--primary));
+  box-shadow: 0 0 8px oklch(var(--primary) / 0.6);
+}
+
+.tactical-readout-label {
+  font-size: calc(0.875rem * var(--hud-scale));
+  letter-spacing: 0.05em;
+  color: oklch(var(--muted-foreground));
+}
+
+.tactical-readout-value {
+  font-size: calc(0.875rem * var(--hud-scale));
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: oklch(var(--primary));
+  text-shadow: 0 0 6px oklch(var(--primary) / 0.4);
+}
+
+.pulse-animation {
+  animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    text-shadow: 0 0 5px oklch(var(--primary) / 0.5);
+  }
+  50% { 
+    text-shadow: 0 0 10px oklch(var(--primary) / 0.8);
+  }
+}
+
+/* Tactical Contacts */
+.tactical-contacts-container {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.5rem * var(--hud-scale));
+}
+
+.tactical-contact-item {
+  display: flex;
+  align-items: center;
+  gap: calc(0.75rem * var(--hud-scale));
+  padding: calc(0.75rem * var(--hud-scale));
+  border: 2px solid oklch(var(--border));
+  background: oklch(var(--card));
+  transition: all 0.2s;
+}
+
+.tactical-contact-item:hover {
+  background: oklch(var(--accent) / 0.2);
+  border-color: oklch(var(--accent));
+}
+
+.tactical-contact-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid oklch(var(--border));
+  background: oklch(var(--background));
+}
+
+.tactical-contact-icon.friendly {
+  border-color: oklch(0.65 0.20 140);
+  color: oklch(0.65 0.20 140);
+}
+
+.tactical-contact-icon.unknown {
+  border-color: oklch(var(--warning));
+  color: oklch(var(--warning));
+}
+
+.tactical-contact-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.25rem * var(--hud-scale));
+}
+
+.tactical-contact-name {
+  font-size: calc(0.875rem * var(--hud-scale));
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: oklch(var(--foreground));
+}
+
+.tactical-contact-meta {
+  display: flex;
+  align-items: center;
+  gap: calc(0.5rem * var(--hud-scale));
+}
+
+.tactical-badge {
+  font-size: calc(0.625rem * var(--hud-scale));
+  padding: calc(0.125rem * var(--hud-scale)) calc(0.375rem * var(--hud-scale));
+}
+
+.tactical-contact-distance {
+  font-size: calc(0.75rem * var(--hud-scale));
+  color: oklch(var(--muted-foreground));
+}
+
+.tactical-contact-summary {
+  display: flex;
+  justify-content: space-between;
+  padding: calc(0.5rem * var(--hud-scale));
+  background: oklch(var(--background));
+  border: 1px solid oklch(var(--border));
+}
+
+.tactical-summary-label {
+  font-size: calc(0.75rem * var(--hud-scale));
+  letter-spacing: 0.05em;
+  color: oklch(var(--muted-foreground));
+}
+
+.tactical-summary-value {
+  font-size: calc(0.875rem * var(--hud-scale));
+  font-weight: 700;
+  color: oklch(var(--primary));
+}
+
+/* Tactical Threat Assessment */
+.tactical-threat-container {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.75rem * var(--hud-scale));
+}
+
+.tactical-threat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: calc(0.5rem * var(--hud-scale));
+  border-left: 3px solid oklch(var(--border));
+  padding-left: calc(0.75rem * var(--hud-scale));
+  transition: all 0.2s;
+}
+
+.tactical-threat-row:hover {
+  background: oklch(var(--accent) / 0.1);
+  border-left-color: oklch(var(--accent));
+}
+
+.tactical-threat-label {
+  font-size: calc(0.75rem * var(--hud-scale));
+  letter-spacing: 0.05em;
+  color: oklch(var(--muted-foreground));
+}
+
+.tactical-threat-value {
+  font-size: calc(0.875rem * var(--hud-scale));
+  font-weight: 700;
+  color: oklch(var(--foreground));
+}
+
+.tactical-threat-value.nominal {
+  color: oklch(0.65 0.20 140);
+}
+
+.tactical-status-badge {
+  font-size: calc(0.75rem * var(--hud-scale));
+}
+
+.tactical-status-badge.nominal {
+  border-color: oklch(0.65 0.20 140);
+  color: oklch(0.65 0.20 140);
+}
+
+.tactical-status-badge.active {
+  border-color: oklch(var(--primary));
+  color: oklch(var(--primary));
+}
+
+/* Tactical Controls */
+.tactical-controls-container {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.75rem * var(--hud-scale));
+}
+
+.tactical-control-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: calc(1rem * var(--hud-scale));
+  padding: calc(0.75rem * var(--hud-scale));
+  border: 2px solid oklch(var(--border));
+  background: oklch(var(--card));
+  transition: all 0.2s;
+}
+
+.tactical-control-row:hover {
+  background: oklch(var(--accent) / 0.1);
+  border-color: oklch(var(--accent));
+}
+
+.tactical-control-info {
+  flex: 1;
+}
+
+.tactical-control-label {
+  font-size: calc(0.875rem * var(--hud-scale));
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: oklch(var(--foreground));
+  display: flex;
+  align-items: center;
+}
+
+.tactical-control-desc {
+  font-size: calc(0.75rem * var(--hud-scale));
+  color: oklch(var(--muted-foreground));
+  margin-top: calc(0.25rem * var(--hud-scale));
+}
+
+/* Tactical Objectives */
+.tactical-objectives-container {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.5rem * var(--hud-scale));
+}
+
+.tactical-objective-item {
+  display: flex;
+  align-items: center;
+  gap: calc(0.75rem * var(--hud-scale));
+  padding: calc(0.5rem * var(--hud-scale));
+  border: 1px solid oklch(var(--border));
+  background: oklch(var(--card));
+  transition: all 0.2s;
+}
+
+.tactical-objective-item:hover {
+  background: oklch(var(--accent) / 0.1);
+  border-color: oklch(var(--accent));
+}
+
+.tactical-objective-status {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  border: 2px solid oklch(var(--border));
+  background: oklch(var(--background));
+}
+
+.tactical-objective-status.complete {
+  border-color: oklch(0.65 0.20 140);
+  color: oklch(0.65 0.20 140);
+}
+
+.tactical-objective-status.active {
+  border-color: oklch(var(--primary));
+  color: oklch(var(--primary));
+  animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+.tactical-objective-status.pending {
+  border-color: oklch(var(--muted-foreground));
+  color: oklch(var(--muted-foreground));
+  opacity: 0.5;
+}
+
+.tactical-objective-text {
+  font-size: calc(0.875rem * var(--hud-scale));
+  letter-spacing: 0.05em;
+  color: oklch(var(--foreground));
+}
+
+/* Tactical Communications */
+.tactical-comms-container {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.75rem * var(--hud-scale));
+}
+
+.tactical-comms-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: calc(0.5rem * var(--hud-scale));
+  border-left: 3px solid oklch(var(--border));
+  padding-left: calc(0.75rem * var(--hud-scale));
+  transition: all 0.2s;
+}
+
+.tactical-comms-row:hover {
+  background: oklch(var(--accent) / 0.1);
+  border-left-color: oklch(var(--accent));
+}
+
+.tactical-comms-label {
+  font-size: calc(0.75rem * var(--hud-scale));
+  letter-spacing: 0.05em;
+  color: oklch(var(--muted-foreground));
+}
+
+.tactical-comms-value {
+  font-size: calc(0.875rem * var(--hud-scale));
+  font-weight: 700;
+  color: oklch(var(--primary));
+}
+
+.tactical-comms-time {
+  font-size: calc(0.75rem * var(--hud-scale));
+  color: oklch(var(--muted-foreground));
+}
+
+/* Tactical Diagnostics */
+.tactical-diagnostics-container {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.5rem * var(--hud-scale));
+}
+
+.tactical-diagnostic-item {
+  display: flex;
+  align-items: center;
+  gap: calc(0.75rem * var(--hud-scale));
+  padding: calc(0.75rem * var(--hud-scale));
+  border: 2px solid oklch(var(--border));
+  background: oklch(var(--card));
+  transition: all 0.2s;
+}
+
+.tactical-diagnostic-item:hover {
+  background: oklch(var(--accent) / 0.2);
+  border-color: oklch(var(--accent));
+}
+
+.tactical-diagnostic-icon {
+  color: oklch(var(--primary));
+}
+
+.tactical-diagnostic-info {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tactical-diagnostic-label {
+  font-size: calc(0.875rem * var(--hud-scale));
+  letter-spacing: 0.05em;
+  color: oklch(var(--foreground));
+}
+
+.tactical-diagnostic-value {
+  font-size: calc(0.875rem * var(--hud-scale));
+  font-weight: 700;
+  color: oklch(var(--primary));
+}
+
+/* Subsystem Readouts - Apply tactical styling */
+.subsystem-readouts {
+  display: flex;
+  flex-direction: column;
+  gap: calc(1rem * var(--hud-scale));
+}
+
+.subsystem-panel {
+  background: oklch(var(--card));
+}
+
+.subsystem-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: calc(0.75rem * var(--hud-scale));
+}
+
+.subsystem-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: calc(0.75rem * var(--hud-scale));
+  border: 2px solid oklch(var(--border));
+  background: linear-gradient(135deg, oklch(var(--card)) 0%, oklch(var(--background)) 100%);
+  box-shadow: inset 0 1px 0 oklch(var(--primary) / 0.1);
+  position: relative;
+  transition: all 0.2s;
+}
+
+.subsystem-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: oklch(var(--primary));
+  box-shadow: 0 0 8px oklch(var(--primary) / 0.6);
+}
+
+.subsystem-item:hover {
+  background: oklch(var(--accent) / 0.1);
+  border-color: oklch(var(--accent));
+}
+
+.subsystem-label {
+  font-size: calc(0.75rem * var(--hud-scale));
+  letter-spacing: 0.05em;
+  color: oklch(var(--muted-foreground));
+}
+
+.subsystem-value {
+  font-size: calc(0.875rem * var(--hud-scale));
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: oklch(var(--primary));
+  text-shadow: 0 0 6px oklch(var(--primary) / 0.4);
+}
+
+.subsystem-value.interactive {
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.subsystem-value.interactive:hover {
+  color: oklch(var(--accent));
+  text-shadow: 0 0 8px oklch(var(--accent) / 0.6);
+}
+
+.subsystem-value.interactive:active {
+  transform: scale(0.98);
+}
+
+.subsystem-value.status-active {
+  color: oklch(0.65 0.20 140);
+  text-shadow: 0 0 6px oklch(0.65 0.20 140 / 0.4);
+  animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+/* Hazards Panel - Apply tactical styling */
+.hazards-panel {
+  background: oklch(var(--card));
+}
+
+.hazards-list {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.5rem * var(--hud-scale));
+}
+
+.hazard-row {
+  display: flex;
+  align-items: center;
+  gap: calc(0.75rem * var(--hud-scale));
+  padding: calc(0.75rem * var(--hud-scale));
+  border: 2px solid oklch(var(--border));
+  background: oklch(var(--card));
+  transition: all 0.2s;
+}
+
+.hazard-row:hover {
+  background: oklch(var(--accent) / 0.1);
+  border-color: oklch(var(--accent));
+}
+
+.hazard-row.status-nominal {
+  border-left: 3px solid oklch(0.65 0.20 140);
+}
+
+.hazard-row.status-warning {
+  border-left: 3px solid oklch(var(--warning));
+}
+
+.hazard-row.status-critical {
+  border-left: 3px solid oklch(var(--critical));
+  animation: pulse-glow 1s ease-in-out infinite;
+}
+
+.hazard-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(1.25rem * var(--hud-scale));
+  border: 2px solid oklch(var(--border));
+  background: oklch(var(--background));
+}
+
+.glyph-icon {
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+}
+
+.hazard-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.25rem * var(--hud-scale));
+}
+
+.hazard-label {
+  font-size: calc(0.875rem * var(--hud-scale));
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: oklch(var(--foreground));
+}
+
+.hazard-status-text {
+  font-size: calc(0.75rem * var(--hud-scale));
+  color: oklch(var(--muted-foreground));
+}
+
+.hazard-level-value {
+  font-size: calc(1rem * var(--hud-scale));
+  font-weight: 700;
+  color: oklch(var(--primary));
+  text-shadow: 0 0 6px oklch(var(--primary) / 0.4);
+}
+
+/* Medical Readouts - Apply tactical styling */
+.medical-readouts-container {
+  width: 100%;
+}
+
+.medical-readouts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: calc(1rem * var(--hud-scale));
+}
+
+@media (min-width: 1024px) {
+  .medical-readouts-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .medical-readouts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.medical-readout-panel {
+  background: oklch(var(--card));
+}
+
+.medical-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: calc(0.75rem * var(--hud-scale));
+  border: 2px solid oklch(var(--border));
+  background: linear-gradient(135deg, oklch(var(--card)) 0%, oklch(var(--background)) 100%);
+  box-shadow: inset 0 1px 0 oklch(var(--primary) / 0.1);
+  position: relative;
+  transition: all 0.2s;
+  margin-bottom: calc(0.5rem * var(--hud-scale));
+}
+
+.medical-stat-row:last-child {
+  margin-bottom: 0;
+}
+
+.medical-stat-row::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: oklch(var(--primary));
+  box-shadow: 0 0 8px oklch(var(--primary) / 0.6);
+}
+
+.medical-stat-row:hover {
+  background: oklch(var(--accent) / 0.1);
+  border-color: oklch(var(--accent));
+}
+
+.medical-label {
+  font-size: calc(0.75rem * var(--hud-scale));
+  letter-spacing: 0.05em;
+  color: oklch(var(--muted-foreground));
+}
+
+.medical-value {
+  font-size: calc(0.875rem * var(--hud-scale));
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: oklch(var(--primary));
+  text-shadow: 0 0 6px oklch(var(--primary) / 0.4);
+}
+
+.medical-value.status-warning {
+  color: oklch(var(--warning));
+  text-shadow: 0 0 6px oklch(var(--warning) / 0.4);
+}
+
+.medical-value.status-critical {
+  color: oklch(var(--critical));
+  text-shadow: 0 0 6px oklch(var(--critical) / 0.4);
+  animation: pulse-glow 1s ease-in-out infinite;
+}
+
+/* System Log - Apply tactical styling */
+.system-log-scroll {
+  height: 400px;
+  border: 2px solid oklch(var(--border));
+  background: oklch(var(--background));
+  padding: calc(0.75rem * var(--hud-scale));
+}
+
+.system-log {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.25rem * var(--hud-scale));
+}
+
+.log-entry {
+  display: flex;
+  gap: calc(0.5rem * var(--hud-scale));
+  padding: calc(0.5rem * var(--hud-scale));
+  border-left: 3px solid oklch(var(--border));
+  background: oklch(var(--card));
+  font-size: calc(0.75rem * var(--hud-scale));
+  font-family: 'Courier New', monospace;
+  transition: all 0.2s;
+}
+
+.log-entry:hover {
+  background: oklch(var(--accent) / 0.1);
+  border-left-color: oklch(var(--accent));
+}
+
+.log-timestamp {
+  color: oklch(var(--muted-foreground));
+  flex-shrink: 0;
+}
+
+.log-type {
+  color: oklch(var(--primary));
+  flex-shrink: 0;
+  font-weight: 700;
+}
+
+.log-message {
+  color: oklch(var(--foreground));
+  flex: 1;
+}
+
+.log-empty {
+  color: oklch(var(--muted-foreground));
+  text-align: center;
+  padding: calc(2rem * var(--hud-scale));
+}
+
+.log-system {
+  border-left-color: oklch(var(--primary));
+}
+
+.log-hazard {
+  border-left-color: oklch(var(--warning));
+}
+
+.log-command {
+  border-left-color: oklch(0.65 0.20 140);
+}
+
+/* Command Console - Apply tactical styling */
+.command-console {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.75rem * var(--hud-scale));
+  height: 100%;
+}
+
+.console-output {
+  flex: 1;
+  border: 2px solid oklch(var(--border));
+  background: oklch(var(--background));
+  padding: calc(0.75rem * var(--hud-scale));
+  min-height: 300px;
+}
+
+.console-history {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.5rem * var(--hud-scale));
+}
+
+.console-entry {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.25rem * var(--hud-scale));
+}
+
+.console-command {
+  display: flex;
+  gap: calc(0.5rem * var(--hud-scale));
+  color: oklch(var(--primary));
+  font-family: 'Courier New', monospace;
+  font-size: calc(0.875rem * var(--hud-scale));
+  font-weight: 700;
+}
+
+.console-prompt {
+  color: oklch(var(--primary));
+  font-weight: 700;
+}
+
+.console-response {
+  padding-left: calc(1.5rem * var(--hud-scale));
+  color: oklch(var(--foreground));
+  font-family: 'Courier New', monospace;
+  font-size: calc(0.875rem * var(--hud-scale));
+  opacity: 0.8;
+}
+
+.console-input-form {
+  display: flex;
+  align-items: center;
+  gap: calc(0.5rem * var(--hud-scale));
+  padding: calc(0.75rem * var(--hud-scale));
+  border: 2px solid oklch(var(--border));
+  background: oklch(var(--card));
+}
+
+.console-input {
+  flex: 1;
+  background: oklch(var(--background));
+  border: 1px solid oklch(var(--border));
+  color: oklch(var(--foreground));
+  font-family: 'Courier New', monospace;
+  transition: all 0.2s;
+}
+
+.console-input:focus {
+  border-color: oklch(var(--primary));
+  box-shadow: 0 0 8px oklch(var(--primary) / 0.4);
+}
+
+.console-submit {
+  background: oklch(var(--primary));
+  color: oklch(var(--primary-foreground));
+  border: 2px solid oklch(var(--primary));
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  transition: all 0.2s;
+}
+
+.console-submit:hover {
+  background: oklch(var(--accent));
+  border-color: oklch(var(--accent));
+  box-shadow: 0 0 10px oklch(var(--accent) / 0.6);
+}
+
+/* Module Rows - Apply tactical styling */
+.module-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: calc(0.75rem * var(--hud-scale));
+  border: 2px solid oklch(var(--border));
+  background: oklch(var(--card));
+  transition: all 0.2s;
+  margin-bottom: calc(0.5rem * var(--hud-scale));
+}
+
+.module-row:hover {
+  background: oklch(var(--accent) / 0.2);
+  border-color: oklch(var(--accent));
+}
+
+.module-row:last-child {
+  margin-bottom: 0;
+}
+
+.module-info {
+  flex: 1;
+}
+
+.module-label {
+  font-size: calc(0.875rem * var(--hud-scale));
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: oklch(var(--foreground));
+}
+
+.module-desc {
+  font-size: calc(0.75rem * var(--hud-scale));
+  color: oklch(var(--muted-foreground));
+  margin-top: calc(0.25rem * var(--hud-scale));
+}
+
+/* Weapon Slot - Apply tactical styling */
+.weapon-slot {
+  padding: calc(0.75rem * var(--hud-scale));
+  border: 2px solid oklch(var(--border));
+  background: oklch(var(--card));
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.weapon-slot:hover {
+  background: oklch(var(--accent) / 0.2);
+  border-color: oklch(var(--accent));
+  transform: translateY(-2px);
+}
+
+.weapon-slot.selected {
+  border-color: oklch(var(--primary));
+  background: oklch(var(--primary) / 0.1);
+  box-shadow: 0 0 10px oklch(var(--primary) / 0.4);
+}
+
+.weapon-slot-label {
+  font-size: calc(0.75rem * var(--hud-scale));
+  letter-spacing: 0.05em;
+  color: oklch(var(--muted-foreground));
+  display: block;
+  margin-bottom: calc(0.25rem * var(--hud-scale));
+}
+
+.weapon-slot-name {
+  font-size: calc(0.875rem * var(--hud-scale));
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: oklch(var(--primary));
+}
+
+/* Settings Row - Apply tactical styling */
+.settings-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: calc(0.75rem * var(--hud-scale));
+  border: 2px solid oklch(var(--border));
+  background: oklch(var(--card));
+  transition: all 0.2s;
+  margin-bottom: calc(0.5rem * var(--hud-scale));
+}
+
+.settings-row:hover {
+  background: oklch(var(--accent) / 0.1);
+  border-color: oklch(var(--accent));
+}
+
+.settings-row:last-child {
+  margin-bottom: 0;
+}
+
+.settings-info {
+  flex: 1;
+}
+
+.settings-label {
+  font-size: calc(0.875rem * var(--hud-scale));
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: oklch(var(--foreground));
+}
+
+.settings-desc {
+  font-size: calc(0.75rem * var(--hud-scale));
+  color: oklch(var(--muted-foreground));
+  margin-top: calc(0.25rem * var(--hud-scale));
+}
+
+/* Basics Tab Grid */
+.basics-grid {
+  display: grid;
+  gap: calc(1rem * var(--hud-scale));
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .basics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) and (orientation: landscape) {
+  .basics-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Info Tab Layout */
+.info-tab-layout {
+  display: flex;
+  flex-direction: column;
+  gap: calc(1rem * var(--hud-scale));
+}
+
+/* Utilities Tab Layout */
+.utilities-grid {
+  display: grid;
+  gap: calc(1rem * var(--hud-scale));
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .utilities-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Weapons Tab Layout */
+.weapons-grid {
+  display: grid;
+  gap: calc(1rem * var(--hud-scale));
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .weapons-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.weapon-loadout-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: calc(0.75rem * var(--hud-scale));
+}
+
+/* Settings Tab Layout */
+.settings-sections {
+  display: flex;
+  flex-direction: column;
+  gap: calc(1.5rem * var(--hud-scale));
+}
+
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.75rem * var(--hud-scale));
+}
+
+.settings-section-title {
+  font-size: calc(1rem * var(--hud-scale));
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: oklch(var(--primary));
+  text-shadow: 0 0 6px oklch(var(--primary) / 0.4);
+  padding-bottom: calc(0.5rem * var(--hud-scale));
+  border-bottom: 2px solid oklch(var(--border));
+}

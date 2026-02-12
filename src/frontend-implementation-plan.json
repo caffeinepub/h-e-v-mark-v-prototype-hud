@@ -1,0 +1,145 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Propagate Tactical tab panel styling, interaction polish, and layout conventions to all tabs",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Restyle BASICS, MEDICAL, INFO, UTILITIES, WEAPONS, and SETTINGS primary sections to match Tactical tab panel look by reusing existing Tactical CSS patterns.",
+      "acceptanceCriteria": [
+        "Each non-tactical tab renders its main content inside card/panel containers that visually match the Tactical tab panels (border weight, glow, texture, and overall density).",
+        "The updated non-tactical tabs no longer appear as mostly-unstyled content blocks; they present information as structured, Tactical-style panels/sections.",
+        "No user-facing text is changed away from English."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Refactor/reuse Tactical tab panel styling by introducing shared HUD panel variants that mirror `.tactical-panel` (bordered inset-glow look, textured panel background, dense typography) and apply them via class composition for non-tactical tabs; keep `.tactical-panel` behavior unchanged."
+        },
+        {
+          "path": "frontend/src/tabs/BasicsTab.tsx",
+          "operation": "modify",
+          "description": "Wrap BASICS tab primary sections (stats, hazards, vitals) into Tactical-style panel containers by applying existing Tactical panel class patterns (e.g., reuse `.tactical-panel` on `HudPanel` wrappers) without changing displayed text or data logic."
+        },
+        {
+          "path": "frontend/src/tabs/MedicalTab.tsx",
+          "operation": "modify",
+          "description": "Update MEDICAL tab layout so its main readouts are placed inside one or more Tactical-style panel containers (reuse `.tactical-panel` look) without changing medical copy or calculations."
+        },
+        {
+          "path": "frontend/src/tabs/InfoTab.tsx",
+          "operation": "modify",
+          "description": "Apply Tactical-style panel classes to INFO tab primary panels (subsystems/log/console sections) so they match Tactical tab visual density and textured panel treatment."
+        },
+        {
+          "path": "frontend/src/tabs/UtilitiesTab.tsx",
+          "operation": "modify",
+          "description": "Apply Tactical-style panel classes to UTILITIES tab primary panels (modules and ambience) and adjust internal section wrappers so content reads as structured Tactical-style sections."
+        },
+        {
+          "path": "frontend/src/tabs/WeaponsTab.tsx",
+          "operation": "modify",
+          "description": "Apply Tactical-style panel classes to WEAPONS tab primary panels (loadout/details/ammunition) so the overall panel framing matches Tactical tab panels."
+        },
+        {
+          "path": "frontend/src/tabs/SettingsTab.tsx",
+          "operation": "modify",
+          "description": "Apply Tactical-style panel classes to SETTINGS tab primary sections so all settings groups render inside Tactical-like textured/glowing panels while preserving all existing labels and descriptions."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Propagate Tactical tab hover/transition/emphasis interaction polish to comparable interactive elements across non-tactical tabs while preserving all behaviors and audio cues.",
+      "acceptanceCriteria": [
+        "Interactive rows and controls in non-tactical tabs have visible hover/focus/active feedback comparable in intensity and style to Tactical tab elements (e.g., border-color shift, background tint, transition).",
+        "Any existing animations already present in the codebase for the Tactical tab (e.g., pulse/glow emphasis patterns) are reused consistently where they make sense in other tabs, without introducing distracting motion.",
+        "All existing click/toggle behaviors, audio cues, and store updates continue to work as before."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Create shared interaction classes modeled after Tactical patterns (e.g., similar to `.tactical-contact-item` hover/transition and existing `pulse`/glow keyframes) and map them onto existing non-tactical element classNames (buttons/rows/toggles/select triggers) via CSS selectors; do not change functional JS behavior."
+        },
+        {
+          "path": "frontend/src/tabs/UtilitiesTab.tsx",
+          "operation": "modify",
+          "description": "Add Tactical-style interactive row classes to module rows so hover/focus/active feedback matches Tactical intensity while keeping toggle handlers, audio cues, and store updates unchanged."
+        },
+        {
+          "path": "frontend/src/tabs/WeaponsTab.tsx",
+          "operation": "modify",
+          "description": "Apply Tactical-style interaction classes to weapon slot buttons and select controls (trigger/rows) to match Tactical hover/transition polish; preserve selection logic and sounds."
+        },
+        {
+          "path": "frontend/src/tabs/SettingsTab.tsx",
+          "operation": "modify",
+          "description": "Apply Tactical-style interaction classes to setting rows and key controls (switch/select/slider area) so hover/focus states feel consistent with Tactical; preserve confirmation modal behavior and audio cues."
+        },
+        {
+          "path": "frontend/src/components/info/SuitSubsystemReadouts.tsx",
+          "operation": "modify",
+          "description": "Ensure INFO subsystem interactive values (currently `.interactive`) receive Tactical-style hover/focus/emphasis styling via className adjustments (if needed) while keeping click/confirm flows and logging/audio unchanged."
+        },
+        {
+          "path": "frontend/src/components/hazards/EnvironmentalHazardsPanel.tsx",
+          "operation": "modify",
+          "description": "Add Tactical-style hover/active polish to hazard rows where appropriate (read-only rows can still have subtle emphasis on hover) without changing hazard status text or logic."
+        },
+        {
+          "path": "frontend/src/components/info/SystemLogView.tsx",
+          "operation": "modify",
+          "description": "Apply Tactical-style list-row hover/focus styling to log entries (where appropriate) while maintaining scroll behavior and rendering logic."
+        },
+        {
+          "path": "frontend/src/components/info/CommandConsole.tsx",
+          "operation": "modify",
+          "description": "Apply Tactical-style emphasis/hover/focus styling to console history rows and console input/submit areas using className hooks, preserving command execution, auto-scroll, and audio cues."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Standardize tab content padding, spacing, and overflow/scrolling to match Tactical tab container conventions across STANDARD and TACTICAL display modes.",
+      "acceptanceCriteria": [
+        "All tabs have consistent outer padding and spacing rules comparable to `.tactical-tab` (scaled padding, consistent section gaps).",
+        "In both STANDARD and TACTICAL display modes, tab content remains usable (no clipped content; scrolling works where needed).",
+        "The TACTICAL tab visibility/behavior remains unchanged (still conditional on Tactical Mode being enabled)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Introduce/adjust shared `.tab-content` layout rules so all tabs follow Tactical-like container conventions (padding scaled by `--hud-scale`, consistent internal gaps, and predictable overflow/scroll behavior); ensure `.tactical-tab` remains unchanged and remains the reference implementation."
+        },
+        {
+          "path": "frontend/src/tabs/BasicsTab.tsx",
+          "operation": "modify",
+          "description": "Align BASICS tab grid wrappers with the standardized tab container spacing conventions (consistent gaps and scroll behavior) while preserving landscape/portrait layout logic."
+        },
+        {
+          "path": "frontend/src/tabs/InfoTab.tsx",
+          "operation": "modify",
+          "description": "Adjust INFO tab internal spacing to match Tactical conventions (consistent section gaps and container padding) and ensure scroll behavior remains predictable for log/console areas in both display modes."
+        },
+        {
+          "path": "frontend/src/tabs/UtilitiesTab.tsx",
+          "operation": "modify",
+          "description": "Normalize UTILITIES tab layout spacing (panel gaps and internal padding) to match Tactical container conventions and ensure content scrolls instead of clipping when needed."
+        },
+        {
+          "path": "frontend/src/tabs/WeaponsTab.tsx",
+          "operation": "modify",
+          "description": "Normalize WEAPONS tab grid spacing and overflow so panels keep consistent gaps and the tab scrolls cleanly under both STANDARD and TACTICAL display modes."
+        },
+        {
+          "path": "frontend/src/tabs/SettingsTab.tsx",
+          "operation": "modify",
+          "description": "Normalize SETTINGS tab spacing and scrolling (especially long settings lists) to align with Tactical container padding/gaps and ensure no clipped content."
+        }
+      ]
+    }
+  ]
+}
