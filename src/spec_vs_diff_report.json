@@ -1,83 +1,70 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-12T02:26:50.988Z",
-  "summary": "Diff adds a new HazardTab component, hazard simulation hook, Zustand hazard state with trends/aggregate, and wires a new HAZARD tab trigger into App.tsx (at least in TACTICAL mode). It also adds a React Query hook for getAllHazardStatuses and additional queries for environmental subsystems. However, the diff evidence is incomplete/truncated for (a) STANDARD-mode tab rendering and (b) backend methods/level-plumbing required by REQ-9, and there are substantial unrelated UI/styling/feature changes not requested.",
+  "generatedAt": "2026-02-12T05:32:08.476Z",
+  "summary": "REQ-1 appears implemented via defaulting and resetting displayMode to STANDARD in the settings store. REQ-2 is mostly implemented (manifest + SW + registration + HTML linking), but the actual icon image files are not shown as added. REQ-3/REQ-4 have partial evidence (auto UI scaling hook, safe-area + touch-action CSS), but the diff summary is truncated and does not clearly demonstrate all UI/layout and touch-target acceptance criteria. Several unrelated UI/feature changes were introduced (boot sequence overhaul, weapons tab behavior changes, audio player features, external branding/footer links).",
   "missing_requirements": [
     {
-      "id": "REQ-6",
-      "requirement": "Render the new \"HAZARD\" tab in both STANDARD and TACTICAL display modes.",
-      "reason": "App.tsx evidence shows the HAZARD tab trigger in the TACTICAL display-mode branch, but the diff is truncated before showing whether the STANDARD branch includes the HAZARD TabsTrigger and corresponding TabsContent.",
+      "id": "REQ-2",
+      "requirement": "PWA icons are provided in appropriate sizes and referenced by the manifest.",
+      "reason": "The manifest references icon paths, but the diff does not show the actual icon image files being added to the repo (only references to /pwa/icon-192.png, /pwa/icon-512.png, /pwa/icon-512-maskable.png).",
       "evidence": [
-        "frontend/src/App.tsx (truncated; shows TACTICAL branch with HAZARD trigger, STANDARD branch not shown)"
-      ]
-    },
-    {
-      "id": "REQ-8",
-      "requirement": "Simulation updates do not break existing hazard alert monitoring (frontend/src/state/hazardAlerts.ts) and can trigger critical flashing/voice behavior when simulated hazards exceed existing thresholds.",
-      "reason": "The diff adds a separate hazardsState store and a simulation hook that updates it, but provides no evidence of integration with (or non-breaking behavior for) the existing hazard alert monitoring module, nor evidence that simulated values feed into the alert/voice/flashing pipeline.",
-      "evidence": [
-        "frontend/src/hooks/useHazardSimulation.ts",
-        "frontend/src/state/hazardsState.ts"
-      ]
-    },
-    {
-      "id": "REQ-9",
-      "requirement": "Backend exposes a single method or updated existing method that returns all five hazard levels (fire, bio, radiation, electrical, gas) in one response (including electrical).",
-      "reason": "backend/main.mo shows new types/fields including electrical, but the diff is truncated before any actor method definitions are shown; there is no explicit evidence of a method returning all five hazard levels in one response.",
-      "evidence": [
-        "backend/main.mo (truncated; type/state additions shown, method definitions not shown)"
+        "frontend/public/manifest.webmanifest",
+        "frontend/index.html",
+        "frontend/public/service-worker.js"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Global orange-forward theme/palette and broad HUD styling changes (including tab styling) unrelated to adding a Hazard tab.",
-      "reason": "BuildRequest focuses on adding a Hazard tab and hazard/environment status plumbing; it does not request a global color palette redesign.",
+      "description": "Expanded/changed boot sequence overlay with multi-stage typed initialization lines, progress indicator, layered CRT effects, and audio playback behavior changes.",
+      "reason": "Not requested by any REQ; BuildRequest focuses on default display mode, PWA installability, and mobile scaling/touch controls.",
       "evidence": [
-        "frontend/src/index.css",
-        "frontend-file-summaries.txt (mentions enhanced orange saturation and styling changes across multiple components)"
+        "frontend-file-summaries.txt (BootSequenceOverlay.tsx summary)"
       ]
     },
     {
-      "description": "Enhanced multi-stage boot sequence overlay with CRT effects and added audio playback behaviors.",
-      "reason": "Not requested; non-goal includes avoiding redesign of unrelated tabs/features beyond what is needed for the Hazard tab entry.",
+      "description": "Weapons tab behavior/content changes (e.g., collapsed-by-default expandable weapon panels, additional weapon info sections, selectors, equip functionality, ammunition status display).",
+      "reason": "Explicit non-goal: \"Do not change weapon simulation/comparison features (not requested).\" The diff summary indicates substantial WeaponsTab changes beyond mobile/touch scaling.",
       "evidence": [
-        "frontend-file-summaries.txt (BootSequenceOverlay described as enhanced with stages/effects/audio)"
+        "frontend-file-summaries.txt (WeaponsTab.tsx summary)"
       ]
     },
     {
-      "description": "Ambience player expanded with loop toggle, volume slider, and custom track import functionality.",
-      "reason": "Not requested by any requirement (REQ-6 to REQ-9).",
+      "description": "Added/expanded ambience player features including custom track import functionality.",
+      "reason": "Not requested by any REQ (PWA + display mode default + mobile scaling/touch).",
       "evidence": [
-        "frontend-file-summaries.txt (frontend/src/components/audio/AmbiencePlayer.tsx summary)"
+        "frontend-file-summaries.txt (AmbiencePlayer.tsx summary)",
+        "frontend-file-summaries.txt (audioState.ts summary)"
       ]
     },
     {
-      "description": "Command parser extended with additional commands (/voice, /display, /system_restart, /reboot).",
-      "reason": "Not requested; unrelated to Hazard tab and hazard plumbing.",
+      "description": "Added external branding/footer content including \"Built with caffeine.ai\" referral link and social links in the HUD layout.",
+      "reason": "Not requested by any REQ; introduces new outbound links and branding.",
+      "evidence": [
+        "frontend/src/components/hud/HudLayout.tsx"
+      ]
+    },
+    {
+      "description": "Extended command parser with /voice, /display, /system_restart, /reboot behaviors.",
+      "reason": "Not requested explicitly; only REQ-1 mentions an existing \"SYSTEM RESTART\" action behavior, not adding new command surfaces.",
       "evidence": [
         "frontend-file-summaries.txt (frontend/src/lib/commands.ts summary)"
-      ]
-    },
-    {
-      "description": "Broad refactors/styling adjustments across multiple existing tabs (Basics/Info/Weapons/Settings/Utilities) beyond what is needed to add the new Hazard tab entry.",
-      "reason": "Non-goals explicitly call out not redesigning unrelated tabs beyond what is needed to add the new tab entry; the diff summary indicates multiple unrelated modifications.",
-      "evidence": [
-        "frontend-file-summaries.txt (summaries for BasicsTab, InfoTab, WeaponsTab, SettingsTab, UtilitiesTab indicate styling/behavior updates)"
       ]
     }
   ],
   "confidence": 0.62,
   "changed_files": [
-    "backend/main.mo",
     "frontend-file-summaries.txt",
+    "frontend/index.html",
+    "frontend/public/manifest.webmanifest",
+    "frontend/public/service-worker.js",
     "frontend/src/App.tsx",
-    "frontend/src/hooks/useHazardSimulation.ts",
-    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/components/hud/HudLayout.tsx",
+    "frontend/src/hooks/useAutoUiScale.ts",
     "frontend/src/index.css",
-    "frontend/src/state/hazardsState.ts",
-    "frontend/src/tabs/HazardTab.tsx",
+    "frontend/src/pwa/registerServiceWorker.ts",
+    "frontend/src/state/infoSettingsState.ts",
     "project_state.json"
   ]
 }

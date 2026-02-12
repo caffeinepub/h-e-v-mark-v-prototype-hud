@@ -24,7 +24,7 @@ interface InfoSettingsState {
 
 const initialState = {
   voiceEnabled: true,
-  displayMode: 'TACTICAL' as const,
+  displayMode: 'STANDARD' as const,
   radioLinkActive: true,
   hudActive: true,
   hudColorScheme: 'AMBER' as HudColorScheme,

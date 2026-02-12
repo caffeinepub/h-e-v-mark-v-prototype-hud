@@ -100,20 +100,6 @@ export interface backendInterface {
     }>;
     getBioStatus(): Promise<string>;
     getCommunicationInfo(): Promise<[boolean, string, string, boolean]>;
-    getDetailedHazardSummary(): Promise<{
-        radStatus: string;
-        fireStatus: string;
-        electricalStatus: string;
-        gasStatus: string;
-        bioStatus: string;
-        hazardLevels: {
-            bio: bigint;
-            gas: bigint;
-            rad: bigint;
-            fire: bigint;
-            electrical: bigint;
-        };
-    }>;
     getElectricalStatus(): Promise<string>;
     getEnvProtectionInfo(): Promise<[boolean, bigint, bigint, string]>;
     getFireStatus(): Promise<string>;
@@ -220,33 +206,6 @@ export class Backend implements backendInterface {
                 result[2],
                 result[3]
             ];
-        }
-    }
-    async getDetailedHazardSummary(): Promise<{
-        radStatus: string;
-        fireStatus: string;
-        electricalStatus: string;
-        gasStatus: string;
-        bioStatus: string;
-        hazardLevels: {
-            bio: bigint;
-            gas: bigint;
-            rad: bigint;
-            fire: bigint;
-            electrical: bigint;
-        };
-    }> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getDetailedHazardSummary();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getDetailedHazardSummary();
-            return result;
         }
     }
     async getElectricalStatus(): Promise<string> {

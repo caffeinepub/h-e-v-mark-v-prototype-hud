@@ -2,11 +2,71 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-a-new-dedicated-hazard-tab-to-the-main-tab-navigation-and-render-it-in-both-standard-and-tactical-display-modes",
-      "featureTitle": "Add a new dedicated \"HAZARD\" tab to the main tab navigation and render it in both STANDARD and TACTICAL display modes.",
+      "featureId": "feature-set-the-app-s-default-display-mode-to-standard-the-mode-after-tactical-on-first-load-and-after-a-settings-reset-without-requiring-the-user-to-manually-switch-from-tactical",
+      "featureTitle": "Set the app’s default display mode to \"STANDARD\" (the mode after Tactical) on first load and after a settings reset, without requiring the user to manually switch from Tactical.",
+      "files": [
+        "frontend/src/state/infoSettingsState.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-an-android-installable-pwa-experience-apk-like-install-flow-by-adding-the-required-web-app-manifest-icons-and-service-worker-so-the-app-can-be-installed-to-an-android-home-screen-from-a-supported-browser",
+      "featureTitle": "Add an Android-installable PWA experience (APK-like install flow) by adding the required web app manifest, icons, and service worker so the app can be installed to an Android home screen from a supported browser.",
+      "files": [
+        "frontend/index.html",
+        "frontend/public/manifest.webmanifest",
+        "frontend/public/service-worker.js",
+        "frontend/src/App.tsx",
+        "frontend/src/pwa/registerServiceWorker.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-improve-mobile-support-with-responsive-ui-scaling-and-layout-adjustments-so-the-hud-is-readable-and-usable-on-common-phone-screen-sizes-portrait-and-landscape-while-preserving-the-existing-ui-style",
+      "featureTitle": "Improve mobile support with responsive UI scaling and layout adjustments so the HUD is readable and usable on common phone screen sizes (portrait and landscape), while preserving the existing UI style.",
+      "files": [
+        "frontend/src/components/hud/HudLayout.tsx",
+        "frontend/src/hooks/useAutoUiScale.ts",
+        "frontend/src/index.css"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-optimize-controls-for-touch-devices-across-the-app-tap-targets-touch-interactions-and-removal-of-hover-only-affordances-so-the-interface-is-comfortable-to-use-on-mobile",
+      "featureTitle": "Optimize controls for touch devices across the app (tap targets, touch interactions, and removal of hover-only affordances) so the interface is comfortable to use on mobile.",
       "files": [
         "frontend/src/App.tsx",
-        "frontend/src/tabs/HazardTab.tsx"
+        "frontend/src/index.css"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -16,65 +76,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-6"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-a-new-hazard-tab-ui-new-component-file-under-frontend-src-tabs-that-presents-a-an-all-hazards-section-containing-all-hazard-categories-and-b-an-environmental-status-section-with-detailed-status-indicators",
-      "featureTitle": "Implement a new Hazard tab UI (new component file under frontend/src/tabs) that presents (a) an \"All Hazards\" section containing all hazard categories and (b) an \"Environmental Status\" section with detailed status indicators.",
-      "files": [
-        "frontend/src/index.css",
-        "frontend/src/tabs/HazardTab.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-7"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-live-updating-simulated-statistics-on-the-hazard-tab-including-continuously-changing-hazard-levels-and-derived-statistics-e-g-trends-and-aggregates-without-requiring-manual-user-input",
-      "featureTitle": "Add live-updating simulated statistics on the Hazard tab, including continuously changing hazard levels and derived statistics (e.g., trends and aggregates) without requiring manual user input.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/hooks/useHazardSimulation.ts",
-        "frontend/src/tabs/HazardTab.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-8"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-expand-hazard-data-plumbing-so-the-hazard-tab-can-show-detailed-hazard-statuses-text-and-include-electrical-hazard-level-alongside-the-other-existing-hazard-levels",
-      "featureTitle": "Expand hazard data plumbing so the Hazard tab can show detailed hazard statuses (text) and include electrical hazard level alongside the other existing hazard levels.",
-      "files": [
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/tabs/HazardTab.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-9"
+        "REQ-4"
       ],
       "confidence": "high"
     }

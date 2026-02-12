@@ -29,26 +29,6 @@ export const idlService = IDL.Service({
       [IDL.Bool, IDL.Text, IDL.Text, IDL.Bool],
       [],
     ),
-  'getDetailedHazardSummary' : IDL.Func(
-      [],
-      [
-        IDL.Record({
-          'radStatus' : IDL.Text,
-          'fireStatus' : IDL.Text,
-          'electricalStatus' : IDL.Text,
-          'gasStatus' : IDL.Text,
-          'bioStatus' : IDL.Text,
-          'hazardLevels' : IDL.Record({
-            'bio' : IDL.Nat,
-            'gas' : IDL.Nat,
-            'rad' : IDL.Nat,
-            'fire' : IDL.Nat,
-            'electrical' : IDL.Nat,
-          }),
-        }),
-      ],
-      [],
-    ),
   'getElectricalStatus' : IDL.Func([], [IDL.Text], []),
   'getEnvProtectionInfo' : IDL.Func(
       [],
@@ -132,26 +112,6 @@ export const idlFactory = ({ IDL }) => {
     'getCommunicationInfo' : IDL.Func(
         [],
         [IDL.Bool, IDL.Text, IDL.Text, IDL.Bool],
-        [],
-      ),
-    'getDetailedHazardSummary' : IDL.Func(
-        [],
-        [
-          IDL.Record({
-            'radStatus' : IDL.Text,
-            'fireStatus' : IDL.Text,
-            'electricalStatus' : IDL.Text,
-            'gasStatus' : IDL.Text,
-            'bioStatus' : IDL.Text,
-            'hazardLevels' : IDL.Record({
-              'bio' : IDL.Nat,
-              'gas' : IDL.Nat,
-              'rad' : IDL.Nat,
-              'fire' : IDL.Nat,
-              'electrical' : IDL.Nat,
-            }),
-          }),
-        ],
         [],
       ),
     'getElectricalStatus' : IDL.Func([], [IDL.Text], []),

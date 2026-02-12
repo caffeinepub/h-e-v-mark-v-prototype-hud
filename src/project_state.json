@@ -1,43 +1,40 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Project includes a dedicated Hazard tab UI showing comprehensive environmental hazard status indicators and live-updating simulated statistics.",
-  "architectural_notes": [
-    "Hazard tab is a specialized, dedicated tab (not combined with other UI roles) and should include all hazard categories.",
-    "Environmental and hazard statistics should be simulated and live-updating (not static placeholders)."
-  ],
+  "summary": "Project focused on an Android-installable PWA experience, with \"Standard mode\" set as default and improved mobile UX (UI scaling + touch-optimized controls).",
+  "architectural_notes": [],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-add-a-new-dedicated-hazard-tab-to-the-main-tab-navigation-and-render-it-in-both-standard-and-tactical-display-modes",
-      "title": "Add a new dedicated \"HAZARD\" tab to the main tab navigation and render it in both STANDARD and TACTICAL display modes.",
+      "id": "feature-set-the-app-s-default-display-mode-to-standard-the-mode-after-tactical-on-first-load-and-after-a-settings-reset-without-requiring-the-user-to-manually-switch-from-tactical",
+      "title": "Set the app’s default display mode to \"STANDARD\" (the mode after Tactical) on first load and after a settings reset, without requiring the user to manually switch from Tactical.",
       "reqIds": [
-        "REQ-6"
+        "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-implement-a-new-hazard-tab-ui-new-component-file-under-frontend-src-tabs-that-presents-a-an-all-hazards-section-containing-all-hazard-categories-and-b-an-environmental-status-section-with-detailed-status-indicators",
-      "title": "Implement a new Hazard tab UI (new component file under frontend/src/tabs) that presents (a) an \"All Hazards\" section containing all hazard categories and (b) an \"Environmental Status\" section with detailed status indicators.",
+      "id": "feature-add-an-android-installable-pwa-experience-apk-like-install-flow-by-adding-the-required-web-app-manifest-icons-and-service-worker-so-the-app-can-be-installed-to-an-android-home-screen-from-a-supported-browser",
+      "title": "Add an Android-installable PWA experience (APK-like install flow) by adding the required web app manifest, icons, and service worker so the app can be installed to an Android home screen from a supported browser.",
       "reqIds": [
-        "REQ-7"
+        "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-add-live-updating-simulated-statistics-on-the-hazard-tab-including-continuously-changing-hazard-levels-and-derived-statistics-e-g-trends-and-aggregates-without-requiring-manual-user-input",
-      "title": "Add live-updating simulated statistics on the Hazard tab, including continuously changing hazard levels and derived statistics (e.g., trends and aggregates) without requiring manual user input.",
+      "id": "feature-improve-mobile-support-with-responsive-ui-scaling-and-layout-adjustments-so-the-hud-is-readable-and-usable-on-common-phone-screen-sizes-portrait-and-landscape-while-preserving-the-existing-ui-style",
+      "title": "Improve mobile support with responsive UI scaling and layout adjustments so the HUD is readable and usable on common phone screen sizes (portrait and landscape), while preserving the existing UI style.",
       "reqIds": [
-        "REQ-8"
+        "REQ-3"
       ],
       "version": 1
     },
     {
-      "id": "feature-expand-hazard-data-plumbing-so-the-hazard-tab-can-show-detailed-hazard-statuses-text-and-include-electrical-hazard-level-alongside-the-other-existing-hazard-levels",
-      "title": "Expand hazard data plumbing so the Hazard tab can show detailed hazard statuses (text) and include electrical hazard level alongside the other existing hazard levels.",
+      "id": "feature-optimize-controls-for-touch-devices-across-the-app-tap-targets-touch-interactions-and-removal-of-hover-only-affordances-so-the-interface-is-comfortable-to-use-on-mobile",
+      "title": "Optimize controls for touch devices across the app (tap targets, touch interactions, and removal of hover-only affordances) so the interface is comfortable to use on mobile.",
       "reqIds": [
-        "REQ-9"
+        "REQ-4"
       ],
       "version": 1
     }
@@ -45,12 +42,24 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Create a dedicated Hazard tab with detailed UI showing all hazard categories, environmental status indicators, and live-updating simulated statistics",
+      "summary": "Provide an Android-installable PWA experience (APK-like install flow) for the app",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Set \"Standard mode\" (mode after Tactical) as the default mode",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Improve mobile support: responsive UI scaling and touch-optimized controls",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Add dedicated Hazard tab with comprehensive hazards, environmental status, and simulated statistics",
+  "projectName": "Make Standard display mode default, add Android-installable PWA, and improve mobile UI scaling + touch controls",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

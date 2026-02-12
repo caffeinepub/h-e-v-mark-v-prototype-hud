@@ -4,6 +4,7 @@ import { useUIStore } from '../../state/uiState';
 import { useViewportOrientation } from '../../hooks/useViewportOrientation';
 import { useAlertState } from '../../state/hazardAlerts';
 import { useHudPresence } from '../../hooks/useHudPresence';
+import { useAutoUiScale } from '../../hooks/useAutoUiScale';
 import { HudGlobalEffects } from './HudGlobalEffects';
 import { SiX, SiGithub } from 'react-icons/si';
 import { Heart } from 'lucide-react';
@@ -18,16 +19,18 @@ export function HudLayout({ children }: HudLayoutProps) {
   const { landscapeModeEnabled } = useUIStore();
   const isLandscape = useViewportOrientation();
   const { isCriticalFlashing } = useAlertState();
+  const autoScale = useAutoUiScale();
 
   // Apply HUD presence tracking for reactive effects
   useHudPresence(containerRef);
 
-  // Apply UI scale CSS variable
+  // Apply effective UI scale (manual * auto) CSS variable
   useEffect(() => {
     if (containerRef.current) {
-      containerRef.current.style.setProperty('--hud-scale', uiScale.toString());
+      const effectiveScale = uiScale * autoScale;
+      containerRef.current.style.setProperty('--hud-scale', effectiveScale.toString());
     }
-  }, [uiScale]);
+  }, [uiScale, autoScale]);
 
   // Determine if landscape layout should be active
   const shouldUseLandscape = landscapeModeEnabled || isLandscape;

@@ -10,22 +10,19 @@ import { InfoTab } from './tabs/InfoTab';
 import { UtilitiesTab } from './tabs/UtilitiesTab';
 import { WeaponsTab } from './tabs/WeaponsTab';
 import { TacticalTab } from './tabs/TacticalTab';
-import { HazardTab } from './tabs/HazardTab';
+import { HazardsTab } from './tabs/HazardsTab';
 import { SettingsTab } from './tabs/SettingsTab';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useInfoSettingsStore } from './state/infoSettingsState';
 import { uiSfx } from './audio/uiSfx';
-import { useHazardSimulation } from './hooks/useHazardSimulation';
+import { registerServiceWorker } from './pwa/registerServiceWorker';
 
-type TabValue = 'basics' | 'medical' | 'info' | 'utilities' | 'weapons' | 'tactical' | 'hazard' | 'settings';
+type TabValue = 'basics' | 'medical' | 'info' | 'utilities' | 'weapons' | 'hazards' | 'tactical' | 'settings';
 
 function App() {
   const [bootComplete, setBootComplete] = useState(false);
   const [activeTab, setActiveTab] = useState<TabValue>('basics');
   const { hudActive, displayMode, tacticalModeEnabled } = useInfoSettingsStore();
-
-  // Mount hazard simulation at app level
-  useHazardSimulation();
 
   // Safety: If tactical tab is active but tactical mode is disabled, switch to basics
   useEffect(() => {
@@ -33,6 +30,13 @@ function App() {
       setActiveTab('basics');
     }
   }, [activeTab, tacticalModeEnabled]);
+
+  // Register service worker after boot completes
+  useEffect(() => {
+    if (bootComplete) {
+      registerServiceWorker();
+    }
+  }, [bootComplete]);
 
   const handleBootComplete = () => {
     setBootComplete(true);
@@ -78,14 +82,14 @@ function App() {
               <TabsTrigger value="weapons" className="hud-tab-trigger">
                 WEAPONS
               </TabsTrigger>
+              <TabsTrigger value="hazards" className="hud-tab-trigger">
+                HAZARDS
+              </TabsTrigger>
               {tacticalModeEnabled && (
                 <TabsTrigger value="tactical" className="hud-tab-trigger">
                   TACTICAL
                 </TabsTrigger>
               )}
-              <TabsTrigger value="hazard" className="hud-tab-trigger">
-                HAZARD
-              </TabsTrigger>
               <TabsTrigger value="settings" className="hud-tab-trigger">
                 SETTINGS
               </TabsTrigger>
@@ -111,15 +115,15 @@ function App() {
               <WeaponsTab />
             </TabsContent>
 
+            <TabsContent value="hazards" className="hud-tab-content">
+              <HazardsTab />
+            </TabsContent>
+
             {tacticalModeEnabled && (
               <TabsContent value="tactical" className="hud-tab-content">
                 <TacticalTab />
               </TabsContent>
             )}
-
-            <TabsContent value="hazard" className="hud-tab-content">
-              <HazardTab />
-            </TabsContent>
 
             <TabsContent value="settings" className="hud-tab-content">
               <SettingsTab />
@@ -152,14 +156,14 @@ function App() {
           <TabsTrigger value="weapons" className="hud-tab-trigger">
             WEAPONS
           </TabsTrigger>
+          <TabsTrigger value="hazards" className="hud-tab-trigger">
+            HAZARDS
+          </TabsTrigger>
           {tacticalModeEnabled && (
             <TabsTrigger value="tactical" className="hud-tab-trigger">
               TACTICAL
             </TabsTrigger>
           )}
-          <TabsTrigger value="hazard" className="hud-tab-trigger">
-            HAZARD
-          </TabsTrigger>
           <TabsTrigger value="settings" className="hud-tab-trigger">
             SETTINGS
           </TabsTrigger>
@@ -185,15 +189,15 @@ function App() {
           <WeaponsTab />
         </TabsContent>
 
+        <TabsContent value="hazards" className="hud-tab-content">
+          <HazardsTab />
+        </TabsContent>
+
         {tacticalModeEnabled && (
           <TabsContent value="tactical" className="hud-tab-content">
             <TacticalTab />
           </TabsContent>
         )}
-
-        <TabsContent value="hazard" className="hud-tab-content">
-          <HazardTab />
-        </TabsContent>
 
         <TabsContent value="settings" className="hud-tab-content">
           <SettingsTab />
