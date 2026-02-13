@@ -4,7 +4,9 @@ import Map "mo:core/Map";
 import Nat "mo:core/Nat";
 import Runtime "mo:core/Runtime";
 import Iter "mo:core/Iter";
+import Migration "migration";
 
+(with migration = Migration.run)
 actor {
   type Stats = {
     var health : Nat;
@@ -15,16 +17,16 @@ actor {
   };
 
   type ModuleToggles = {
-    var helmet : Bool;
-    var respirator : Bool;
-    var longJump : Bool;
-    var flashlight : Bool;
-    var advancedMedical : Bool;
-    var radiationShield : Bool;
-    var defibrillator : Bool;
-    var shieldBoost : Bool;
-    var hazardSystem : Bool;
-    var moduleSync : Bool;
+    helmet : Bool;
+    respirator : Bool;
+    longJump : Bool;
+    flashlight : Bool;
+    advancedMedical : Bool;
+    radiationShield : Bool;
+    defibrillator : Bool;
+    shieldBoost : Bool;
+    hazardSystem : Bool;
+    moduleSync : Bool;
   };
 
   type FireHazard = {
@@ -124,17 +126,17 @@ actor {
     var hazard = 0;
   };
 
-  let modules : ModuleToggles = {
-    var helmet = false;
-    var respirator = false;
-    var longJump = false;
-    var flashlight = false;
-    var advancedMedical = false;
-    var radiationShield = false;
-    var defibrillator = false;
-    var shieldBoost = false;
-    var hazardSystem = false;
-    var moduleSync = false;
+  var modules : ModuleToggles = {
+    helmet = false;
+    respirator = false;
+    longJump = false;
+    flashlight = false;
+    advancedMedical = false;
+    radiationShield = false;
+    defibrillator = false;
+    shieldBoost = false;
+    hazardSystem = false;
+    moduleSync = false;
   };
 
   let lss : LifeSupportSystem = {
@@ -216,21 +218,37 @@ actor {
   ///////////////////////// Health Systems///////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
   public shared ({ caller }) func toggleModule(moduleName : Text) : async () {
-    func toggleVar(varRef : { var value : Bool }) {
-      varRef.value := not varRef.value;
-    };
-
-    switch (moduleName) {
-      case ("helmet") { toggleVar({ var value = modules.helmet }) };
-      case ("respirator") { toggleVar({ var value = modules.respirator }) };
-      case ("longJump") { toggleVar({ var value = modules.longJump }) };
-      case ("flashlight") { toggleVar({ var value = modules.flashlight }) };
-      case ("advancedMedical") { toggleVar({ var value = modules.advancedMedical }) };
-      case ("radiationShield") { toggleVar({ var value = modules.radiationShield }) };
-      case ("defibrillator") { toggleVar({ var value = modules.defibrillator }) };
-      case ("shieldBoost") { toggleVar({ var value = modules.shieldBoost }) };
-      case ("hazardSystem") { toggleVar({ var value = modules.hazardSystem }) };
-      case ("moduleSync") { toggleVar({ var value = modules.moduleSync }) };
+    modules := switch (moduleName) {
+      case ("helmet") {
+        { modules with helmet = not modules.helmet };
+      };
+      case ("respirator") {
+        { modules with respirator = not modules.respirator };
+      };
+      case ("longJump") {
+        { modules with longJump = not modules.longJump };
+      };
+      case ("flashlight") {
+        { modules with flashlight = not modules.flashlight };
+      };
+      case ("advancedMedical") {
+        { modules with advancedMedical = not modules.advancedMedical };
+      };
+      case ("radiationShield") {
+        { modules with radiationShield = not modules.radiationShield };
+      };
+      case ("defibrillator") {
+        { modules with defibrillator = not modules.defibrillator };
+      };
+      case ("shieldBoost") {
+        { modules with shieldBoost = not modules.shieldBoost };
+      };
+      case ("hazardSystem") {
+        { modules with hazardSystem = not modules.hazardSystem };
+      };
+      case ("moduleSync") {
+        { modules with moduleSync = not modules.moduleSync };
+      };
       case (_) { Runtime.trap("Invalid module") };
     };
   };
@@ -287,7 +305,7 @@ actor {
   /////////////// Environmental Hazard Toggles ///////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
   public shared ({ caller }) func toggleHazard(hazardType : Text, level : Nat) : async () {
-    func setHazardStatus(hazardType : Text, newStatus : Text, hazardVar : { var status : Text }) : () {
+    func setHazardStatus(hazardType : Text, newStatus : Text, hazardVar : { var status : Text }) { 
       hazardVar.status := hazardType # " hazard: " # newStatus;
     };
 
@@ -377,28 +395,8 @@ actor {
     };
   };
 
-  public query ({ caller }) func getModuleStates() : async {
-    helmet : Bool;
-    respirator : Bool;
-    longJump : Bool;
-    flashlight : Bool;
-    radiationShield : Bool;
-    defibrillator : Bool;
-    shieldBoost : Bool;
-    hazardSystem : Bool;
-    moduleSync : Bool;
-  } {
-    {
-      helmet = modules.helmet;
-      respirator = modules.respirator;
-      longJump = modules.longJump;
-      flashlight = modules.flashlight;
-      radiationShield = modules.radiationShield;
-      defibrillator = modules.defibrillator;
-      shieldBoost = modules.shieldBoost;
-      hazardSystem = modules.hazardSystem;
-      moduleSync = modules.moduleSync;
-    };
+  public query ({ caller }) func getModuleStates() : async ModuleToggles {
+    modules;
   };
 
   ////////////////////////////////////////////////////////////////////////////////

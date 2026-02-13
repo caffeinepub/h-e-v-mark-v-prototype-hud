@@ -69,7 +69,7 @@ export function HudLayout({ children }: HudLayoutProps) {
         <header className="hud-header">
           <div className="hud-header-content">
             <h1 className="hud-title">H.E.V SUIT INTERFACE</h1>
-            <div className="hud-user">OPERATOR: GORDON FREEMAN</div>
+            <div className="hud-user">OPERATOR: LEON KRYWIAK</div>
           </div>
         </header>
 

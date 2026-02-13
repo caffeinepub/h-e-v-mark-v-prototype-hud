@@ -1,51 +1,52 @@
 {
   "kind": "build_request",
-  "title": "Make HUD tabs compact so all tabs (including Settings) are reachable",
+  "title": "Fix utility module toggles so they stay enabled (backend module state persistence)",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Update the HUD tab bar so all tabs are reachable on small screens by reducing each tab’s visual width and supporting horizontal overflow scrolling (e.g., when the full tab set exceeds viewport width).",
-      "target": "frontend",
+      "text": "Fix the backend `toggleModule(moduleName : Text)` implementation so toggling a module actually updates the persistent `modules` state, and `getModuleStates()` reflects the updated values after a toggle.",
+      "target": "backend",
       "source": {
         "messageIds": [
           "msg-3"
         ],
         "quotes": [
-          "Maybe make the tabs not as big or make them only say they're name as I cannot get to the settings tab or other tabs at the back"
+          "They turn on but don't stay on"
         ]
       },
       "acceptanceCriteria": [
-        "On narrow/mobile-sized viewports, the tab bar does not prevent access to the Settings tab (it is reachable via horizontal scroll/drag).",
-        "The tab bar does not overflow outside the viewport; extra tabs remain accessible via horizontal scrolling.",
-        "No regression on desktop widths: tabs remain visible/usable without requiring scrolling when space permits."
+        "Calling `toggleModule(\"helmet\")` flips the stored value of `modules.helmet` and subsequent `getModuleStates().helmet` returns the new value.",
+        "Toggling any supported module key (`helmet`, `respirator`, `longJump`, `flashlight`, `advancedMedical`, `radiationShield`, `defibrillator`, `shieldBoost`, `hazardSystem`, `moduleSync`) persists and is returned correctly by `getModuleStates()`.",
+        "After a successful toggle, a refetch of the `modules` query does not revert the switch back to its prior state."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Add a compact rendering mode for `HudTabsBar` that, at small widths, shows only the tab name (label) and removes/reduces secondary micro-text so each tab consumes less space while remaining readable.",
+      "text": "Ensure the frontend utilities switches remain stable after toggling by relying on the backend-refetched `modules` state (React Query `modules` query) and do not visually revert unless the backend toggle fails.",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-3"
         ],
         "quotes": [
-          "make them only say they're name"
+          "They turn on but don't stay on"
         ]
       },
       "acceptanceCriteria": [
-        "At small widths, tab triggers display only the primary label (e.g., BASICS, MEDICAL, …, SETTINGS) and do not render the micro indicator line.",
-        "Tab labels remain legible and do not overlap adjacent tabs; truncation/ellipsis behavior is acceptable if needed.",
-        "Switching tabs still works identically (click/tap) and active styling remains clearly indicated."
+        "In the Utilities tab, toggling any module switch stays in the new position after the mutation settles and the `modules` query invalidates/refetches.",
+        "If the backend toggle fails, the UI rolls back to the previous state (no permanent mismatch between switch UI and backend `getModuleStates`).",
+        "Switches remain correct after navigating away from the Utilities tab and returning (i.e., after re-render and refetch)."
       ]
     }
   ],
   "constraints": [
-    "Do not modify files under `frontend/src/components/ui` (read-only UI component sources must be composed, not edited)."
+    "Backend must remain a single Motoko actor in `backend/main.mo` (no additional backend services).",
+    "Do not edit any files under `frontend/src/components/ui` or other `frontend.immutablePaths` entries from SYSTEM_CONTEXT."
   ],
   "nonGoals": [
-    "Adding/removing tabs or changing tab routing logic.",
-    "Backend changes to suit stats/modules/hazards."
+    "Adding new utility modules beyond the existing module keys already listed in the UI and backend.",
+    "Adding third-party real-time sync or WebSocket-based updates."
   ],
   "imageRequirements": {
     "required": [],

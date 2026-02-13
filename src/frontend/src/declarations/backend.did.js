@@ -8,6 +8,19 @@
 
 import { IDL } from '@icp-sdk/core/candid';
 
+export const ModuleToggles = IDL.Record({
+  'helmet' : IDL.Bool,
+  'moduleSync' : IDL.Bool,
+  'defibrillator' : IDL.Bool,
+  'advancedMedical' : IDL.Bool,
+  'respirator' : IDL.Bool,
+  'longJump' : IDL.Bool,
+  'radiationShield' : IDL.Bool,
+  'shieldBoost' : IDL.Bool,
+  'hazardSystem' : IDL.Bool,
+  'flashlight' : IDL.Bool,
+});
+
 export const idlService = IDL.Service({
   'addWarningSensor' : IDL.Func([IDL.Nat, IDL.Text], [], []),
   'getAllHazardStatuses' : IDL.Func(
@@ -47,23 +60,7 @@ export const idlService = IDL.Service({
       [IDL.Bool, IDL.Nat, IDL.Nat, IDL.Nat, IDL.Text],
       [],
     ),
-  'getModuleStates' : IDL.Func(
-      [],
-      [
-        IDL.Record({
-          'helmet' : IDL.Bool,
-          'moduleSync' : IDL.Bool,
-          'defibrillator' : IDL.Bool,
-          'respirator' : IDL.Bool,
-          'longJump' : IDL.Bool,
-          'radiationShield' : IDL.Bool,
-          'shieldBoost' : IDL.Bool,
-          'hazardSystem' : IDL.Bool,
-          'flashlight' : IDL.Bool,
-        }),
-      ],
-      ['query'],
-    ),
+  'getModuleStates' : IDL.Func([], [ModuleToggles], ['query']),
   'getPowerInfo' : IDL.Func([], [IDL.Bool, IDL.Nat, IDL.Nat, IDL.Nat], []),
   'getRadiationStatus' : IDL.Func([], [IDL.Text], []),
   'getStats' : IDL.Func([], [IDL.Nat, IDL.Nat, IDL.Nat, IDL.Nat, IDL.Nat], []),
@@ -93,6 +90,19 @@ export const idlService = IDL.Service({
 export const idlInitArgs = [];
 
 export const idlFactory = ({ IDL }) => {
+  const ModuleToggles = IDL.Record({
+    'helmet' : IDL.Bool,
+    'moduleSync' : IDL.Bool,
+    'defibrillator' : IDL.Bool,
+    'advancedMedical' : IDL.Bool,
+    'respirator' : IDL.Bool,
+    'longJump' : IDL.Bool,
+    'radiationShield' : IDL.Bool,
+    'shieldBoost' : IDL.Bool,
+    'hazardSystem' : IDL.Bool,
+    'flashlight' : IDL.Bool,
+  });
+  
   return IDL.Service({
     'addWarningSensor' : IDL.Func([IDL.Nat, IDL.Text], [], []),
     'getAllHazardStatuses' : IDL.Func(
@@ -132,23 +142,7 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Bool, IDL.Nat, IDL.Nat, IDL.Nat, IDL.Text],
         [],
       ),
-    'getModuleStates' : IDL.Func(
-        [],
-        [
-          IDL.Record({
-            'helmet' : IDL.Bool,
-            'moduleSync' : IDL.Bool,
-            'defibrillator' : IDL.Bool,
-            'respirator' : IDL.Bool,
-            'longJump' : IDL.Bool,
-            'radiationShield' : IDL.Bool,
-            'shieldBoost' : IDL.Bool,
-            'hazardSystem' : IDL.Bool,
-            'flashlight' : IDL.Bool,
-          }),
-        ],
-        ['query'],
-      ),
+    'getModuleStates' : IDL.Func([], [ModuleToggles], ['query']),
     'getPowerInfo' : IDL.Func([], [IDL.Bool, IDL.Nat, IDL.Nat, IDL.Nat], []),
     'getRadiationStatus' : IDL.Func([], [IDL.Text], []),
     'getStats' : IDL.Func(

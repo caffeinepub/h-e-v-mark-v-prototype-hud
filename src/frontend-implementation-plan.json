@@ -1,47 +1,31 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Compact, scrollable HUD tabs for small screens",
+  "title": "Stabilize Utilities module toggles using backend-refetched module state",
   "requirements": [
     {
-      "id": "REQ-1",
-      "summary": "Make HUD tabs horizontally scrollable and reduce per-tab width so all tabs remain reachable on small screens.",
-      "acceptanceCriteria": [
-        "On narrow/mobile-sized viewports, the tab bar does not prevent access to the Settings tab (it is reachable via horizontal scroll/drag).",
-        "The tab bar does not overflow outside the viewport; extra tabs remain accessible via horizontal scrolling.",
-        "No regression on desktop widths: tabs remain visible/usable without requiring scrolling when space permits."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/hud/HudTabsBar.tsx",
-          "operation": "modify",
-          "description": "Adjust the HudTabsBar markup/classes to support an overflow-x scrolling tab list (including touch/pointer horizontal drag scrolling) and to ensure tab triggers size to content (reduced padding/min-width) rather than forcing equal-width tabs."
-        },
-        {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "Add/adjust CSS for HudTabsBar (e.g., `hud-tabs-list-enhanced` / `hud-tab-trigger-enhanced` and related sub-elements) to enable horizontal overflow scrolling within the viewport, prevent layout overflow, hide/trim scrollbars appropriately, and tighten spacing so more tabs fit on small screens while remaining usable on desktop."
-        }
-      ]
-    },
-    {
       "id": "REQ-2",
-      "summary": "Add a compact visual mode for HudTabsBar at small widths that shows only the primary tab label and removes micro-text.",
+      "summary": "Make Utilities module switches derive from the React Query 'modules' state with optimistic UI + rollback on failure, staying stable across refetch and navigation.",
       "acceptanceCriteria": [
-        "At small widths, tab triggers display only the primary label (e.g., BASICS, MEDICAL, …, SETTINGS) and do not render the micro indicator line.",
-        "Tab labels remain legible and do not overlap adjacent tabs; truncation/ellipsis behavior is acceptable if needed.",
-        "Switching tabs still works identically (click/tap) and active styling remains clearly indicated."
+        "In the Utilities tab, toggling any module switch stays in the new position after the mutation settles and the `modules` query invalidates/refetches.",
+        "If the backend toggle fails, the UI rolls back to the previous state (no permanent mismatch between switch UI and backend `getModuleStates`).",
+        "Switches remain correct after navigating away from the Utilities tab and returning (i.e., after re-render and refetch)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/hud/HudTabsBar.tsx",
+          "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Introduce a compact rendering behavior for HudTabsBar (e.g., by adding a compact-mode class or structure that allows hiding the micro line and optionally reducing non-label elements at small widths) while keeping tab values and switching logic unchanged."
+          "description": "Update the `useToggleModule` mutation to be query-cache-driven (optimistic update of the React Query ['modules'] cache and rollback on error) and remove direct Zustand module toggling to ensure the post-mutation UI is governed by backend-refetched module state. Verify the component's usage instructions before implementing."
         },
         {
-          "path": "frontend/src/index.css",
+          "path": "frontend/src/tabs/UtilitiesTab.tsx",
           "operation": "modify",
-          "description": "Implement responsive compact styling for HudTabsBar at small widths (via media queries and/or a compact-mode class): hide `.tab-trigger-micro` (micro indicator line), ensure `.tab-trigger-label` remains readable with nowrap + ellipsis as needed, and keep active-state styling clearly visible."
+          "description": "Change module switch `checked` values and toggle calculations to rely on the React Query `useGetModuleStates()` data (fall back safely when unavailable) so switches do not visually revert except on mutation failure; keep using `HudSwitch` (shadcn-ui Switch wrapper) for consistent styling. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Ensure the existing module-state synchronization from the React Query `modules` query into the Zustand suit store remains the single source of truth for other tabs, and does not reintroduce local-only module toggles that could desync during invalidation/refetch. Verify the component's usage instructions before implementing."
         }
       ]
     }

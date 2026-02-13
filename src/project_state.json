@@ -4,21 +4,13 @@
   "summary": "New project",
   "architectural_notes": [],
   "known_issues": [
-    "Tabs are too large/labels too long, preventing access to Settings and tabs at the back"
+    "Utilities toggle turns on but does not stay enabled (state not persisting)."
   ],
   "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-update-the-hud-tab-bar-so-all-tabs-are-reachable-on-small-screens-by-reducing-each-tab-s-visual-width-and-supporting-horizontal-overflow-scrolling-e-g-when-the-full-tab-set-exceeds-viewport-width",
-      "title": "Update the HUD tab bar so all tabs are reachable on small screens by reducing each tab’s visual width and supporting horizontal overflow scrolling (e.g., when the full tab set exceeds viewport width).",
-      "reqIds": [
-        "REQ-1"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-a-compact-rendering-mode-for-hudtabsbar-that-at-small-widths-shows-only-the-tab-name-label-and-removes-reduces-secondary-micro-text-so-each-tab-consumes-less-space-while-remaining-readable",
-      "title": "Add a compact rendering mode for `HudTabsBar` that, at small widths, shows only the tab name (label) and removes/reduces secondary micro-text so each tab consumes less space while remaining readable.",
+      "id": "feature-ensure-the-frontend-utilities-switches-remain-stable-after-toggling-by-relying-on-the-backend-refetched-modules-state-react-query-modules-query-and-do-not-visually-revert-unless-the-backend-toggle-fails",
+      "title": "Ensure the frontend utilities switches remain stable after toggling by relying on the backend-refetched `modules` state (React Query `modules` query) and do not visually revert unless the backend toggle fails.",
       "reqIds": [
         "REQ-2"
       ],
@@ -28,12 +20,14 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Reduce tab size and/or shorten tab labels so all tabs (e.g., Settings) are reachable/visible",
-      "reqIds": [],
+      "summary": "Fix the backend `toggleModule(moduleName : Text)` implementation so toggling a module actually updates the persistent `modules` state, and `getModuleStates()` reflects the updated values after a toggle.",
+      "reqIds": [
+        "REQ-1"
+      ],
       "status": "pending"
     }
   ],
-  "projectName": "Make HUD tabs compact so all tabs (including Settings) are reachable",
+  "projectName": "Fix utility module toggles so they stay enabled (backend module state persistence)",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

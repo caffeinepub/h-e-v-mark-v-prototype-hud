@@ -1,14 +1,13 @@
-import { useSuitStore } from '../state/suitState';
-import { useToggleModule } from '../hooks/useQueries';
+import { useGetModuleStates, useToggleModule } from '../hooks/useQueries';
 import { HudSwitch } from '../components/common/HudSwitch';
 import { Label } from '@/components/ui/label';
 import { AmbiencePlayer } from '../components/audio/AmbiencePlayer';
 import { hevVoice } from '../audio/hevVoice';
 import { uiSfx } from '../audio/uiSfx';
 
-type ModuleKey = keyof typeof initialModules;
+type ModuleKey = 'helmet' | 'respirator' | 'longJump' | 'flashlight' | 'advancedMedical' | 'radiationShield' | 'defibrillator' | 'shieldBoost' | 'hazardSystem' | 'moduleSync';
 
-const initialModules = {
+const moduleDefinitions: Record<ModuleKey, { label: string; description: string }> = {
   helmet: { label: 'HELMET', description: 'Heads-up display and protection' },
   respirator: { label: 'RESPIRATOR', description: 'Air filtration system' },
   longJump: { label: 'LONG JUMP', description: 'Enhanced mobility module' },
@@ -22,12 +21,13 @@ const initialModules = {
 };
 
 export function UtilitiesTab() {
-  const { modules } = useSuitStore();
+  const { data: modules } = useGetModuleStates();
   const toggleModule = useToggleModule();
 
   const handleToggle = (moduleKey: ModuleKey) => {
-    const willBeEnabled = !modules[moduleKey];
-    const moduleLabel = initialModules[moduleKey].label;
+    const currentState = modules?.[moduleKey] ?? false;
+    const willBeEnabled = !currentState;
+    const moduleLabel = moduleDefinitions[moduleKey].label;
     
     toggleModule.mutate(moduleKey, {
       onSuccess: () => {
@@ -48,9 +48,9 @@ export function UtilitiesTab() {
           <div className="hud-panel-title-compact">MODULE CONTROLS</div>
           <div className="hud-panel-content-compact">
             <div className="modules-list-compact">
-              {(Object.keys(initialModules) as ModuleKey[]).map((key) => {
-                const module = initialModules[key];
-                const isActive = modules[key];
+              {(Object.keys(moduleDefinitions) as ModuleKey[]).map((key) => {
+                const module = moduleDefinitions[key];
+                const isActive = modules?.[key] ?? false;
                 
                 return (
                   <div key={key} className="module-row-compact">

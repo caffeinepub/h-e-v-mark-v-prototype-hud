@@ -15,6 +15,8 @@ import { HazardsTab } from './tabs/HazardsTab';
 import { SettingsTab } from './tabs/SettingsTab';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { useInfoSettingsStore } from './state/infoSettingsState';
+import { useSuitStore } from './state/suitState';
+import { useGetModuleStates } from './hooks/useQueries';
 import { uiSfx } from './audio/uiSfx';
 import { registerServiceWorker } from './pwa/registerServiceWorker';
 
@@ -24,6 +26,17 @@ function App() {
   const [bootComplete, setBootComplete] = useState(false);
   const [activeTab, setActiveTab] = useState<TabValue>('basics');
   const { hudActive, displayMode, tacticalModeEnabled } = useInfoSettingsStore();
+  const { setModules } = useSuitStore();
+  
+  // Fetch module states from backend
+  const { data: moduleStates } = useGetModuleStates();
+
+  // Sync backend module states into Zustand store for other tabs that need it
+  useEffect(() => {
+    if (moduleStates) {
+      setModules(moduleStates);
+    }
+  }, [moduleStates, setModules]);
 
   // Safety: If tactical tab is active but tactical mode is disabled, switch to basics
   useEffect(() => {

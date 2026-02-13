@@ -1,54 +1,43 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-12T06:30:19.830Z",
-  "summary": "The diff does not show any implementation changes to `HudTabsBar` or the HUD tab bar behavior. It only includes global CSS updates (not tab-specific), and metadata/summary files. As a result, both REQ-1 and REQ-2 appear unimplemented. The diff also includes unrelated styling changes (global switch styling) and project metadata updates that were not requested by the BuildRequest.",
+  "generatedAt": "2026-02-12T06:56:36.123Z",
+  "summary": "Frontend changes appear to address stable module toggles via React Query cache/rollback + refetch, but the diff summary does not include the backend `toggleModule`/`getModuleStates` implementations, so REQ-1 cannot be verified from the provided evidence. Some additional unrequested implementation work (backend migration module, syncing modules into Zustand from App) is present.",
   "missing_requirements": [
     {
       "id": "REQ-1",
-      "requirement": "Update the HUD tab bar so all tabs are reachable on small screens by reducing each tab’s visual width and supporting horizontal overflow scrolling (e.g., when the full tab set exceeds viewport width).",
-      "reason": "No changes in the diff summary indicate updates to the HUD tab bar layout, width reduction, or horizontal overflow scrolling/drag behavior. Modified files do not include the HUD tab bar component.",
+      "requirement": "Fix the backend `toggleModule(moduleName : Text)` implementation so toggling a module actually updates the persistent `modules` state, and `getModuleStates()` reflects the updated values after a toggle.",
+      "reason": "The diff summary for `backend/main.mo` is truncated before showing `toggleModule` and `getModuleStates`. The presence of a `modules` variable/type changes alone does not prove that toggling persists or that getters return updated values.",
       "evidence": [
-        "frontend-file-summaries.txt",
-        "frontend/src/index.css"
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "requirement": "Add a compact rendering mode for `HudTabsBar` that, at small widths, shows only the tab name (label) and removes/reduces secondary micro-text so each tab consumes less space while remaining readable.",
-      "reason": "No diff evidence of a compact mode being added to `HudTabsBar` or of removing micro-text/micro indicator line at small widths. No relevant component file changes are shown.",
-      "evidence": [
-        "frontend-file-summaries.txt"
+        "backend/main.mo (truncated; toggleModule/getModuleStates not shown)"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Global Radix Switch styling overrides (pill track, thumb styling, hover/focus/checked states) added to the global stylesheet.",
-      "reason": "The BuildRequest is specifically about making HUD tabs compact and horizontally scrollable on small screens; it does not request any switch component styling changes.",
+      "description": "Added a backend migration module and wired migration support into the backend actor.",
+      "reason": "BuildRequest only asks to fix persistence of module toggles; it does not request adding a migration system/module.",
       "evidence": [
-        "frontend/src/index.css"
+        "backend/migration.mo",
+        "backend/main.mo (imports `Migration \"migration\"` and indicates `(with migration = Migration.run)`)"
       ]
     },
     {
-      "description": "Project metadata/state updates marking the new feature requests (AR-1/AR-2/AR-3) as pending.",
-      "reason": "The BuildRequest does not request changes to project tracking files; this does not implement the tab bar requirements.",
+      "description": "Synced backend module states into a Zustand store from `App.tsx` for use by other tabs.",
+      "reason": "REQ-2 is scoped to keeping Utilities tab switches stable via the React Query `modules` query; global syncing into Zustand is not requested.",
       "evidence": [
-        "project_state.json"
-      ]
-    },
-    {
-      "description": "Updates to a generated/aggregated frontend file summary listing many components and features.",
-      "reason": "Not requested by the BuildRequest and does not constitute implementation of HUD tab compactness/scrolling.",
-      "evidence": [
-        "frontend-file-summaries.txt"
+        "frontend/src/App.tsx (useGetModuleStates + useEffect calling `setModules(moduleStates)`)"
       ]
     }
   ],
-  "confidence": 0.78,
+  "confidence": 0.62,
   "changed_files": [
+    "backend/main.mo",
+    "backend/migration.mo",
     "frontend-file-summaries.txt",
-    "frontend/src/index.css",
+    "frontend/src/App.tsx",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/tabs/UtilitiesTab.tsx",
     "project_state.json"
   ]
 }

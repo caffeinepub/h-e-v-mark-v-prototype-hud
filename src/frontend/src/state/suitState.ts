@@ -30,6 +30,8 @@ interface SuitState {
   setAmmo: (value: number) => void;
   setHazard: (value: number) => void;
   toggleModule: (module: keyof Modules) => void;
+  setModules: (modules: Modules) => void;
+  setModuleState: (module: keyof Modules, value: boolean) => void;
   reset: () => void;
 }
 
@@ -64,6 +66,10 @@ export const useSuitStore = create<SuitState>((set) => ({
   setHazard: (value) => set((state) => ({ stats: { ...state.stats, hazard: Math.max(0, Math.min(100, value)) } })),
   toggleModule: (module) => set((state) => ({
     modules: { ...state.modules, [module]: !state.modules[module] }
+  })),
+  setModules: (modules) => set({ modules }),
+  setModuleState: (module, value) => set((state) => ({
+    modules: { ...state.modules, [module]: value }
   })),
   reset: () => set({ stats: initialStats, modules: initialModules }),
 }));

@@ -89,6 +89,18 @@ export class ExternalBlob {
         return this;
     }
 }
+export interface ModuleToggles {
+    helmet: boolean;
+    moduleSync: boolean;
+    defibrillator: boolean;
+    advancedMedical: boolean;
+    respirator: boolean;
+    longJump: boolean;
+    radiationShield: boolean;
+    shieldBoost: boolean;
+    hazardSystem: boolean;
+    flashlight: boolean;
+}
 export interface backendInterface {
     addWarningSensor(id: bigint, location: string): Promise<void>;
     getAllHazardStatuses(): Promise<{
@@ -106,17 +118,7 @@ export interface backendInterface {
     getGasStatus(): Promise<string>;
     getHazardData(): Promise<[bigint, bigint, bigint, bigint, bigint]>;
     getLifeSupportInfo(): Promise<[boolean, bigint, bigint, bigint, string]>;
-    getModuleStates(): Promise<{
-        helmet: boolean;
-        moduleSync: boolean;
-        defibrillator: boolean;
-        respirator: boolean;
-        longJump: boolean;
-        radiationShield: boolean;
-        shieldBoost: boolean;
-        hazardSystem: boolean;
-        flashlight: boolean;
-    }>;
+    getModuleStates(): Promise<ModuleToggles>;
     getPowerInfo(): Promise<[boolean, bigint, bigint, bigint]>;
     getRadiationStatus(): Promise<string>;
     getStats(): Promise<[bigint, bigint, bigint, bigint, bigint]>;
@@ -326,17 +328,7 @@ export class Backend implements backendInterface {
             ];
         }
     }
-    async getModuleStates(): Promise<{
-        helmet: boolean;
-        moduleSync: boolean;
-        defibrillator: boolean;
-        respirator: boolean;
-        longJump: boolean;
-        radiationShield: boolean;
-        shieldBoost: boolean;
-        hazardSystem: boolean;
-        flashlight: boolean;
-    }> {
+    async getModuleStates(): Promise<ModuleToggles> {
         if (this.processError) {
             try {
                 const result = await this.actor.getModuleStates();

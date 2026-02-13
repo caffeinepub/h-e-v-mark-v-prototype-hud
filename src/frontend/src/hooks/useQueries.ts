@@ -34,7 +34,7 @@ export function useGetModuleStates() {
         respirator: modules.respirator,
         longJump: modules.longJump,
         flashlight: modules.flashlight,
-        advancedMedical: false, // Not in backend response
+        advancedMedical: modules.advancedMedical,
         radiationShield: modules.radiationShield,
         defibrillator: modules.defibrillator,
         shieldBoost: modules.shieldBoost,
@@ -70,7 +70,32 @@ export function useToggleModule() {
       if (!actor) throw new Error('Actor not initialized');
       await actor.toggleModule(moduleName);
     },
-    onSuccess: () => {
+    onMutate: async (moduleName) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['modules'] });
+
+      // Snapshot the previous value
+      const previousModules = queryClient.getQueryData(['modules']);
+
+      // Optimistically update the query cache only
+      queryClient.setQueryData(['modules'], (old: any) => {
+        if (!old) return old;
+        return {
+          ...old,
+          [moduleName]: !old[moduleName],
+        };
+      });
+
+      return { previousModules };
+    },
+    onError: (err, moduleName, context) => {
+      // Rollback on error
+      if (context?.previousModules) {
+        queryClient.setQueryData(['modules'], context.previousModules);
+      }
+    },
+    onSettled: () => {
+      // Refetch to ensure sync with backend
       queryClient.invalidateQueries({ queryKey: ['modules'] });
     },
   });

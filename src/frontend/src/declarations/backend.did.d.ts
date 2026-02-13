@@ -10,6 +10,18 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
+export interface ModuleToggles {
+  'helmet' : boolean,
+  'moduleSync' : boolean,
+  'defibrillator' : boolean,
+  'advancedMedical' : boolean,
+  'respirator' : boolean,
+  'longJump' : boolean,
+  'radiationShield' : boolean,
+  'shieldBoost' : boolean,
+  'hazardSystem' : boolean,
+  'flashlight' : boolean,
+}
 export interface _SERVICE {
   'addWarningSensor' : ActorMethod<[bigint, string], undefined>,
   'getAllHazardStatuses' : ActorMethod<
@@ -33,20 +45,7 @@ export interface _SERVICE {
     [],
     [boolean, bigint, bigint, bigint, string]
   >,
-  'getModuleStates' : ActorMethod<
-    [],
-    {
-      'helmet' : boolean,
-      'moduleSync' : boolean,
-      'defibrillator' : boolean,
-      'respirator' : boolean,
-      'longJump' : boolean,
-      'radiationShield' : boolean,
-      'shieldBoost' : boolean,
-      'hazardSystem' : boolean,
-      'flashlight' : boolean,
-    }
-  >,
+  'getModuleStates' : ActorMethod<[], ModuleToggles>,
   'getPowerInfo' : ActorMethod<[], [boolean, bigint, bigint, bigint]>,
   'getRadiationStatus' : ActorMethod<[], string>,
   'getStats' : ActorMethod<[], [bigint, bigint, bigint, bigint, bigint]>,
