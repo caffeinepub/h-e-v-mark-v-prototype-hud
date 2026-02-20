@@ -1,16 +1,25 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "New project",
-  "architectural_notes": [],
-  "known_issues": [
-    "Utilities toggle turns on but does not stay enabled (state not persisting)."
+  "summary": "H.E.V Mark Prototype protective systems interface with startup sequence and voice alerts",
+  "architectural_notes": [
+    "Text-to-speech voice system for startup sequence announcements",
+    "Multi-stage boot sequence visualization displaying system initialization states"
   ],
-  "isFixRequest": true,
+  "known_issues": [],
+  "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-ensure-the-frontend-utilities-switches-remain-stable-after-toggling-by-relying-on-the-backend-refetched-modules-state-react-query-modules-query-and-do-not-visually-revert-unless-the-backend-toggle-fails",
-      "title": "Ensure the frontend utilities switches remain stable after toggling by relying on the backend-refetched `modules` state (React Query `modules` query) and do not visually revert unless the backend toggle fails.",
+      "id": "feature-add-female-text-to-speech-voice-narration-to-the-boot-sequence-that-speaks-the-following-script-hello-welcome-to-the-h-e-v-mark-prototype-protective-systems-initialization-procedures-active-comms-active-advanced-medical-systems-active-advanced-weaponry-systems-engaged-vital-signs-activated-tactical-engagement-systems-activated-environmental-hazard-and-informational-tabs-activated-power-and-health-monitoring-systems-activated-boot-up-sequence-finished-have-a-very-safe-day",
+      "title": "Add female text-to-speech voice narration to the boot sequence that speaks the following script: \"Hello welcome to the H.E.V mark prototype protective systems. Initialization procedures active. Comms. Active. Advanced medical systems. Active. Advanced weaponry systems engaged. Vital signs Activated. Tactical engagement systems Activated. Environmental hazard and informational tabs Activated. Power and health monitoring systems Activated. Boot up sequence finished. Have a very safe day.\"",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-enhance-the-boot-sequence-visuals-in-bootsequenceoverlay-tsx-to-be-more-informative-and-visually-engaging-displaying-system-initialization-stages-with-corresponding-status-indicators-progress-bars-or-animated-elements-that-correlate-with-each-voice-announcement",
+      "title": "Enhance the boot sequence visuals in BootSequenceOverlay.tsx to be more informative and visually engaging, displaying system initialization stages with corresponding status indicators, progress bars, or animated elements that correlate with each voice announcement",
       "reqIds": [
         "REQ-2"
       ],
@@ -20,14 +29,18 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Fix the backend `toggleModule(moduleName : Text)` implementation so toggling a module actually updates the persistent `modules` state, and `getModuleStates()` reflects the updated values after a toggle.",
-      "reqIds": [
-        "REQ-1"
-      ],
+      "summary": "Add female voice alert system during startup with specific H.E.V Mark script",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Enhance boot up sequence with cooler and more informative visuals",
+      "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Fix utility module toggles so they stay enabled (backend module state persistence)",
+  "projectName": "H.E.V Mark Prototype",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

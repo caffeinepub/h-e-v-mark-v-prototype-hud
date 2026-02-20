@@ -2,12 +2,29 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-ensure-the-frontend-utilities-switches-remain-stable-after-toggling-by-relying-on-the-backend-refetched-modules-state-react-query-modules-query-and-do-not-visually-revert-unless-the-backend-toggle-fails",
-      "featureTitle": "Ensure the frontend utilities switches remain stable after toggling by relying on the backend-refetched `modules` state (React Query `modules` query) and do not visually revert unless the backend toggle fails.",
+      "featureId": "feature-add-female-text-to-speech-voice-narration-to-the-boot-sequence-that-speaks-the-following-script-hello-welcome-to-the-h-e-v-mark-prototype-protective-systems-initialization-procedures-active-comms-active-advanced-medical-systems-active-advanced-weaponry-systems-engaged-vital-signs-activated-tactical-engagement-systems-activated-environmental-hazard-and-informational-tabs-activated-power-and-health-monitoring-systems-activated-boot-up-sequence-finished-have-a-very-safe-day",
+      "featureTitle": "Add female text-to-speech voice narration to the boot sequence that speaks the following script: \"Hello welcome to the H.E.V mark prototype protective systems. Initialization procedures active. Comms. Active. Advanced medical systems. Active. Advanced weaponry systems engaged. Vital signs Activated. Tactical engagement systems Activated. Environmental hazard and informational tabs Activated. Power and health monitoring systems Activated. Boot up sequence finished. Have a very safe day.\"",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/tabs/UtilitiesTab.tsx"
+        "frontend/src/audio/audioBus.ts",
+        "frontend/src/components/boot/BootSequenceOverlay.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-enhance-the-boot-sequence-visuals-in-bootsequenceoverlay-tsx-to-be-more-informative-and-visually-engaging-displaying-system-initialization-stages-with-corresponding-status-indicators-progress-bars-or-animated-elements-that-correlate-with-each-voice-announcement",
+      "featureTitle": "Enhance the boot sequence visuals in BootSequenceOverlay.tsx to be more informative and visually engaging, displaying system initialization stages with corresponding status indicators, progress bars, or animated elements that correlate with each voice announcement",
+      "files": [
+        "frontend/src/components/boot/BootSequenceOverlay.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",

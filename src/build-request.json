@@ -1,52 +1,61 @@
 {
   "kind": "build_request",
-  "title": "Fix utility module toggles so they stay enabled (backend module state persistence)",
+  "title": "Add female voice narration and enhanced visuals to boot sequence",
+  "projectName": "H.E.V Mark Prototype",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Fix the backend `toggleModule(moduleName : Text)` implementation so toggling a module actually updates the persistent `modules` state, and `getModuleStates()` reflects the updated values after a toggle.",
-      "target": "backend",
+      "text": "Add female text-to-speech voice narration to the boot sequence that speaks the following script: \"Hello welcome to the H.E.V mark prototype protective systems. Initialization procedures active. Comms. Active. Advanced medical systems. Active. Advanced weaponry systems engaged. Vital signs Activated. Tactical engagement systems Activated. Environmental hazard and informational tabs Activated. Power and health monitoring systems Activated. Boot up sequence finished. Have a very safe day.\"",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-3"
+          "msg-13"
         ],
         "quotes": [
-          "They turn on but don't stay on"
+          "Can you add a voice during startup?",
+          "make the voice female and make it say \"hello welcome to the H.E.V mark prototype protective systems...\""
         ]
       },
       "acceptanceCriteria": [
-        "Calling `toggleModule(\"helmet\")` flips the stored value of `modules.helmet` and subsequent `getModuleStates().helmet` returns the new value.",
-        "Toggling any supported module key (`helmet`, `respirator`, `longJump`, `flashlight`, `advancedMedical`, `radiationShield`, `defibrillator`, `shieldBoost`, `hazardSystem`, `moduleSync`) persists and is returned correctly by `getModuleStates()`.",
-        "After a successful toggle, a refetch of the `modules` query does not revert the switch back to its prior state."
+        "Female voice plays automatically during boot sequence",
+        "Voice narration matches the provided script exactly",
+        "Voice playback is synchronized with boot sequence stages",
+        "Voice respects the existing voiceEnabled setting from infoSettingsState"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Ensure the frontend utilities switches remain stable after toggling by relying on the backend-refetched `modules` state (React Query `modules` query) and do not visually revert unless the backend toggle fails.",
+      "text": "Enhance the boot sequence visuals in BootSequenceOverlay.tsx to be more informative and visually engaging, displaying system initialization stages with corresponding status indicators, progress bars, or animated elements that correlate with each voice announcement",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-3"
+          "msg-13"
         ],
         "quotes": [
-          "They turn on but don't stay on"
+          "make the boot up sequence have way cooler and informative visuals"
         ]
       },
       "acceptanceCriteria": [
-        "In the Utilities tab, toggling any module switch stays in the new position after the mutation settles and the `modules` query invalidates/refetches.",
-        "If the backend toggle fails, the UI rolls back to the previous state (no permanent mismatch between switch UI and backend `getModuleStates`).",
-        "Switches remain correct after navigating away from the Utilities tab and returning (i.e., after re-render and refetch)."
+        "Boot sequence displays distinct visual stages for each system initialization step",
+        "Visual elements animate smoothly and provide clear feedback about initialization progress",
+        "Visuals are synchronized with voice narration timing",
+        "Enhanced visuals maintain consistency with existing HUD aesthetic and color scheme",
+        "Boot sequence remains performant and does not cause layout shifts or visual glitches"
       ]
     }
   ],
   "constraints": [
-    "Backend must remain a single Motoko actor in `backend/main.mo` (no additional backend services).",
-    "Do not edit any files under `frontend/src/components/ui` or other `frontend.immutablePaths` entries from SYSTEM_CONTEXT."
+    "Voice narration must respect the existing voiceEnabled setting in infoSettingsState",
+    "Boot sequence enhancements must work within the existing BootSequenceOverlay.tsx component structure",
+    "Audio playback must integrate with existing audioBus.ts system",
+    "Visuals must support reduced-motion preferences"
   ],
   "nonGoals": [
-    "Adding new utility modules beyond the existing module keys already listed in the UI and backend.",
-    "Adding third-party real-time sync or WebSocket-based updates."
+    "Modifying backend voice alert logic",
+    "Creating new audio settings beyond existing voiceEnabled toggle",
+    "Changing the overall HUD theme or color scheme",
+    "Adding voice alerts outside of the boot sequence"
   ],
   "imageRequirements": {
     "required": [],

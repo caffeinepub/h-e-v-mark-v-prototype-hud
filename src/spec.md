@@ -1,10 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Make utility module toggles persist correctly so backend module states update and the Utilities UI stays in sync after refetches.
+**Goal:** Add female voice narration and enhanced visuals to the H.E.V suit boot sequence.
 
 **Planned changes:**
-- Fix backend `toggleModule(moduleName : Text)` to update the persistent `modules` state so `getModuleStates()` returns the new stored values after toggling.
-- Ensure frontend Utilities switches rely on the backend-refetched `modules` (React Query) state after mutation settle/invalidate, and only roll back visually when a toggle fails.
+- Add female text-to-speech voice narration that plays during boot sequence with the provided script about system initialization
+- Enhance boot sequence visuals with animated system initialization stages, status indicators, and progress feedback
+- Synchronize visual elements with voice narration timing
+- Respect existing voiceEnabled setting and reduced-motion preferences
 
-**User-visible outcome:** Toggling any Utilities module switch stays enabled/disabled correctly, remains consistent after refetch or navigation, and only reverts if the toggle request fails.
+**User-visible outcome:** Users will experience an immersive boot sequence with female voice narration announcing system activations alongside enhanced animated visuals showing each initialization stage, creating a more polished and informative startup experience.

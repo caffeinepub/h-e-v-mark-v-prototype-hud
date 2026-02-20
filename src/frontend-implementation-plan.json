@@ -1,31 +1,45 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Stabilize Utilities module toggles using backend-refetched module state",
+  "title": "Add female voice narration and enhanced visuals to boot sequence",
   "requirements": [
     {
-      "id": "REQ-2",
-      "summary": "Make Utilities module switches derive from the React Query 'modules' state with optimistic UI + rollback on failure, staying stable across refetch and navigation.",
+      "id": "REQ-1",
+      "summary": "Add female text-to-speech voice narration to the boot sequence that speaks the provided script with synchronization to boot stages",
       "acceptanceCriteria": [
-        "In the Utilities tab, toggling any module switch stays in the new position after the mutation settles and the `modules` query invalidates/refetches.",
-        "If the backend toggle fails, the UI rolls back to the previous state (no permanent mismatch between switch UI and backend `getModuleStates`).",
-        "Switches remain correct after navigating away from the Utilities tab and returning (i.e., after re-render and refetch)."
+        "Female voice plays automatically during boot sequence",
+        "Voice narration matches the provided script exactly",
+        "Voice playback is synchronized with boot sequence stages",
+        "Voice respects the existing voiceEnabled setting from infoSettingsState"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/hooks/useQueries.ts",
+          "path": "frontend/src/components/boot/BootSequenceOverlay.tsx",
           "operation": "modify",
-          "description": "Update the `useToggleModule` mutation to be query-cache-driven (optimistic update of the React Query ['modules'] cache and rollback on error) and remove direct Zustand module toggling to ensure the post-mutation UI is governed by backend-refetched module state. Verify the component's usage instructions before implementing."
+          "description": "Integrate female text-to-speech voice narration into the boot sequence. Add speech synthesis using the Web Speech API with a female voice, speaking the script: 'Hello welcome to the H.E.V mark prototype protective systems. Initialization procedures active. Comms. Active. Advanced medical systems. Active. Advanced weaponry systems engaged. Vital signs Activated. Tactical engagement systems Activated. Environmental hazard and informational tabs Activated. Power and health monitoring systems Activated. Boot up sequence finished. Have a very safe day.' Synchronize voice playback with the existing boot stage animations. Gate voice playback on the voiceEnabled setting from infoSettingsState. Handle voice initialization, utterance queueing, and cleanup on component unmount."
         },
         {
-          "path": "frontend/src/tabs/UtilitiesTab.tsx",
+          "path": "frontend/src/audio/audioBus.ts",
           "operation": "modify",
-          "description": "Change module switch `checked` values and toggle calculations to rely on the React Query `useGetModuleStates()` data (fall back safely when unavailable) so switches do not visually revert except on mutation failure; keep using `HudSwitch` (shadcn-ui Switch wrapper) for consistent styling. Verify the component's usage instructions before implementing."
-        },
+          "description": "Add a helper function to support speech synthesis voice playback with voice selection preference for female voices. Implement voice initialization that respects the existing voiceEnabled setting and integrates with the audio unlock flow. Provide an interface for queuing and controlling speech utterances that can be used by boot sequence and other components."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Enhance the boot sequence visuals to display system initialization stages with status indicators, progress bars, and animated elements synchronized with voice announcements",
+      "acceptanceCriteria": [
+        "Boot sequence displays distinct visual stages for each system initialization step",
+        "Visual elements animate smoothly and provide clear feedback about initialization progress",
+        "Visuals are synchronized with voice narration timing",
+        "Enhanced visuals maintain consistency with existing HUD aesthetic and color scheme",
+        "Boot sequence remains performant and does not cause layout shifts or visual glitches"
+      ],
+      "file_operations": [
         {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/components/boot/BootSequenceOverlay.tsx",
           "operation": "modify",
-          "description": "Ensure the existing module-state synchronization from the React Query `modules` query into the Zustand suit store remains the single source of truth for other tabs, and does not reintroduce local-only module toggles that could desync during invalidation/refetch. Verify the component's usage instructions before implementing."
+          "description": "Enhance the boot sequence with informative and visually engaging system initialization stages. Add distinct visual stages for each system mentioned in the voice script: Initialization, Comms, Advanced Medical, Weaponry, Vital Signs, Tactical Engagement, Environmental/Informational tabs, and Power/Health Monitoring. Implement animated status indicators (checkmarks, progress bars, or pulse effects) for each stage that animate in as the corresponding voice line plays. Use the existing HUD color scheme from CSS variables and maintain consistency with the current HEV aesthetic. Add progress percentage display. Ensure animations respect the prefers-reduced-motion media query. Synchronize visual stage transitions with voice narration timing using the same timing logic. Maintain smooth fade-out and completion callback behavior."
         }
       ]
     }
