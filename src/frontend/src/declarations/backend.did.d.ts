@@ -10,6 +10,67 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
+export interface ComprehensiveVehicleInfo {
+  'supportSystems' : SupportSystems,
+  'engineSpecs' : EngineSpecs,
+  'tacticalCapabilities' : TacticalCapabilities,
+  'fuel' : bigint,
+  'lore' : VehicleLore,
+  'name' : string,
+  'damageResistance' : DamageResistance,
+  'speed' : bigint,
+  'diagnostics' : string,
+  'integrity' : bigint,
+}
+export interface DamageResistance {
+  'armorStrength' : bigint,
+  'resistances' : {
+    'fire' : bigint,
+    'electrical' : bigint,
+    'bioHazards' : bigint,
+    'radiation' : bigint,
+  },
+}
+export interface EngineSpecs {
+  'powerOutput' : bigint,
+  'transmission' : string,
+  'torque' : bigint,
+  'engineType' : string,
+}
+export interface Faction {
+  'defaultWeapons' : Array<string>,
+  'name' : string,
+  'description' : string,
+}
+export interface FeatureSet {
+  'communication' : boolean,
+  'auxPower' : boolean,
+  'navigationSystem' : boolean,
+  'moduleSync' : boolean,
+  'defibrillator' : boolean,
+  'weaponSystem' : boolean,
+  'hazardProtection' : boolean,
+  'healthMonitoring' : boolean,
+  'advancedMedical' : boolean,
+  'lifeSupportTimeout' : boolean,
+  'vehicleInterface' : boolean,
+  'radiationShield' : boolean,
+  'armorShielding' : boolean,
+  'shieldBoost' : boolean,
+  'longJumpModule' : boolean,
+  'hazardSystem' : boolean,
+}
+export interface GravityGunStatusView {
+  'mode' : string,
+  'isActive' : boolean,
+  'chargeLevel' : bigint,
+}
+export interface ModesView {
+  'halfLife2Active' : boolean,
+  'currentMode' : string,
+  'blackMesaSecurityActive' : boolean,
+  'hecuActive' : boolean,
+}
 export interface ModuleToggles {
   'helmet' : boolean,
   'moduleSync' : boolean,
@@ -22,8 +83,48 @@ export interface ModuleToggles {
   'hazardSystem' : boolean,
   'flashlight' : boolean,
 }
+export interface SupportSystems {
+  'communication' : string,
+  'navigation' : string,
+  'sensors' : string,
+  'automation' : string,
+}
+export interface TacticalCapabilities {
+  'speed' : bigint,
+  'acceleration' : bigint,
+  'durability' : bigint,
+  'handling' : string,
+}
+export interface VehicleLore {
+  'historicalUse' : string,
+  'manufacturer' : string,
+  'notableUpgrades' : string,
+  'purpose' : string,
+}
+export interface WeaponView {
+  'damage' : bigint,
+  'lore' : string,
+  'name' : string,
+  'description' : string,
+  'weaponType' : string,
+  'ammoCapacity' : bigint,
+  'fireRate' : bigint,
+  'accuracy' : bigint,
+}
+export interface settingsView {
+  'currentMark' : bigint,
+  'availableFeatures' : FeatureSet,
+}
 export interface _SERVICE {
   'addWarningSensor' : ActorMethod<[bigint, string], undefined>,
+  'changeMark' : ActorMethod<[bigint], undefined>,
+  'chargeGravityGun' : ActorMethod<[], undefined>,
+  'customizeFactionWeapons' : ActorMethod<[string, Array<string>], undefined>,
+  'getAllComprehensiveVehicleInfo' : ActorMethod<
+    [],
+    Array<ComprehensiveVehicleInfo>
+  >,
+  'getAllFactions' : ActorMethod<[], Array<Faction>>,
   'getAllHazardStatuses' : ActorMethod<
     [],
     {
@@ -34,12 +135,22 @@ export interface _SERVICE {
       'radiation' : string,
     }
   >,
+  'getAllWeapons' : ActorMethod<[], Array<WeaponView>>,
   'getBioStatus' : ActorMethod<[], string>,
   'getCommunicationInfo' : ActorMethod<[], [boolean, string, string, boolean]>,
+  'getComprehensiveVehicleInfo' : ActorMethod<
+    [string],
+    ComprehensiveVehicleInfo
+  >,
+  'getCurrentFaction' : ActorMethod<[], string>,
+  'getCurrentMark' : ActorMethod<[], settingsView>,
+  'getCurrentMode' : ActorMethod<[], ModesView>,
   'getElectricalStatus' : ActorMethod<[], string>,
   'getEnvProtectionInfo' : ActorMethod<[], [boolean, bigint, bigint, string]>,
+  'getFactionWeapons' : ActorMethod<[string], [] | [Array<string>]>,
   'getFireStatus' : ActorMethod<[], string>,
   'getGasStatus' : ActorMethod<[], string>,
+  'getGravityGunStatus' : ActorMethod<[], GravityGunStatusView>,
   'getHazardData' : ActorMethod<[], [bigint, bigint, bigint, bigint, bigint]>,
   'getLifeSupportInfo' : ActorMethod<
     [],
@@ -53,11 +164,16 @@ export interface _SERVICE {
   'getSystemState' : ActorMethod<[], [boolean, bigint, string]>,
   'getSystemStatus' : ActorMethod<[], string>,
   'getWarningSensors' : ActorMethod<[], Array<[bigint, string]>>,
+  'getWeapon' : ActorMethod<[string], [] | [WeaponView]>,
+  'getWeaponsCount' : ActorMethod<[], bigint>,
   'removeWarningSensor' : ActorMethod<[bigint], undefined>,
   'setErrorState' : ActorMethod<[string], undefined>,
   'setSuitState' : ActorMethod<[string, string], undefined>,
   'setTemperature' : ActorMethod<[bigint], undefined>,
+  'switchFaction' : ActorMethod<[string], undefined>,
   'switchHudDisplay' : ActorMethod<[string], undefined>,
+  'switchMode' : ActorMethod<[string], undefined>,
+  'toggleGravityGun' : ActorMethod<[], undefined>,
   'toggleHazard' : ActorMethod<[string, bigint], undefined>,
   'toggleLifeSupportSystem' : ActorMethod<[], undefined>,
   'toggleModule' : ActorMethod<[string], undefined>,

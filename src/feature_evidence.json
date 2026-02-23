@@ -2,29 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-female-text-to-speech-voice-narration-to-the-boot-sequence-that-speaks-the-following-script-hello-welcome-to-the-h-e-v-mark-prototype-protective-systems-initialization-procedures-active-comms-active-advanced-medical-systems-active-advanced-weaponry-systems-engaged-vital-signs-activated-tactical-engagement-systems-activated-environmental-hazard-and-informational-tabs-activated-power-and-health-monitoring-systems-activated-boot-up-sequence-finished-have-a-very-safe-day",
-      "featureTitle": "Add female text-to-speech voice narration to the boot sequence that speaks the following script: \"Hello welcome to the H.E.V mark prototype protective systems. Initialization procedures active. Comms. Active. Advanced medical systems. Active. Advanced weaponry systems engaged. Vital signs Activated. Tactical engagement systems Activated. Environmental hazard and informational tabs Activated. Power and health monitoring systems Activated. Boot up sequence finished. Have a very safe day.\"",
+      "featureId": "feature-apply-faction-specific-color-schemes-consistently-across-all-ui-elements-hecu-uses-green-security-uses-blue-and-resistance-uses-yellow-orange-colors-should-affect-borders-accents-progress-bars-badges-buttons-and-all-interactive-elements-within-each-faction-s-hud",
+      "featureTitle": "Apply faction-specific color schemes consistently across all UI elements: HECU uses green, Security uses blue, and Resistance uses yellow-orange. Colors should affect borders, accents, progress bars, badges, buttons, and all interactive elements within each faction's HUD.",
       "files": [
-        "frontend/src/audio/audioBus.ts",
-        "frontend/src/components/boot/BootSequenceOverlay.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-1"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-enhance-the-boot-sequence-visuals-in-bootsequenceoverlay-tsx-to-be-more-informative-and-visually-engaging-displaying-system-initialization-stages-with-corresponding-status-indicators-progress-bars-or-animated-elements-that-correlate-with-each-voice-announcement",
-      "featureTitle": "Enhance the boot sequence visuals in BootSequenceOverlay.tsx to be more informative and visually engaging, displaying system initialization stages with corresponding status indicators, progress bars, or animated elements that correlate with each voice announcement",
-      "files": [
-        "frontend/src/components/boot/BootSequenceOverlay.tsx"
+        "frontend/src/index.css",
+        "frontend/tailwind.config.js"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -35,6 +17,141 @@
       ],
       "testIds": [
         "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-faction-specific-weapon-arsenals-with-predefined-weapon-sets-for-each-faction-that-appear-automatically-based-on-selected-faction-additionally-provide-user-customization-capability-to-modify-which-weapons-appear-for-each-faction",
+      "featureTitle": "Implement faction-specific weapon arsenals with predefined weapon sets for each faction that appear automatically based on selected faction. Additionally, provide user customization capability to modify which weapons appear for each faction.",
+      "files": [
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-enhance-the-boot-sequence-with-more-realistic-system-initialization-including-sequential-loading-text-multiple-initialization-stages-glitch-effects-and-progressive-system-checks-make-the-boot-up-feel-like-a-real-computer-system-starting-up",
+      "featureTitle": "Enhance the boot sequence with more realistic system initialization including sequential loading text, multiple initialization stages, glitch effects, and progressive system checks. Make the boot-up feel like a real computer system starting up.",
+      "files": [
+        "frontend/src/components/boot/BootSequenceOverlay.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-polish-tab-selection-interactions-with-smooth-transitions-better-visual-feedback-hover-effects-and-active-state-indicators-make-tab-switching-feel-responsive-and-professional",
+      "featureTitle": "Polish tab selection interactions with smooth transitions, better visual feedback, hover effects, and active state indicators. Make tab switching feel responsive and professional.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/hud/HudTabsBar.tsx",
+        "frontend/src/index.css"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-5"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-comprehensive-quality-of-life-features-including-keyboard-shortcuts-for-all-major-actions-tooltips-on-interactive-elements-quick-switch-between-factions-saved-user-preferences-and-auto-hide-functionality-for-non-critical-elements",
+      "featureTitle": "Implement comprehensive quality of life features including keyboard shortcuts for all major actions, tooltips on interactive elements, quick-switch between factions, saved user preferences, and auto-hide functionality for non-critical elements.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/common/HudTooltip.tsx",
+        "frontend/src/components/hud/HudTabsBar.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-6"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-optimize-all-hud-layouts-for-mobile-devices-with-semi-compact-responsive-design-that-is-100-friendly-for-small-screens-ensure-all-faction-huds-tabs-panels-and-controls-are-fully-functional-and-readable-on-mobile-viewports",
+      "featureTitle": "Optimize all HUD layouts for mobile devices with semi-compact responsive design that is 100% friendly for small screens. Ensure all faction HUDs, tabs, panels, and controls are fully functional and readable on mobile viewports.",
+      "files": [
+        "frontend/src/components/hud/HudTabsBar.tsx",
+        "frontend/src/index.css",
+        "frontend/tailwind.config.js"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-7"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-professional-sectioning-and-layout-organization-with-small-visual-details-like-dividers-section-headers-subtle-spacing-adjustments-and-grouped-related-elements-make-the-interface-feel-polished-and-well-organized",
+      "featureTitle": "Add professional sectioning and layout organization with small visual details like dividers, section headers, subtle spacing adjustments, and grouped related elements. Make the interface feel polished and well-organized.",
+      "files": [
+        "frontend/src/components/common/HudDivider.tsx",
+        "frontend/src/components/common/HudSection.tsx",
+        "frontend/src/index.css"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-8"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-preserve-all-existing-features-including-h-e-v-mark-selection-prototype-through-mark-v-mark-i-glitch-effects-prototype-hybrid-visual-style-all-current-tabs-and-panels-module-toggles-and-stat-tracking-ensure-no-functionality-is-lost-during-faction-system-integration",
+      "featureTitle": "Preserve all existing features including H.E.V Mark selection (Prototype through Mark V), Mark I glitch effects, Prototype hybrid visual style, all current tabs and panels, module toggles, and stat tracking. Ensure no functionality is lost during faction system integration.",
+      "files": [
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/index.css"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-9"
       ],
       "confidence": "high"
     }

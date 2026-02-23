@@ -1,130 +1,85 @@
-import { TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useInfoSettingsStore } from '@/state/infoSettingsStore';
 import { useSuitStore } from '@/state/suitState';
 import { useHazardsStore } from '@/state/hazardsState';
-import { useWeaponSystemsStore } from '@/state/weaponSystemsState';
-import { useInfoSettingsStore } from '@/state/infoSettingsState';
-import { cn } from '@/lib/utils';
-import { Activity, AlertTriangle, Info, Wrench, Crosshair, Shield, Settings } from 'lucide-react';
+import { useMarkFeatures } from '@/hooks/useMarkFeatures';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Activity, AlertTriangle, Crosshair, Heart, Info, Settings, Shield, Wrench, Car } from 'lucide-react';
+import { HudTooltip } from '@/components/common/HudTooltip';
 
 interface HudTabsBarProps {
-  showTactical?: boolean;
+  activeTab: string;
+  onTabChange: (tab: string) => void;
 }
 
-export function HudTabsBar({ showTactical = false }: HudTabsBarProps) {
-  const { stats, modules } = useSuitStore();
-  const { levels, getAggregateHazard } = useHazardsStore();
-  const { selectedWeapon } = useWeaponSystemsStore();
-  const { displayMode } = useInfoSettingsStore();
+export function HudTabsBar({ activeTab, onTabChange }: HudTabsBarProps) {
+  const { showTacticalTab, toggleEmergencyMode } = useInfoSettingsStore();
+  const { stats } = useSuitStore();
+  const { getAggregateHazard } = useHazardsStore();
+  const markFeatures = useMarkFeatures();
 
-  // Calculate active modules count
-  const activeModulesCount = Object.values(modules).filter(Boolean).length;
-
-  // Get critical hazard count
-  const criticalHazards = Object.values(levels).filter(level => level >= 60).length;
   const aggregateHazard = getAggregateHazard();
 
-  // Health status indicator
-  const healthStatus = stats.health >= 70 ? 'nominal' : stats.health >= 40 ? 'warning' : 'critical';
+  const tabs = [
+    { id: 'basics', label: 'BASICS', icon: Heart, available: markFeatures.tabs.basics, shortcut: '1' },
+    { id: 'medical', label: 'MEDICAL', icon: Activity, available: markFeatures.tabs.medical, shortcut: '2' },
+    { id: 'info', label: 'INFO', icon: Info, available: markFeatures.tabs.info, shortcut: '3' },
+    { id: 'utilities', label: 'UTILITIES', icon: Wrench, available: markFeatures.tabs.utilities, shortcut: '4' },
+    { id: 'weapons', label: 'WEAPONS', icon: Crosshair, available: markFeatures.tabs.weapons, shortcut: '5' },
+    { id: 'hazards', label: 'HAZARDS', icon: AlertTriangle, available: markFeatures.tabs.hazards, shortcut: '6' },
+    { id: 'tactical', label: 'TACTICAL', icon: Shield, available: markFeatures.tabs.tactical && showTacticalTab, shortcut: '7' },
+    { id: 'vehicles', label: 'VEHICLES', icon: Car, available: markFeatures.tabs.vehicles, shortcut: '8' },
+    { id: 'settings', label: 'SETTINGS', icon: Settings, available: markFeatures.tabs.settings, shortcut: '9' },
+  ].filter((tab) => tab.available);
+
+  const getMicroIndicator = (tabId: string) => {
+    switch (tabId) {
+      case 'basics':
+        if (stats.health < 30) return <Badge variant="destructive" className="micro-indicator">!</Badge>;
+        if (stats.armor < 20) return <Badge variant="outline" className="micro-indicator warning">!</Badge>;
+        return null;
+      case 'hazards':
+        if (aggregateHazard > 70) return <Badge variant="destructive" className="micro-indicator">!</Badge>;
+        if (aggregateHazard > 40) return <Badge variant="outline" className="micro-indicator warning">!</Badge>;
+        return null;
+      case 'weapons':
+        if (stats.ammo < 20) return <Badge variant="outline" className="micro-indicator warning">!</Badge>;
+        return null;
+      default:
+        return null;
+    }
+  };
 
   return (
-    <TabsList className="hud-tabs-list-enhanced">
-      <TabsTrigger value="basics" className="hud-tab-trigger-enhanced">
-        <div className="tab-trigger-content">
-          <Activity className="tab-trigger-icon" />
-          <div className="tab-trigger-text">
-            <span className="tab-trigger-label">BASICS</span>
-            <span className={cn('tab-trigger-micro', `status-${healthStatus}`)}>
-              {stats.health}% HP
-            </span>
-          </div>
-        </div>
-      </TabsTrigger>
+    <div className="hud-tabs-bar">
+      <div className="hud-tabs-scroll">
+        {tabs.map((tab) => {
+          const Icon = tab.icon;
+          return (
+            <HudTooltip key={tab.id} content={`${tab.label} (${tab.shortcut})`}>
+              <button
+                onClick={() => onTabChange(tab.id)}
+                className={`hud-tab ${activeTab === tab.id ? 'hud-tab-active' : ''}`}
+              >
+                <Icon className="hud-tab-icon" />
+                <span className="hud-tab-label">{tab.label}</span>
+                {getMicroIndicator(tab.id)}
+              </button>
+            </HudTooltip>
+          );
+        })}
+      </div>
 
-      <TabsTrigger value="medical" className="hud-tab-trigger-enhanced">
-        <div className="tab-trigger-content">
-          <Activity className="tab-trigger-icon" />
-          <div className="tab-trigger-text">
-            <span className="tab-trigger-label">MEDICAL</span>
-            <span className="tab-trigger-micro">
-              {stats.armor}% ARM
-            </span>
-          </div>
-        </div>
-      </TabsTrigger>
-
-      <TabsTrigger value="info" className="hud-tab-trigger-enhanced">
-        <div className="tab-trigger-content">
-          <Info className="tab-trigger-icon" />
-          <div className="tab-trigger-text">
-            <span className="tab-trigger-label">INFO</span>
-            <span className="tab-trigger-micro">
-              {displayMode}
-            </span>
-          </div>
-        </div>
-      </TabsTrigger>
-
-      <TabsTrigger value="utilities" className="hud-tab-trigger-enhanced">
-        <div className="tab-trigger-content">
-          <Wrench className="tab-trigger-icon" />
-          <div className="tab-trigger-text">
-            <span className="tab-trigger-label">UTILITIES</span>
-            <span className="tab-trigger-micro">
-              {activeModulesCount}/10 ON
-            </span>
-          </div>
-        </div>
-      </TabsTrigger>
-
-      <TabsTrigger value="weapons" className="hud-tab-trigger-enhanced">
-        <div className="tab-trigger-content">
-          <Crosshair className="tab-trigger-icon" />
-          <div className="tab-trigger-text">
-            <span className="tab-trigger-label">WEAPONS</span>
-            <span className="tab-trigger-micro">
-              {selectedWeapon.toUpperCase().slice(0, 6)}
-            </span>
-          </div>
-        </div>
-      </TabsTrigger>
-
-      <TabsTrigger value="hazards" className="hud-tab-trigger-enhanced">
-        <div className="tab-trigger-content">
-          <AlertTriangle className="tab-trigger-icon" />
-          <div className="tab-trigger-text">
-            <span className="tab-trigger-label">HAZARDS</span>
-            <span className={cn('tab-trigger-micro', aggregateHazard >= 60 ? 'status-critical' : aggregateHazard > 0 ? 'status-warning' : 'status-nominal')}>
-              {criticalHazards > 0 ? `${criticalHazards} CRIT` : `${aggregateHazard}%`}
-            </span>
-          </div>
-        </div>
-      </TabsTrigger>
-
-      {showTactical && (
-        <TabsTrigger value="tactical" className="hud-tab-trigger-enhanced">
-          <div className="tab-trigger-content">
-            <Shield className="tab-trigger-icon" />
-            <div className="tab-trigger-text">
-              <span className="tab-trigger-label">TACTICAL</span>
-              <span className="tab-trigger-micro">
-                ACTIVE
-              </span>
-            </div>
-          </div>
-        </TabsTrigger>
-      )}
-
-      <TabsTrigger value="settings" className="hud-tab-trigger-enhanced">
-        <div className="tab-trigger-content">
-          <Settings className="tab-trigger-icon" />
-          <div className="tab-trigger-text">
-            <span className="tab-trigger-label">SETTINGS</span>
-            <span className="tab-trigger-micro">
-              SYS
-            </span>
-          </div>
-        </div>
-      </TabsTrigger>
-    </TabsList>
+      <HudTooltip content="Emergency Mode (F4)">
+        <Button
+          onClick={toggleEmergencyMode}
+          variant="outline"
+          size="sm"
+          className="emergency-quick-button"
+        >
+          <AlertTriangle className="w-4 h-4" />
+        </Button>
+      </HudTooltip>
+    </div>
   );
 }

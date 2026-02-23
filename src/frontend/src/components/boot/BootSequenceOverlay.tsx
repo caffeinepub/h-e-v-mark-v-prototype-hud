@@ -1,198 +1,153 @@
-import { useEffect, useState, useRef } from 'react';
+import { useState, useEffect } from 'react';
+import { Progress } from '@/components/ui/progress';
+import { Check, Loader2, AlertTriangle } from 'lucide-react';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useInfoSettingsStore } from '@/state/infoSettingsStore';
 import { cn } from '@/lib/utils';
-import { audioBus } from '@/audio/audioBus';
-import { useInfoSettingsStore } from '@/state/infoSettingsState';
-import { Check, Loader2 } from 'lucide-react';
 
 interface BootSequenceOverlayProps {
   onComplete: () => void;
 }
 
-interface SystemStage {
-  id: string;
+interface BootStage {
+  id: number;
   label: string;
-  status: 'pending' | 'active' | 'complete';
+  duration: number;
+  factionSpecific?: {
+    hev?: string;
+    hecu?: string;
+    security?: string;
+    resistance?: string;
+  };
 }
 
+const BOOT_STAGES: BootStage[] = [
+  { id: 1, label: 'BIOS INITIALIZATION', duration: 400 },
+  { id: 2, label: 'HARDWARE DIAGNOSTICS', duration: 500 },
+  { id: 3, label: 'MEMORY CHECK', duration: 450 },
+  { id: 4, label: 'DRIVER LOADING', duration: 600 },
+  { id: 5, label: 'SYSTEM CORE BOOT', duration: 550 },
+  { id: 6, label: 'NETWORK INTERFACE', duration: 500 },
+  { id: 7, label: 'SECURITY PROTOCOLS', duration: 600 },
+  { id: 8, label: 'MODULE SYNCHRONIZATION', duration: 550 },
+  {
+    id: 9,
+    label: 'FACTION SUBSYSTEMS',
+    duration: 700,
+    factionSpecific: {
+      hev: 'H.E.V. SUIT INTERFACE',
+      hecu: 'HECU TACTICAL NETWORK',
+      security: 'SECURITY GRID ONLINE',
+      resistance: 'RESISTANCE COMMS LINK',
+    },
+  },
+  { id: 10, label: 'AUDIO SYSTEMS', duration: 450 },
+  { id: 11, label: 'DISPLAY CALIBRATION', duration: 500 },
+  { id: 12, label: 'FINAL DIAGNOSTICS', duration: 600 },
+];
+
 export function BootSequenceOverlay({ onComplete }: BootSequenceOverlayProps) {
-  const [stage, setStage] = useState(0);
-  const [opacity, setOpacity] = useState(1);
+  const [currentStage, setCurrentStage] = useState(0);
+  const [completedStages, setCompletedStages] = useState<number[]>([]);
   const [progress, setProgress] = useState(0);
-  const [currentSystemIndex, setCurrentSystemIndex] = useState(-1);
-  const [systemStages, setSystemStages] = useState<SystemStage[]>([
-    { id: 'init', label: 'Initialization procedures', status: 'pending' },
-    { id: 'comms', label: 'Communications', status: 'pending' },
-    { id: 'medical', label: 'Advanced medical systems', status: 'pending' },
-    { id: 'weapons', label: 'Advanced weaponry systems', status: 'pending' },
-    { id: 'vitals', label: 'Vital signs monitoring', status: 'pending' },
-    { id: 'tactical', label: 'Tactical engagement systems', status: 'pending' },
-    { id: 'environmental', label: 'Environmental hazard & informational tabs', status: 'pending' },
-    { id: 'power', label: 'Power and health monitoring systems', status: 'pending' },
-  ]);
-  
-  const mountedRef = useRef(true);
-  const voiceEnabled = useInfoSettingsStore((state) => state.voiceEnabled);
+  const [showGlitch, setShowGlitch] = useState(false);
+  const reducedMotion = useReducedMotion();
+  const { systemStyle } = useInfoSettingsStore();
 
   useEffect(() => {
-    mountedRef.current = true;
-    
-    const sequence = async () => {
-      try {
-        // Stage 0: CRT power on with flicker (0-400ms)
-        await new Promise(resolve => setTimeout(resolve, 100));
-        if (!mountedRef.current) return;
-        audioBus.playSfx('/assets/audio/boot-crt-noise.mp3', 0.15);
-        
-        // Stage 1: Initial flicker and noise (400-800ms)
-        setStage(1);
-        await new Promise(resolve => setTimeout(resolve, 400));
-        if (!mountedRef.current) return;
-        
-        // Stage 2: System initialization begins
-        setStage(2);
-        await new Promise(resolve => setTimeout(resolve, 300));
-        if (!mountedRef.current) return;
-        
-        // Start voice narration if enabled
-        if (voiceEnabled) {
-          audioBus.speakBootSequence();
-        }
-        
-        // Stage 3: Progressive system initialization with synchronized visuals
-        setStage(3);
-        
-        const systemTimings = [
-          1200,  // Initialization procedures
-          800,   // Comms
-          900,   // Advanced medical
-          1000,  // Weaponry
-          800,   // Vital signs
-          1100,  // Tactical engagement
-          1200,  // Environmental/informational
-          1000,  // Power/health monitoring
-        ];
-        
-        for (let i = 0; i < systemStages.length; i++) {
-          if (!mountedRef.current) return;
-          
-          // Set current system to active
-          setCurrentSystemIndex(i);
-          setSystemStages(prev => prev.map((sys, idx) => 
-            idx === i ? { ...sys, status: 'active' } : sys
-          ));
-          
-          // Update progress
-          setProgress(((i + 1) / systemStages.length) * 100);
-          
-          // Wait for system initialization
-          await new Promise(resolve => setTimeout(resolve, systemTimings[i]));
-          
-          if (!mountedRef.current) return;
-          
-          // Mark as complete
-          setSystemStages(prev => prev.map((sys, idx) => 
-            idx === i ? { ...sys, status: 'complete' } : sys
-          ));
-        }
-        
-        if (!mountedRef.current) return;
-        
-        // Stage 4: All systems operational
-        setStage(4);
-        setCurrentSystemIndex(-1);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        if (!mountedRef.current) return;
-        
-        // Stage 5: Fade out
-        setStage(5);
-        setOpacity(0);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        if (!mountedRef.current) return;
+    if (currentStage >= BOOT_STAGES.length) {
+      const timer = setTimeout(() => {
         onComplete();
-      } catch (e) {
-        // Silently handle any errors
-        if (mountedRef.current) {
-          onComplete();
-        }
-      }
-    };
+      }, 800);
+      return () => clearTimeout(timer);
+    }
 
-    sequence();
+    const stage = BOOT_STAGES[currentStage];
+    const duration = reducedMotion ? 100 : stage.duration;
 
-    return () => {
-      mountedRef.current = false;
-    };
-  }, [onComplete, voiceEnabled]);
+    // Random glitch effect during boot
+    if (!reducedMotion && Math.random() > 0.7) {
+      setShowGlitch(true);
+      setTimeout(() => setShowGlitch(false), 100);
+    }
+
+    const timer = setTimeout(() => {
+      setCompletedStages((prev) => [...prev, stage.id]);
+      setCurrentStage((prev) => prev + 1);
+      setProgress(((currentStage + 1) / BOOT_STAGES.length) * 100);
+    }, duration);
+
+    return () => clearTimeout(timer);
+  }, [currentStage, onComplete, reducedMotion]);
+
+  const getStageLabel = (stage: BootStage): string => {
+    if (stage.factionSpecific && stage.factionSpecific[systemStyle]) {
+      return stage.factionSpecific[systemStyle]!;
+    }
+    return stage.label;
+  };
 
   return (
-    <div 
-      className={cn('boot-overlay', stage >= 5 && 'boot-fade-out')}
-      style={{ opacity }}
-    >
-      <div className="boot-crt-effect" />
-      <div className="boot-crt-overlay" />
-      <div className="boot-scanlines" />
-      <div className="boot-noise" />
-      <div className="boot-content">
-        {stage >= 1 && (
-          <div className={cn('boot-text', stage >= 2 && 'boot-text-visible')}>
-            <div className="boot-logo">H.E.V</div>
-            <div className="boot-subtitle">MARK PROTOTYPE PROTECTIVE SYSTEMS</div>
-            
-            {stage >= 3 && (
-              <div className="boot-systems-container">
-                <div className="boot-systems-header">
-                  <span className="boot-systems-title">SYSTEM INITIALIZATION</span>
-                  <span className="boot-systems-progress">{Math.round(progress)}%</span>
+    <div className={cn('boot-sequence-overlay', showGlitch && 'boot-glitch')}>
+      <div className="boot-sequence-content">
+        <div className="boot-header">
+          <h1 className="boot-title">SYSTEM INITIALIZATION</h1>
+          <div className="boot-subtitle">
+            <span className="boot-version">v4.2.1</span>
+            <span className="boot-separator">•</span>
+            <span className="boot-faction">{systemStyle.toUpperCase()}</span>
+          </div>
+        </div>
+
+        <div className="boot-stages">
+          {BOOT_STAGES.map((stage, index) => {
+            const isCompleted = completedStages.includes(stage.id);
+            const isCurrent = index === currentStage;
+            const isPending = index > currentStage;
+
+            return (
+              <div
+                key={stage.id}
+                className={cn(
+                  'boot-stage',
+                  isCompleted && 'boot-stage-completed',
+                  isCurrent && 'boot-stage-current',
+                  isPending && 'boot-stage-pending'
+                )}
+                style={{
+                  animationDelay: reducedMotion ? '0ms' : `${index * 50}ms`,
+                }}
+              >
+                <div className="boot-stage-icon">
+                  {isCompleted && <Check className="w-4 h-4" />}
+                  {isCurrent && <Loader2 className="w-4 h-4 animate-spin" />}
+                  {isPending && <div className="boot-stage-dot" />}
                 </div>
-                
-                <div className="boot-progress-bar-container">
-                  <div className="boot-progress-bar" style={{ width: `${progress}%` }} />
-                </div>
-                
-                <div className="boot-systems-list">
-                  {systemStages.map((system, idx) => (
-                    <div 
-                      key={system.id}
-                      className={cn(
-                        'boot-system-item',
-                        system.status === 'active' && 'boot-system-active',
-                        system.status === 'complete' && 'boot-system-complete',
-                        idx > currentSystemIndex && system.status === 'pending' && 'boot-system-pending'
-                      )}
-                    >
-                      <div className="boot-system-indicator">
-                        {system.status === 'pending' && (
-                          <div className="boot-system-dot" />
-                        )}
-                        {system.status === 'active' && (
-                          <Loader2 className="boot-system-spinner" />
-                        )}
-                        {system.status === 'complete' && (
-                          <Check className="boot-system-check" />
-                        )}
-                      </div>
-                      <span className="boot-system-label">{system.label}</span>
-                      <span className="boot-system-status">
-                        {system.status === 'pending' && 'STANDBY'}
-                        {system.status === 'active' && 'ACTIVE'}
-                        {system.status === 'complete' && 'ONLINE'}
-                      </span>
-                    </div>
-                  ))}
-                </div>
+                <span className="boot-stage-label">{getStageLabel(stage)}</span>
+                {isCompleted && <span className="boot-stage-status">OK</span>}
+                {isCurrent && <span className="boot-stage-status boot-stage-loading">LOADING</span>}
               </div>
-            )}
-            
-            {stage >= 4 && (
-              <div className="boot-complete-message">
-                <div className="boot-complete-icon">✓</div>
-                <div className="boot-complete-text">BOOT UP SEQUENCE FINISHED</div>
-                <div className="boot-complete-subtext">Have a very safe day</div>
-              </div>
-            )}
+            );
+          })}
+        </div>
+
+        <div className="boot-progress-section">
+          <div className="boot-progress-header">
+            <span className="boot-progress-label">BOOT PROGRESS</span>
+            <span className="boot-progress-percentage">{Math.round(progress)}%</span>
+          </div>
+          <Progress value={progress} className="boot-progress-bar" />
+          <div className="boot-progress-footer">
+            <span className="boot-stage-counter">
+              STAGE {currentStage + 1} / {BOOT_STAGES.length}
+            </span>
+          </div>
+        </div>
+
+        {showGlitch && (
+          <div className="boot-glitch-overlay">
+            <AlertTriangle className="w-8 h-8 text-warning" />
+            <span className="boot-glitch-text">SIGNAL INTERFERENCE</span>
           </div>
         )}
       </div>

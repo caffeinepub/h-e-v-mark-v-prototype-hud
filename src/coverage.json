@@ -1,51 +1,176 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-20T00:15:45.241Z",
+  "generatedAt": "2026-02-23T01:49:11.756Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 2,
-    "implemented": 2,
+    "total": 9,
+    "implemented": 8,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Add female text-to-speech voice narration to the boot sequence that speaks the following script: \"Hello welcome to the H.E.V mark prototype protective systems. Initialization procedures active. Comms. Active. Advanced medical systems. Active. Advanced weaponry systems engaged. Vital signs Activated. Tactical engagement systems Activated. Environmental hazard and informational tabs Activated. Power and health monitoring systems Activated. Boot up sequence finished. Have a very safe day.\"",
-        "status": "implemented",
+        "summary": "Create three completely separate faction HUD systems (HECU, Security, Resistance), each with its own complete interface design, tab structure, and layouts. Each faction should have distinct visual identity while maintaining all existing HUD functionality.",
+        "status": "missing",
         "plannedFiles": [
-          "frontend/src/components/boot/BootSequenceOverlay.tsx",
-          "frontend/src/audio/audioBus.ts"
+          "frontend/src/components/hud/FactionHudShell.tsx",
+          "frontend/src/components/hud/HudLayout.tsx",
+          "frontend/src/state/infoSettingsStore.ts",
+          "frontend/src/tabs/SettingsTab.tsx"
         ],
-        "matchedFiles": [
-          "frontend/src/components/boot/BootSequenceOverlay.tsx",
-          "frontend/src/audio/audioBus.ts"
-        ]
+        "matchedFiles": []
       },
       {
         "id": "REQ-2",
-        "summary": "Enhance the boot sequence visuals in BootSequenceOverlay.tsx to be more informative and visually engaging, displaying system initialization stages with corresponding status indicators, progress bars, or animated elements that correlate with each voice announcement",
+        "summary": "Apply faction-specific color schemes consistently across all UI elements: HECU uses green, Security uses blue, and Resistance uses yellow-orange. Colors should affect borders, accents, progress bars, badges, buttons, and all interactive elements within each faction's HUD.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/boot/BootSequenceOverlay.tsx"
+          "frontend/src/index.css",
+          "frontend/tailwind.config.js",
+          "frontend/src/components/hud/FactionHudShell.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/index.css",
+          "frontend/tailwind.config.js"
+        ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Implement faction-specific weapon arsenals with predefined weapon sets for each faction that appear automatically based on selected faction. Additionally, provide user customization capability to modify which weapons appear for each faction.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/lib/factionWeapons.ts",
+          "frontend/src/tabs/WeaponsTab.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/tabs/SettingsTab.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useQueries.ts"
+        ]
+      },
+      {
+        "id": "REQ-4",
+        "summary": "Enhance the boot sequence with more realistic system initialization including sequential loading text, multiple initialization stages, glitch effects, and progressive system checks. Make the boot-up feel like a real computer system starting up.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/boot/BootSequenceOverlay.tsx",
+          "frontend/src/audio/audioBus.ts"
         ],
         "matchedFiles": [
           "frontend/src/components/boot/BootSequenceOverlay.tsx"
+        ]
+      },
+      {
+        "id": "REQ-5",
+        "summary": "Polish tab selection interactions with smooth transitions, better visual feedback, hover effects, and active state indicators. Make tab switching feel responsive and professional.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/hud/HudTabsBar.tsx",
+          "frontend/src/index.css",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/hud/HudTabsBar.tsx",
+          "frontend/src/index.css",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-6",
+        "summary": "Implement comprehensive quality of life features including keyboard shortcuts for all major actions, tooltips on interactive elements, quick-switch between factions, saved user preferences, and auto-hide functionality for non-critical elements.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/App.tsx",
+          "frontend/src/components/common/HudTooltip.tsx",
+          "frontend/src/components/hud/HudTabsBar.tsx",
+          "frontend/src/components/hud/AutoHideWrapper.tsx",
+          "frontend/src/state/infoSettingsStore.ts",
+          "frontend/src/tabs/SettingsTab.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/App.tsx",
+          "frontend/src/components/common/HudTooltip.tsx",
+          "frontend/src/components/hud/HudTabsBar.tsx"
+        ]
+      },
+      {
+        "id": "REQ-7",
+        "summary": "Optimize all HUD layouts for mobile devices with semi-compact responsive design that is 100% friendly for small screens. Ensure all faction HUDs, tabs, panels, and controls are fully functional and readable on mobile viewports.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/index.css",
+          "frontend/src/components/hud/HudLayout.tsx",
+          "frontend/src/components/hud/HudTabsBar.tsx",
+          "frontend/src/components/hud/Panels.tsx",
+          "frontend/tailwind.config.js"
+        ],
+        "matchedFiles": [
+          "frontend/src/index.css",
+          "frontend/src/components/hud/HudTabsBar.tsx",
+          "frontend/tailwind.config.js"
+        ]
+      },
+      {
+        "id": "REQ-8",
+        "summary": "Add professional sectioning and layout organization with small visual details like dividers, section headers, subtle spacing adjustments, and grouped related elements. Make the interface feel polished and well-organized.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/common/HudSection.tsx",
+          "frontend/src/components/common/HudDivider.tsx",
+          "frontend/src/tabs/BasicsTab.tsx",
+          "frontend/src/tabs/MedicalTab.tsx",
+          "frontend/src/tabs/TacticalTab.tsx",
+          "frontend/src/tabs/InfoTab.tsx",
+          "frontend/src/index.css"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/common/HudSection.tsx",
+          "frontend/src/components/common/HudDivider.tsx",
+          "frontend/src/index.css"
+        ]
+      },
+      {
+        "id": "REQ-9",
+        "summary": "Preserve all existing features including H.E.V Mark selection (Prototype through Mark V), Mark I glitch effects, Prototype hybrid visual style, all current tabs and panels, module toggles, and stat tracking. Ensure no functionality is lost during faction system integration.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/settings/HevMarkSelector.tsx",
+          "frontend/src/components/hud/MarkIGlitchOverlay.tsx",
+          "frontend/src/components/hud/FactionHudShell.tsx",
+          "frontend/src/hooks/useMarkFeatures.ts",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/state/suitState.ts",
+          "frontend/src/index.css"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/index.css"
         ]
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
+    "backend/migration.mo",
     "build-request.json",
-    "caffeine.lock.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/audio/audioBus.ts",
+    "frontend/src/App.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
     "frontend/src/components/boot/BootSequenceOverlay.tsx",
-    "frontend/src/config.ts",
+    "frontend/src/components/common/HudDivider.tsx",
+    "frontend/src/components/common/HudSection.tsx",
+    "frontend/src/components/common/HudTooltip.tsx",
+    "frontend/src/components/hud/HudTabsBar.tsx",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useQueries.ts",
     "frontend/src/index.css",
+    "frontend/tailwind.config.js",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

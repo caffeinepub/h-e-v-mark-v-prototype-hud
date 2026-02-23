@@ -1,32 +1,38 @@
 import { create } from 'zustand';
 
-export type LogEntryType = 'system' | 'module' | 'command' | 'warning' | 'error' | 'hazard';
+type LogType = 'system' | 'module' | 'command' | 'warning' | 'error' | 'hazard' | 'radio' | 'medical';
 
-export interface LogEntry {
+interface LogEntry {
   id: string;
-  type: LogEntryType;
+  timestamp: string;
+  type: LogType;
   message: string;
-  timestamp: Date;
 }
 
 interface SystemLogState {
   entries: LogEntry[];
-  addEntry: (type: LogEntryType, message: string) => void;
-  clear: () => void;
+  addEntry: (type: LogType, message: string) => void;
+  clearLog: () => void;
+  reset: () => void;
 }
 
 export const useLogStore = create<SystemLogState>((set) => ({
   entries: [],
-  addEntry: (type, message) => {
-    const entry: LogEntry = {
-      id: `${Date.now()}-${Math.random()}`,
-      type,
-      message,
-      timestamp: new Date(),
-    };
+
+  addEntry: (type, message) =>
     set((state) => ({
-      entries: [...state.entries, entry],
-    }));
-  },
-  clear: () => set({ entries: [] }),
+      entries: [
+        {
+          id: `${Date.now()}-${Math.random()}`,
+          timestamp: new Date().toLocaleTimeString(),
+          type,
+          message,
+        },
+        ...state.entries,
+      ].slice(0, 100), // Keep only last 100 entries
+    })),
+
+  clearLog: () => set({ entries: [] }),
+
+  reset: () => set({ entries: [] }),
 }));

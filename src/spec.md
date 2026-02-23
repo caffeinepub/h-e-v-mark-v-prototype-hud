@@ -1,12 +1,17 @@
 # Specification
 
 ## Summary
-**Goal:** Add female voice narration and enhanced visuals to the H.E.V suit boot sequence.
+**Goal:** Create three faction-specific HUD systems (HECU, Security, Resistance) with complete visual separation, enhanced polish, and mobile optimization.
 
 **Planned changes:**
-- Add female text-to-speech voice narration that plays during boot sequence with the provided script about system initialization
-- Enhance boot sequence visuals with animated system initialization stages, status indicators, and progress feedback
-- Synchronize visual elements with voice narration timing
-- Respect existing voiceEnabled setting and reduced-motion preferences
+- Create three separate faction HUD layouts with distinct routing and view components
+- Apply faction-specific color schemes (HECU green, Security blue, Resistance yellow-orange) across all UI elements
+- Implement faction-specific weapon arsenals with user customization capability
+- Enhance boot sequence with sequential loading text, glitch effects, and progressive system checks
+- Polish tab selection with smooth transitions, hover effects, and active state indicators
+- Add comprehensive keyboard shortcuts, tooltips, quick-faction switching, and auto-hide features
+- Optimize all layouts for mobile devices with responsive semi-compact design
+- Add professional sectioning with dividers, headers, and grouped elements
+- Preserve all existing features including H.E.V Mark selection, glitch effects, and all current tabs
 
-**User-visible outcome:** Users will experience an immersive boot sequence with female voice narration announcing system activations alongside enhanced animated visuals showing each initialization stage, creating a more polished and informative startup experience.
+**User-visible outcome:** Users can select from three completely distinct faction HUDs (HECU, Security, Resistance), each with unique visual identity, color schemes, and weapon sets. The interface features polished animations, enhanced boot sequences, comprehensive keyboard shortcuts, and full mobile responsiveness while maintaining all original H.E.V Mark functionality.

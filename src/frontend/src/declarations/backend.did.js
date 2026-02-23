@@ -8,6 +8,99 @@
 
 import { IDL } from '@icp-sdk/core/candid';
 
+export const SupportSystems = IDL.Record({
+  'communication' : IDL.Text,
+  'navigation' : IDL.Text,
+  'sensors' : IDL.Text,
+  'automation' : IDL.Text,
+});
+export const EngineSpecs = IDL.Record({
+  'powerOutput' : IDL.Nat,
+  'transmission' : IDL.Text,
+  'torque' : IDL.Nat,
+  'engineType' : IDL.Text,
+});
+export const TacticalCapabilities = IDL.Record({
+  'speed' : IDL.Nat,
+  'acceleration' : IDL.Nat,
+  'durability' : IDL.Nat,
+  'handling' : IDL.Text,
+});
+export const VehicleLore = IDL.Record({
+  'historicalUse' : IDL.Text,
+  'manufacturer' : IDL.Text,
+  'notableUpgrades' : IDL.Text,
+  'purpose' : IDL.Text,
+});
+export const DamageResistance = IDL.Record({
+  'armorStrength' : IDL.Nat,
+  'resistances' : IDL.Record({
+    'fire' : IDL.Nat,
+    'electrical' : IDL.Nat,
+    'bioHazards' : IDL.Nat,
+    'radiation' : IDL.Nat,
+  }),
+});
+export const ComprehensiveVehicleInfo = IDL.Record({
+  'supportSystems' : SupportSystems,
+  'engineSpecs' : EngineSpecs,
+  'tacticalCapabilities' : TacticalCapabilities,
+  'fuel' : IDL.Nat,
+  'lore' : VehicleLore,
+  'name' : IDL.Text,
+  'damageResistance' : DamageResistance,
+  'speed' : IDL.Nat,
+  'diagnostics' : IDL.Text,
+  'integrity' : IDL.Nat,
+});
+export const Faction = IDL.Record({
+  'defaultWeapons' : IDL.Vec(IDL.Text),
+  'name' : IDL.Text,
+  'description' : IDL.Text,
+});
+export const WeaponView = IDL.Record({
+  'damage' : IDL.Nat,
+  'lore' : IDL.Text,
+  'name' : IDL.Text,
+  'description' : IDL.Text,
+  'weaponType' : IDL.Text,
+  'ammoCapacity' : IDL.Nat,
+  'fireRate' : IDL.Nat,
+  'accuracy' : IDL.Nat,
+});
+export const FeatureSet = IDL.Record({
+  'communication' : IDL.Bool,
+  'auxPower' : IDL.Bool,
+  'navigationSystem' : IDL.Bool,
+  'moduleSync' : IDL.Bool,
+  'defibrillator' : IDL.Bool,
+  'weaponSystem' : IDL.Bool,
+  'hazardProtection' : IDL.Bool,
+  'healthMonitoring' : IDL.Bool,
+  'advancedMedical' : IDL.Bool,
+  'lifeSupportTimeout' : IDL.Bool,
+  'vehicleInterface' : IDL.Bool,
+  'radiationShield' : IDL.Bool,
+  'armorShielding' : IDL.Bool,
+  'shieldBoost' : IDL.Bool,
+  'longJumpModule' : IDL.Bool,
+  'hazardSystem' : IDL.Bool,
+});
+export const settingsView = IDL.Record({
+  'currentMark' : IDL.Nat,
+  'availableFeatures' : FeatureSet,
+});
+export const ModesView = IDL.Record({
+  'halfLife2Active' : IDL.Bool,
+  'currentMode' : IDL.Text,
+  'blackMesaSecurityActive' : IDL.Bool,
+  'hecuActive' : IDL.Bool,
+});
+export const GravityGunStatusView = IDL.Record({
+  'mode' : IDL.Text,
+  'isActive' : IDL.Bool,
+  'chargeLevel' : IDL.Nat,
+});
 export const ModuleToggles = IDL.Record({
   'helmet' : IDL.Bool,
   'moduleSync' : IDL.Bool,
@@ -23,6 +116,15 @@ export const ModuleToggles = IDL.Record({
 
 export const idlService = IDL.Service({
   'addWarningSensor' : IDL.Func([IDL.Nat, IDL.Text], [], []),
+  'changeMark' : IDL.Func([IDL.Nat], [], []),
+  'chargeGravityGun' : IDL.Func([], [], []),
+  'customizeFactionWeapons' : IDL.Func([IDL.Text, IDL.Vec(IDL.Text)], [], []),
+  'getAllComprehensiveVehicleInfo' : IDL.Func(
+      [],
+      [IDL.Vec(ComprehensiveVehicleInfo)],
+      ['query'],
+    ),
+  'getAllFactions' : IDL.Func([], [IDL.Vec(Faction)], ['query']),
   'getAllHazardStatuses' : IDL.Func(
       [],
       [
@@ -36,20 +138,35 @@ export const idlService = IDL.Service({
       ],
       [],
     ),
+  'getAllWeapons' : IDL.Func([], [IDL.Vec(WeaponView)], ['query']),
   'getBioStatus' : IDL.Func([], [IDL.Text], []),
   'getCommunicationInfo' : IDL.Func(
       [],
       [IDL.Bool, IDL.Text, IDL.Text, IDL.Bool],
       [],
     ),
+  'getComprehensiveVehicleInfo' : IDL.Func(
+      [IDL.Text],
+      [ComprehensiveVehicleInfo],
+      ['query'],
+    ),
+  'getCurrentFaction' : IDL.Func([], [IDL.Text], ['query']),
+  'getCurrentMark' : IDL.Func([], [settingsView], ['query']),
+  'getCurrentMode' : IDL.Func([], [ModesView], ['query']),
   'getElectricalStatus' : IDL.Func([], [IDL.Text], []),
   'getEnvProtectionInfo' : IDL.Func(
       [],
       [IDL.Bool, IDL.Nat, IDL.Nat, IDL.Text],
       [],
     ),
+  'getFactionWeapons' : IDL.Func(
+      [IDL.Text],
+      [IDL.Opt(IDL.Vec(IDL.Text))],
+      ['query'],
+    ),
   'getFireStatus' : IDL.Func([], [IDL.Text], []),
   'getGasStatus' : IDL.Func([], [IDL.Text], []),
+  'getGravityGunStatus' : IDL.Func([], [GravityGunStatusView], ['query']),
   'getHazardData' : IDL.Func(
       [],
       [IDL.Nat, IDL.Nat, IDL.Nat, IDL.Nat, IDL.Nat],
@@ -76,11 +193,16 @@ export const idlService = IDL.Service({
       [IDL.Vec(IDL.Tuple(IDL.Nat, IDL.Text))],
       ['query'],
     ),
+  'getWeapon' : IDL.Func([IDL.Text], [IDL.Opt(WeaponView)], ['query']),
+  'getWeaponsCount' : IDL.Func([], [IDL.Nat], ['query']),
   'removeWarningSensor' : IDL.Func([IDL.Nat], [], []),
   'setErrorState' : IDL.Func([IDL.Text], [], []),
   'setSuitState' : IDL.Func([IDL.Text, IDL.Text], [], []),
   'setTemperature' : IDL.Func([IDL.Nat], [], []),
+  'switchFaction' : IDL.Func([IDL.Text], [], []),
   'switchHudDisplay' : IDL.Func([IDL.Text], [], []),
+  'switchMode' : IDL.Func([IDL.Text], [], []),
+  'toggleGravityGun' : IDL.Func([], [], []),
   'toggleHazard' : IDL.Func([IDL.Text, IDL.Nat], [], []),
   'toggleLifeSupportSystem' : IDL.Func([], [], []),
   'toggleModule' : IDL.Func([IDL.Text], [], []),
@@ -90,6 +212,99 @@ export const idlService = IDL.Service({
 export const idlInitArgs = [];
 
 export const idlFactory = ({ IDL }) => {
+  const SupportSystems = IDL.Record({
+    'communication' : IDL.Text,
+    'navigation' : IDL.Text,
+    'sensors' : IDL.Text,
+    'automation' : IDL.Text,
+  });
+  const EngineSpecs = IDL.Record({
+    'powerOutput' : IDL.Nat,
+    'transmission' : IDL.Text,
+    'torque' : IDL.Nat,
+    'engineType' : IDL.Text,
+  });
+  const TacticalCapabilities = IDL.Record({
+    'speed' : IDL.Nat,
+    'acceleration' : IDL.Nat,
+    'durability' : IDL.Nat,
+    'handling' : IDL.Text,
+  });
+  const VehicleLore = IDL.Record({
+    'historicalUse' : IDL.Text,
+    'manufacturer' : IDL.Text,
+    'notableUpgrades' : IDL.Text,
+    'purpose' : IDL.Text,
+  });
+  const DamageResistance = IDL.Record({
+    'armorStrength' : IDL.Nat,
+    'resistances' : IDL.Record({
+      'fire' : IDL.Nat,
+      'electrical' : IDL.Nat,
+      'bioHazards' : IDL.Nat,
+      'radiation' : IDL.Nat,
+    }),
+  });
+  const ComprehensiveVehicleInfo = IDL.Record({
+    'supportSystems' : SupportSystems,
+    'engineSpecs' : EngineSpecs,
+    'tacticalCapabilities' : TacticalCapabilities,
+    'fuel' : IDL.Nat,
+    'lore' : VehicleLore,
+    'name' : IDL.Text,
+    'damageResistance' : DamageResistance,
+    'speed' : IDL.Nat,
+    'diagnostics' : IDL.Text,
+    'integrity' : IDL.Nat,
+  });
+  const Faction = IDL.Record({
+    'defaultWeapons' : IDL.Vec(IDL.Text),
+    'name' : IDL.Text,
+    'description' : IDL.Text,
+  });
+  const WeaponView = IDL.Record({
+    'damage' : IDL.Nat,
+    'lore' : IDL.Text,
+    'name' : IDL.Text,
+    'description' : IDL.Text,
+    'weaponType' : IDL.Text,
+    'ammoCapacity' : IDL.Nat,
+    'fireRate' : IDL.Nat,
+    'accuracy' : IDL.Nat,
+  });
+  const FeatureSet = IDL.Record({
+    'communication' : IDL.Bool,
+    'auxPower' : IDL.Bool,
+    'navigationSystem' : IDL.Bool,
+    'moduleSync' : IDL.Bool,
+    'defibrillator' : IDL.Bool,
+    'weaponSystem' : IDL.Bool,
+    'hazardProtection' : IDL.Bool,
+    'healthMonitoring' : IDL.Bool,
+    'advancedMedical' : IDL.Bool,
+    'lifeSupportTimeout' : IDL.Bool,
+    'vehicleInterface' : IDL.Bool,
+    'radiationShield' : IDL.Bool,
+    'armorShielding' : IDL.Bool,
+    'shieldBoost' : IDL.Bool,
+    'longJumpModule' : IDL.Bool,
+    'hazardSystem' : IDL.Bool,
+  });
+  const settingsView = IDL.Record({
+    'currentMark' : IDL.Nat,
+    'availableFeatures' : FeatureSet,
+  });
+  const ModesView = IDL.Record({
+    'halfLife2Active' : IDL.Bool,
+    'currentMode' : IDL.Text,
+    'blackMesaSecurityActive' : IDL.Bool,
+    'hecuActive' : IDL.Bool,
+  });
+  const GravityGunStatusView = IDL.Record({
+    'mode' : IDL.Text,
+    'isActive' : IDL.Bool,
+    'chargeLevel' : IDL.Nat,
+  });
   const ModuleToggles = IDL.Record({
     'helmet' : IDL.Bool,
     'moduleSync' : IDL.Bool,
@@ -105,6 +320,15 @@ export const idlFactory = ({ IDL }) => {
   
   return IDL.Service({
     'addWarningSensor' : IDL.Func([IDL.Nat, IDL.Text], [], []),
+    'changeMark' : IDL.Func([IDL.Nat], [], []),
+    'chargeGravityGun' : IDL.Func([], [], []),
+    'customizeFactionWeapons' : IDL.Func([IDL.Text, IDL.Vec(IDL.Text)], [], []),
+    'getAllComprehensiveVehicleInfo' : IDL.Func(
+        [],
+        [IDL.Vec(ComprehensiveVehicleInfo)],
+        ['query'],
+      ),
+    'getAllFactions' : IDL.Func([], [IDL.Vec(Faction)], ['query']),
     'getAllHazardStatuses' : IDL.Func(
         [],
         [
@@ -118,20 +342,35 @@ export const idlFactory = ({ IDL }) => {
         ],
         [],
       ),
+    'getAllWeapons' : IDL.Func([], [IDL.Vec(WeaponView)], ['query']),
     'getBioStatus' : IDL.Func([], [IDL.Text], []),
     'getCommunicationInfo' : IDL.Func(
         [],
         [IDL.Bool, IDL.Text, IDL.Text, IDL.Bool],
         [],
       ),
+    'getComprehensiveVehicleInfo' : IDL.Func(
+        [IDL.Text],
+        [ComprehensiveVehicleInfo],
+        ['query'],
+      ),
+    'getCurrentFaction' : IDL.Func([], [IDL.Text], ['query']),
+    'getCurrentMark' : IDL.Func([], [settingsView], ['query']),
+    'getCurrentMode' : IDL.Func([], [ModesView], ['query']),
     'getElectricalStatus' : IDL.Func([], [IDL.Text], []),
     'getEnvProtectionInfo' : IDL.Func(
         [],
         [IDL.Bool, IDL.Nat, IDL.Nat, IDL.Text],
         [],
       ),
+    'getFactionWeapons' : IDL.Func(
+        [IDL.Text],
+        [IDL.Opt(IDL.Vec(IDL.Text))],
+        ['query'],
+      ),
     'getFireStatus' : IDL.Func([], [IDL.Text], []),
     'getGasStatus' : IDL.Func([], [IDL.Text], []),
+    'getGravityGunStatus' : IDL.Func([], [GravityGunStatusView], ['query']),
     'getHazardData' : IDL.Func(
         [],
         [IDL.Nat, IDL.Nat, IDL.Nat, IDL.Nat, IDL.Nat],
@@ -162,11 +401,16 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(IDL.Tuple(IDL.Nat, IDL.Text))],
         ['query'],
       ),
+    'getWeapon' : IDL.Func([IDL.Text], [IDL.Opt(WeaponView)], ['query']),
+    'getWeaponsCount' : IDL.Func([], [IDL.Nat], ['query']),
     'removeWarningSensor' : IDL.Func([IDL.Nat], [], []),
     'setErrorState' : IDL.Func([IDL.Text], [], []),
     'setSuitState' : IDL.Func([IDL.Text, IDL.Text], [], []),
     'setTemperature' : IDL.Func([IDL.Nat], [], []),
+    'switchFaction' : IDL.Func([IDL.Text], [], []),
     'switchHudDisplay' : IDL.Func([IDL.Text], [], []),
+    'switchMode' : IDL.Func([IDL.Text], [], []),
+    'toggleGravityGun' : IDL.Func([], [], []),
     'toggleHazard' : IDL.Func([IDL.Text, IDL.Nat], [], []),
     'toggleLifeSupportSystem' : IDL.Func([], [], []),
     'toggleModule' : IDL.Func([IDL.Text], [], []),

@@ -1,45 +1,325 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Add female voice narration and enhanced visuals to boot sequence",
+  "title": "Create three complete faction-specific HUDs with enhanced polish and mobile optimization",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Add female text-to-speech voice narration to the boot sequence that speaks the provided script with synchronization to boot stages",
+      "summary": "Create three completely separate faction HUD systems (HECU, Security, Resistance), each with its own complete interface design, tab structure, and layouts",
       "acceptanceCriteria": [
-        "Female voice plays automatically during boot sequence",
-        "Voice narration matches the provided script exactly",
-        "Voice playback is synchronized with boot sequence stages",
-        "Voice respects the existing voiceEnabled setting from infoSettingsState"
+        "Three distinct faction HUD layouts exist with separate routing/view components",
+        "Each faction maintains all core tabs (Basics, Hazards, Medical, Tactical, Weapons, etc.)",
+        "Faction selection persists in settings and loads the correct HUD on app start",
+        "Visual identity is consistent throughout each faction's interface"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/boot/BootSequenceOverlay.tsx",
-          "operation": "modify",
-          "description": "Integrate female text-to-speech voice narration into the boot sequence. Add speech synthesis using the Web Speech API with a female voice, speaking the script: 'Hello welcome to the H.E.V mark prototype protective systems. Initialization procedures active. Comms. Active. Advanced medical systems. Active. Advanced weaponry systems engaged. Vital signs Activated. Tactical engagement systems Activated. Environmental hazard and informational tabs Activated. Power and health monitoring systems Activated. Boot up sequence finished. Have a very safe day.' Synchronize voice playback with the existing boot stage animations. Gate voice playback on the voiceEnabled setting from infoSettingsState. Handle voice initialization, utterance queueing, and cleanup on component unmount."
+          "path": "frontend/src/components/hud/FactionHudShell.tsx",
+          "operation": "create",
+          "description": "Create faction-specific HUD shell component that wraps all tabs and applies faction-specific layout structures. This component will receive the selected faction from settings and conditionally render HECU, Security, or Resistance layouts with their unique visual structures while maintaining all existing tab functionality."
         },
         {
-          "path": "frontend/src/audio/audioBus.ts",
+          "path": "frontend/src/components/hud/HudLayout.tsx",
           "operation": "modify",
-          "description": "Add a helper function to support speech synthesis voice playback with voice selection preference for female voices. Implement voice initialization that respects the existing voiceEnabled setting and integrates with the audio unlock flow. Provide an interface for queuing and controlling speech utterances that can be used by boot sequence and other components."
+          "description": "Integrate FactionHudShell into the main HUD layout to route between faction-specific interfaces. Update the component to read faction selection from infoSettingsStore and pass it to FactionHudShell, ensuring faction choice persists across sessions."
+        },
+        {
+          "path": "frontend/src/state/infoSettingsStore.ts",
+          "operation": "modify",
+          "description": "Add faction selection state (selectedFaction: 'HECU' | 'Security' | 'Resistance') with persistence. Include actions to switch factions and ensure the selection is restored on app initialization."
+        },
+        {
+          "path": "frontend/src/tabs/SettingsTab.tsx",
+          "operation": "modify",
+          "description": "Add faction selector UI control in the settings tab that allows users to choose between HECU, Security, and Resistance. Wire the selector to infoSettingsStore actions and display the current faction selection."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Enhance the boot sequence visuals to display system initialization stages with status indicators, progress bars, and animated elements synchronized with voice announcements",
+      "summary": "Apply faction-specific color schemes consistently across all UI elements (HECU green, Security blue, Resistance yellow-orange)",
       "acceptanceCriteria": [
-        "Boot sequence displays distinct visual stages for each system initialization step",
-        "Visual elements animate smoothly and provide clear feedback about initialization progress",
-        "Visuals are synchronized with voice narration timing",
-        "Enhanced visuals maintain consistency with existing HUD aesthetic and color scheme",
-        "Boot sequence remains performant and does not cause layout shifts or visual glitches"
+        "HECU HUD uses green color scheme throughout all components",
+        "Security HUD uses blue color scheme throughout all components",
+        "Resistance HUD uses yellow-orange color scheme throughout all components",
+        "Color theming applies to borders, progress bars, badges, buttons, and highlights"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Define faction-specific CSS custom properties for HECU (green tones), Security (blue tones), and Resistance (yellow-orange tones). Add faction-scoped class selectors (.faction-hecu, .faction-security, .faction-resistance) that override standard color variables for borders, accents, progress bars, badges, buttons, and interactive elements."
+        },
+        {
+          "path": "frontend/tailwind.config.js",
+          "operation": "modify",
+          "description": "Extend Tailwind theme with faction-specific color utilities (hecu, security, resistance) using OKLCH color space. Ensure these colors can be used throughout components for consistent theming."
+        },
+        {
+          "path": "frontend/src/components/hud/FactionHudShell.tsx",
+          "operation": "modify",
+          "description": "Apply faction-specific CSS classes to the root HUD container based on selected faction, ensuring all child components inherit faction color theming through CSS custom properties."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Implement faction-specific weapon arsenals with predefined weapon sets and user customization capability",
+      "acceptanceCriteria": [
+        "HECU faction displays military-grade weapons (MP5, SPAS-12, M4A1, explosives)",
+        "Security faction displays security equipment (9mm Pistol, MP5, shotgun, stun stick)",
+        "Resistance faction displays improvised/rebel weapons (Pulse Rifle, Crossbow, SMG, grenades)",
+        "Users can customize weapon lists per faction in settings",
+        "Weapon data persists per faction selection"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/lib/factionWeapons.ts",
+          "operation": "create",
+          "description": "Create faction weapon configuration library defining default weapon sets for HECU (military-grade: MP5, SPAS-12, M4A1, explosives), Security (security equipment: 9mm Pistol, MP5, shotgun, stun stick), and Resistance (improvised: Pulse Rifle, Crossbow, SMG, grenades). Export lookup functions to retrieve weapons by faction."
+        },
+        {
+          "path": "frontend/src/tabs/WeaponsTab.tsx",
+          "operation": "modify",
+          "description": "Update WeaponsTab to filter and display weapons based on selected faction using faction weapon configuration. Wire in the useGetFactionWeapons query hook to fetch customized weapon lists and fall back to default faction sets when no customization exists."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add useGetFactionWeapons query hook that calls backend.getFactionWeapons(faction) and returns the weapon list. Add useCustomizeFactionWeapons mutation hook that calls backend.customizeFactionWeapons(faction, weaponList) to persist user customizations."
+        },
+        {
+          "path": "frontend/src/tabs/SettingsTab.tsx",
+          "operation": "modify",
+          "description": "Add faction weapon customization UI in settings tab allowing users to add/remove weapons from their faction's arsenal. Display current weapons for selected faction with checkboxes or multi-select, and use useCustomizeFactionWeapons mutation to save changes."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Enhance boot sequence with more realistic system initialization including sequential loading, glitch effects, and progressive system checks",
+      "acceptanceCriteria": [
+        "Boot sequence displays multiple initialization stages with descriptive text",
+        "Systems load sequentially with visual progression indicators",
+        "Glitch effects appear during boot for added realism",
+        "Boot sequence includes faction-specific initialization messages",
+        "Audio accompanies boot sequence stages"
       ],
       "file_operations": [
         {
           "path": "frontend/src/components/boot/BootSequenceOverlay.tsx",
           "operation": "modify",
-          "description": "Enhance the boot sequence with informative and visually engaging system initialization stages. Add distinct visual stages for each system mentioned in the voice script: Initialization, Comms, Advanced Medical, Weaponry, Vital Signs, Tactical Engagement, Environmental/Informational tabs, and Power/Health Monitoring. Implement animated status indicators (checkmarks, progress bars, or pulse effects) for each stage that animate in as the corresponding voice line plays. Use the existing HUD color scheme from CSS variables and maintain consistency with the current HEV aesthetic. Add progress percentage display. Ensure animations respect the prefers-reduced-motion media query. Synchronize visual stage transitions with voice narration timing using the same timing logic. Maintain smooth fade-out and completion callback behavior."
+          "description": "Expand boot sequence with additional initialization stages including BIOS checks, driver loading, system diagnostics, module sync, and faction-specific subsystem initialization. Add sequential loading text for each stage with timing delays. Integrate glitch effects (flicker, scanline, color shift) during early boot stages. Include faction-specific initialization messages based on selected faction from settings."
+        },
+        {
+          "path": "frontend/src/audio/audioBus.ts",
+          "operation": "modify",
+          "description": "Add support for multi-stage boot audio sequences allowing different sounds to play at specific boot stages (e.g., system startup beep, initialization hum, subsystem online confirmation)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Polish tab selection interactions with smooth transitions, better visual feedback, hover effects, and active state indicators",
+      "acceptanceCriteria": [
+        "Tab hover states show clear visual feedback",
+        "Active tab has distinct styling from inactive tabs",
+        "Tab transitions are smooth with CSS animations",
+        "Tab switching triggers appropriate UI sound effects",
+        "Keyboard navigation (1-9 keys) works with visual feedback"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/hud/HudTabsBar.tsx",
+          "operation": "modify",
+          "description": "Enhance tab button styles with distinct hover, active, and focus states. Add smooth CSS transitions for background, border, and color changes. Ensure active tab has a prominent visual indicator (e.g., border highlight, background glow) that matches faction colors. Add visual feedback for keyboard shortcuts by briefly highlighting the tab when activated via number keys."
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Add CSS animation keyframes for tab transitions including fade-in, slide effects, and glow pulses. Define hover and active state styles with smooth transitions respecting reduced motion preferences."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Ensure tab switching via keyboard shortcuts (1-9 keys) triggers uiSfx.playTabSwitch() sound effect and applies brief visual feedback to the activated tab."
+        }
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "summary": "Implement comprehensive quality of life features including keyboard shortcuts, tooltips, quick-switch, saved preferences, and auto-hide functionality",
+      "acceptanceCriteria": [
+        "Keyboard shortcuts work for faction switching (e.g., Ctrl+1/2/3)",
+        "Tooltips appear on hover for buttons, badges, and controls",
+        "User preferences persist across sessions (localStorage/settings)",
+        "Quick-faction switcher accessible from settings or keyboard",
+        "Auto-hide feature for secondary UI elements when inactive"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Add keyboard shortcuts for quick faction switching (Ctrl+1 for HECU, Ctrl+2 for Security, Ctrl+3 for Resistance). Implement event listener for these shortcuts that updates infoSettingsStore and plays appropriate sound effects."
+        },
+        {
+          "path": "frontend/src/components/common/HudTooltip.tsx",
+          "operation": "create",
+          "description": "Create reusable HudTooltip component that wraps interactive elements and displays contextual help text on hover. Use shadcn/ui Tooltip primitives with HUD-specific styling including faction-themed backgrounds and borders."
+        },
+        {
+          "path": "frontend/src/components/hud/HudTabsBar.tsx",
+          "operation": "modify",
+          "description": "Wrap tab buttons with HudTooltip components showing tab name and keyboard shortcut hint (e.g., 'Basics (1)'). Ensure tooltips respect reduced motion and touch device interactions."
+        },
+        {
+          "path": "frontend/src/components/hud/AutoHideWrapper.tsx",
+          "operation": "create",
+          "description": "Create AutoHideWrapper component that automatically hides secondary UI elements (e.g., non-critical badges, decorative indicators) after a period of inactivity. Use pointer/touch tracking to detect user activity and apply fade-out transitions with reduced motion support."
+        },
+        {
+          "path": "frontend/src/state/infoSettingsStore.ts",
+          "operation": "modify",
+          "description": "Ensure all user preferences (faction, display mode, voice settings, UI scale, operator name) persist via localStorage using Zustand persist middleware. Verify preferences are restored on app initialization."
+        },
+        {
+          "path": "frontend/src/tabs/SettingsTab.tsx",
+          "operation": "modify",
+          "description": "Add quick-faction switcher buttons in settings tab for rapid faction changes. Display keyboard shortcut hints next to faction options. Include tooltips on all setting controls explaining their function."
+        }
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "summary": "Optimize all HUD layouts for mobile devices with semi-compact responsive design that is 100% friendly for small screens",
+      "acceptanceCriteria": [
+        "All faction HUDs render correctly on mobile devices (320px+)",
+        "Touch targets are appropriately sized for mobile interaction",
+        "Text remains readable without zooming on small screens",
+        "Layouts adapt responsively without horizontal scrolling",
+        "Mobile-specific optimizations for tab navigation and panels"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Add mobile-first responsive typography using fluid type scales and viewport-relative units. Define breakpoints for small screens (320px-640px) with reduced padding, compact spacing, and mobile-optimized font sizes. Ensure all text remains readable on small viewports without zooming."
+        },
+        {
+          "path": "frontend/src/components/hud/HudLayout.tsx",
+          "operation": "modify",
+          "description": "Implement responsive layout adjustments for mobile viewports including stacked vertical layouts, reduced sidebar widths, and collapsible sections. Use CSS Grid and Flexbox with mobile-friendly breakpoints to prevent horizontal scrolling."
+        },
+        {
+          "path": "frontend/src/components/hud/HudTabsBar.tsx",
+          "operation": "modify",
+          "description": "Optimize tab bar for mobile with touch-friendly button sizes (min 44x44px touch targets), horizontal scrolling for overflow tabs, and swipe gesture support. Consider vertical tab layout option for narrow screens."
+        },
+        {
+          "path": "frontend/src/components/hud/Panels.tsx",
+          "operation": "modify",
+          "description": "Adjust StatPanel and MeterPanel components for mobile with compact layouts, stacked orientations on small screens, and touch-optimized interactive elements. Ensure progress bars and meters remain readable at reduced sizes."
+        },
+        {
+          "path": "frontend/tailwind.config.js",
+          "operation": "modify",
+          "description": "Define mobile-specific spacing utilities, compact padding classes, and responsive breakpoints optimized for small screens. Add utilities for touch-target sizing and mobile-friendly layouts."
+        }
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "summary": "Add professional sectioning and layout organization with dividers, section headers, spacing adjustments, and grouped elements",
+      "acceptanceCriteria": [
+        "Panels use section headers to group related content",
+        "Visual dividers separate distinct sections within tabs",
+        "Related controls are grouped with appropriate spacing",
+        "Consistent padding and margins throughout interface",
+        "Professional visual hierarchy with clear information organization"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/common/HudSection.tsx",
+          "operation": "create",
+          "description": "Create reusable HudSection component for grouping related content with optional section headers, dividers, and consistent spacing. Include props for title, collapsible behavior, and faction-themed styling."
+        },
+        {
+          "path": "frontend/src/components/common/HudDivider.tsx",
+          "operation": "create",
+          "description": "Create HudDivider component for visual separation between sections with faction-specific colors and optional decorative elements (e.g., corner accents, gradient lines)."
+        },
+        {
+          "path": "frontend/src/tabs/BasicsTab.tsx",
+          "operation": "modify",
+          "description": "Refactor BasicsTab to use HudSection components for grouping stat panels and hazard displays. Add section headers (e.g., 'Core Systems', 'Environmental Status') and dividers between major sections."
+        },
+        {
+          "path": "frontend/src/tabs/MedicalTab.tsx",
+          "operation": "modify",
+          "description": "Organize MedicalTab content using HudSection components with clear headers for 'Vital Signs', 'Trauma Assessment', and 'Medical Systems'. Add dividers between medical readouts and interactive panels."
+        },
+        {
+          "path": "frontend/src/tabs/TacticalTab.tsx",
+          "operation": "modify",
+          "description": "Structure TacticalTab with HudSection components grouping radar, threat assessment, quick controls, and mission briefing into distinct sections with headers and dividers."
+        },
+        {
+          "path": "frontend/src/tabs/InfoTab.tsx",
+          "operation": "modify",
+          "description": "Apply HudSection components throughout InfoTab to organize operator profile, subsystems, diagnostics, and console sections with clear headers and visual separation."
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Define consistent spacing utilities for sections including standard padding, margin, and gap values. Add section header typography styles with appropriate hierarchy (e.g., uppercase labels, increased letter-spacing)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "summary": "Preserve all existing features including H.E.V Mark selection, glitch effects, tabs, modules, and stat tracking",
+      "acceptanceCriteria": [
+        "H.E.V Mark selector remains functional with all marks available",
+        "Mark I glitch effects still activate for Mark I suits",
+        "Prototype hybrid visual styling is preserved",
+        "All existing tabs remain accessible (Basics, Hazards, HEV, Medical, Tactical, Weapons, Utilities, Vehicles, Security, Military, Info, Settings)",
+        "Module states, stats, and backend queries continue working as before"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/settings/HevMarkSelector.tsx",
+          "operation": "modify",
+          "description": "Ensure H.E.V Mark selector remains fully functional and accessible in settings. Verify all marks (Prototype, Mark I-V) are available and that faction system integration does not interfere with mark selection. Maintain separate visual style and functional profile options."
+        },
+        {
+          "path": "frontend/src/components/hud/MarkIGlitchOverlay.tsx",
+          "operation": "modify",
+          "description": "Verify Mark I glitch effects continue to render correctly when Mark I is selected, ensuring faction-specific styling does not override or disable glitch animations. Test compatibility with all three faction themes."
+        },
+        {
+          "path": "frontend/src/components/hud/FactionHudShell.tsx",
+          "operation": "modify",
+          "description": "Ensure faction HUD system preserves all existing tabs (Basics, Hazards, HEV, Medical, Tactical, Weapons, Utilities, Vehicles, Security, Military, Info, Settings) and does not remove or hide any tabs. Maintain tab availability rules based on Mark feature sets."
+        },
+        {
+          "path": "frontend/src/hooks/useMarkFeatures.ts",
+          "operation": "modify",
+          "description": "Verify mark feature detection continues to work correctly with faction system, ensuring feature gating for tabs and modules remains functional across all factions."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Ensure all existing query hooks (useGetStats, useGetModuleStates, useGetHazards, etc.) continue to function correctly with faction system. Verify backend queries are not disrupted by faction changes."
+        },
+        {
+          "path": "frontend/src/state/suitState.ts",
+          "operation": "modify",
+          "description": "Verify suit state store continues to track health, armor, aux, ammo, hazards, module toggles, and damage events correctly across faction changes. Ensure state persistence works as expected."
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Preserve Prototype hybrid styling (gradient borders, scanlines) and Mark I glitch animation keyframes. Ensure faction color schemes do not override these special visual styles when those marks are selected."
         }
       ]
     }

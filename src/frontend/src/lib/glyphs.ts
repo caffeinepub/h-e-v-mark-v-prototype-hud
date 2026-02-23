@@ -1,17 +1,17 @@
 // HUD-safe monochrome glyph symbols for hazards and indicators
-// Using Unicode symbols with text presentation to avoid multi-color emoji rendering
+// Using simple ASCII and Unicode symbols with text presentation to avoid multi-color emoji rendering
 
 export const GLYPHS = {
-  // Hazard symbols
+  // Hazard symbols - monochrome flat
   fire: '▲',           // Triangle for fire/temperature
-  bio: '☣\uFE0E',      // Biohazard symbol (text variant)
-  radiation: '☢\uFE0E', // Radiation symbol (text variant)
-  electrical: '⚡\uFE0E', // Lightning bolt (text variant)
+  bio: '☣',            // Biohazard symbol
+  radiation: '☢',      // Radiation symbol
+  electrical: '⚡',    // Lightning bolt
   gas: '◆',            // Diamond for gas/vapor
   
   // Status indicators
-  warning: '⚠\uFE0E',
-  critical: '✖\uFE0E',
+  warning: '⚠',
+  critical: '✖',
   nominal: '●',
   active: '◉',
   

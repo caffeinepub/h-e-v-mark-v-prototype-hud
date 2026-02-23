@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { useSuitStore } from '../../state/suitState';
+import { useMarkFeatures } from '../../hooks/useMarkFeatures';
 import { StatPanel } from './Panels';
 
 interface TacticalHudShellProps {
@@ -8,6 +9,12 @@ interface TacticalHudShellProps {
 
 export function TacticalHudShell({ children }: TacticalHudShellProps) {
   const { stats } = useSuitStore();
+  const markFeatures = useMarkFeatures();
+
+  // Mark I and II cannot use tactical mode
+  if (!markFeatures.tabs.tactical) {
+    return <>{children}</>;
+  }
 
   return (
     <div className="tactical-hud-shell">
@@ -43,20 +50,24 @@ export function TacticalHudShell({ children }: TacticalHudShellProps) {
             </div>
             <div className="tactical-module-sub">NOMINAL</div>
           </div>
-          <StatPanel 
-            label="HEALTH" 
-            value={stats.health} 
-            max={100} 
-            status={stats.health >= 70 ? 'nominal' : stats.health >= 40 ? 'warning' : 'critical'}
-            className="tactical-stat-compact"
-          />
-          <StatPanel 
-            label="ARMOR" 
-            value={stats.armor} 
-            max={100}
-            status={stats.armor >= 70 ? 'nominal' : stats.armor >= 40 ? 'warning' : 'critical'}
-            className="tactical-stat-compact"
-          />
+          {markFeatures.stats.health && (
+            <StatPanel
+              label="HEALTH"
+              value={stats.health}
+              max={100}
+              status={stats.health >= 70 ? 'nominal' : stats.health >= 40 ? 'warning' : 'critical'}
+              className="tactical-stat-compact"
+            />
+          )}
+          {markFeatures.stats.armor && (
+            <StatPanel
+              label="ARMOR"
+              value={stats.armor}
+              max={100}
+              status={stats.armor >= 70 ? 'nominal' : stats.armor >= 40 ? 'warning' : 'critical'}
+              className="tactical-stat-compact"
+            />
+          )}
         </div>
 
         {/* Center content area (tabs) */}
@@ -82,20 +93,24 @@ export function TacticalHudShell({ children }: TacticalHudShellProps) {
             </div>
             <div className="tactical-module-sub">0 CONTACTS</div>
           </div>
-          <StatPanel 
-            label="AUX POWER" 
-            value={stats.aux} 
-            max={100}
-            status={stats.aux >= 70 ? 'nominal' : stats.aux >= 40 ? 'warning' : 'critical'}
-            className="tactical-stat-compact"
-          />
-          <StatPanel 
-            label="AMMO" 
-            value={stats.ammo} 
-            max={999}
-            status="nominal"
-            className="tactical-stat-compact"
-          />
+          {markFeatures.stats.aux && (
+            <StatPanel
+              label="AUX POWER"
+              value={stats.aux}
+              max={100}
+              status={stats.aux >= 70 ? 'nominal' : stats.aux >= 40 ? 'warning' : 'critical'}
+              className="tactical-stat-compact"
+            />
+          )}
+          {markFeatures.stats.ammo && (
+            <StatPanel
+              label="AMMO"
+              value={stats.ammo}
+              max={999}
+              status="nominal"
+              className="tactical-stat-compact"
+            />
+          )}
         </div>
       </div>
 

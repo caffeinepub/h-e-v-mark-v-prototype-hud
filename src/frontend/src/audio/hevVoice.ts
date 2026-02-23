@@ -1,7 +1,7 @@
 // HEV-style voice announcement helpers
 
 import { audioBus } from './audioBus';
-import { useInfoSettingsStore } from '../state/infoSettingsState';
+import { useInfoSettingsStore } from '../state/infoSettingsStore';
 
 // Helper to check if voice is enabled
 const isVoiceEnabled = () => {
@@ -27,6 +27,11 @@ export const hevVoice = {
   armorLow: () => {
     if (!isVoiceEnabled()) return;
     audioBus.playVoice('/assets/audio/hev-armor-low.mp3', 0.7);
+  },
+  
+  ammoLow: () => {
+    if (!isVoiceEnabled()) return;
+    audioBus.playVoice('/assets/audio/hev-hazard-detected.mp3', 0.7);
   },
   
   hazardDetected: (hazardType: string) => {
@@ -60,6 +65,16 @@ export const hevVoice = {
   },
 
   voiceSystemEnabled: () => {
+    if (!isVoiceEnabled()) return;
+    audioBus.playVoice('/assets/audio/hev-module-enabled.mp3', 0.6);
+  },
+
+  systemRestart: () => {
+    if (!isVoiceEnabled()) return;
+    audioBus.playVoice('/assets/audio/hev-module-enabled.mp3', 0.6);
+  },
+
+  voiceEnabled: () => {
     if (!isVoiceEnabled()) return;
     audioBus.playVoice('/assets/audio/hev-module-enabled.mp3', 0.6);
   },

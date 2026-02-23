@@ -1,6 +1,6 @@
 import { useSuitStore } from '../state/suitState';
 import { useHazardsStore } from '../state/hazardsState';
-import { useInfoSettingsStore } from '../state/infoSettingsState';
+import { useInfoSettingsStore } from '../state/infoSettingsStore';
 import { useLogStore } from '../state/systemLog';
 import { hevVoice } from '../audio/hevVoice';
 import { uiSfx } from '../audio/uiSfx';
@@ -156,14 +156,13 @@ Active Modules: ${activeModules || 'None'}`;
 
     case '/system_restart':
     case '/reboot':
-      logStore.addEntry('system', 'System restart command received. Initiating restart sequence...');
-      uiSfx.buttonClick();
-      setTimeout(() => {
-        if ((window as any).__hevRestart) {
-          (window as any).__hevRestart('System restart initiated via console command.');
-        }
-      }, 500);
-      return 'Initiating system restart...';
+      suitStore.reset();
+      hazardsStore.reset();
+      logStore.addEntry('warning', 'SYSTEM RESTART INITIATED');
+      logStore.addEntry('system', 'All systems restored to defaults');
+      uiSfx.confirmAccept();
+      hevVoice.displayModeChanged('restart');
+      return 'System restart complete. All values reset to defaults.';
 
     case '/clear':
       return '__CLEAR__';

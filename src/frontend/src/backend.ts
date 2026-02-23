@@ -89,6 +89,50 @@ export class ExternalBlob {
         return this;
     }
 }
+export interface FeatureSet {
+    communication: boolean;
+    auxPower: boolean;
+    navigationSystem: boolean;
+    moduleSync: boolean;
+    defibrillator: boolean;
+    weaponSystem: boolean;
+    hazardProtection: boolean;
+    healthMonitoring: boolean;
+    advancedMedical: boolean;
+    lifeSupportTimeout: boolean;
+    vehicleInterface: boolean;
+    radiationShield: boolean;
+    armorShielding: boolean;
+    shieldBoost: boolean;
+    longJumpModule: boolean;
+    hazardSystem: boolean;
+}
+export interface DamageResistance {
+    armorStrength: bigint;
+    resistances: {
+        fire: bigint;
+        electrical: bigint;
+        bioHazards: bigint;
+        radiation: bigint;
+    };
+}
+export interface Faction {
+    defaultWeapons: Array<string>;
+    name: string;
+    description: string;
+}
+export interface TacticalCapabilities {
+    speed: bigint;
+    acceleration: bigint;
+    durability: bigint;
+    handling: string;
+}
+export interface SupportSystems {
+    communication: string;
+    navigation: string;
+    sensors: string;
+    automation: string;
+}
 export interface ModuleToggles {
     helmet: boolean;
     moduleSync: boolean;
@@ -101,8 +145,62 @@ export interface ModuleToggles {
     hazardSystem: boolean;
     flashlight: boolean;
 }
+export interface EngineSpecs {
+    powerOutput: bigint;
+    transmission: string;
+    torque: bigint;
+    engineType: string;
+}
+export interface GravityGunStatusView {
+    mode: string;
+    isActive: boolean;
+    chargeLevel: bigint;
+}
+export interface ComprehensiveVehicleInfo {
+    supportSystems: SupportSystems;
+    engineSpecs: EngineSpecs;
+    tacticalCapabilities: TacticalCapabilities;
+    fuel: bigint;
+    lore: VehicleLore;
+    name: string;
+    damageResistance: DamageResistance;
+    speed: bigint;
+    diagnostics: string;
+    integrity: bigint;
+}
+export interface ModesView {
+    halfLife2Active: boolean;
+    currentMode: string;
+    blackMesaSecurityActive: boolean;
+    hecuActive: boolean;
+}
+export interface settingsView {
+    currentMark: bigint;
+    availableFeatures: FeatureSet;
+}
+export interface WeaponView {
+    damage: bigint;
+    lore: string;
+    name: string;
+    description: string;
+    weaponType: string;
+    ammoCapacity: bigint;
+    fireRate: bigint;
+    accuracy: bigint;
+}
+export interface VehicleLore {
+    historicalUse: string;
+    manufacturer: string;
+    notableUpgrades: string;
+    purpose: string;
+}
 export interface backendInterface {
     addWarningSensor(id: bigint, location: string): Promise<void>;
+    changeMark(markType: bigint): Promise<void>;
+    chargeGravityGun(): Promise<void>;
+    customizeFactionWeapons(faction: string, weaponList: Array<string>): Promise<void>;
+    getAllComprehensiveVehicleInfo(): Promise<Array<ComprehensiveVehicleInfo>>;
+    getAllFactions(): Promise<Array<Faction>>;
     getAllHazardStatuses(): Promise<{
         bio: string;
         gas: string;
@@ -110,12 +208,19 @@ export interface backendInterface {
         electrical: string;
         radiation: string;
     }>;
+    getAllWeapons(): Promise<Array<WeaponView>>;
     getBioStatus(): Promise<string>;
     getCommunicationInfo(): Promise<[boolean, string, string, boolean]>;
+    getComprehensiveVehicleInfo(vehicleName: string): Promise<ComprehensiveVehicleInfo>;
+    getCurrentFaction(): Promise<string>;
+    getCurrentMark(): Promise<settingsView>;
+    getCurrentMode(): Promise<ModesView>;
     getElectricalStatus(): Promise<string>;
     getEnvProtectionInfo(): Promise<[boolean, bigint, bigint, string]>;
+    getFactionWeapons(faction: string): Promise<Array<string> | null>;
     getFireStatus(): Promise<string>;
     getGasStatus(): Promise<string>;
+    getGravityGunStatus(): Promise<GravityGunStatusView>;
     getHazardData(): Promise<[bigint, bigint, bigint, bigint, bigint]>;
     getLifeSupportInfo(): Promise<[boolean, bigint, bigint, bigint, string]>;
     getModuleStates(): Promise<ModuleToggles>;
@@ -126,16 +231,22 @@ export interface backendInterface {
     getSystemState(): Promise<[boolean, bigint, string]>;
     getSystemStatus(): Promise<string>;
     getWarningSensors(): Promise<Array<[bigint, string]>>;
+    getWeapon(name: string): Promise<WeaponView | null>;
+    getWeaponsCount(): Promise<bigint>;
     removeWarningSensor(id: bigint): Promise<void>;
     setErrorState(errorType: string): Promise<void>;
     setSuitState(key: string, value: string): Promise<void>;
     setTemperature(tempVal: bigint): Promise<void>;
+    switchFaction(factionName: string): Promise<void>;
     switchHudDisplay(_mode: string): Promise<void>;
+    switchMode(mode: string): Promise<void>;
+    toggleGravityGun(): Promise<void>;
     toggleHazard(hazardType: string, level: bigint): Promise<void>;
     toggleLifeSupportSystem(): Promise<void>;
     toggleModule(moduleName: string): Promise<void>;
     updateStats(stat: string, value: bigint): Promise<void>;
 }
+import type { WeaponView as _WeaponView } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
     async addWarningSensor(arg0: bigint, arg1: string): Promise<void> {
@@ -149,6 +260,76 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.addWarningSensor(arg0, arg1);
+            return result;
+        }
+    }
+    async changeMark(arg0: bigint): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.changeMark(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.changeMark(arg0);
+            return result;
+        }
+    }
+    async chargeGravityGun(): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.chargeGravityGun();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.chargeGravityGun();
+            return result;
+        }
+    }
+    async customizeFactionWeapons(arg0: string, arg1: Array<string>): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.customizeFactionWeapons(arg0, arg1);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.customizeFactionWeapons(arg0, arg1);
+            return result;
+        }
+    }
+    async getAllComprehensiveVehicleInfo(): Promise<Array<ComprehensiveVehicleInfo>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getAllComprehensiveVehicleInfo();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getAllComprehensiveVehicleInfo();
+            return result;
+        }
+    }
+    async getAllFactions(): Promise<Array<Faction>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getAllFactions();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getAllFactions();
             return result;
         }
     }
@@ -169,6 +350,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.getAllHazardStatuses();
+            return result;
+        }
+    }
+    async getAllWeapons(): Promise<Array<WeaponView>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getAllWeapons();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getAllWeapons();
             return result;
         }
     }
@@ -210,6 +405,62 @@ export class Backend implements backendInterface {
             ];
         }
     }
+    async getComprehensiveVehicleInfo(arg0: string): Promise<ComprehensiveVehicleInfo> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getComprehensiveVehicleInfo(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getComprehensiveVehicleInfo(arg0);
+            return result;
+        }
+    }
+    async getCurrentFaction(): Promise<string> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getCurrentFaction();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getCurrentFaction();
+            return result;
+        }
+    }
+    async getCurrentMark(): Promise<settingsView> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getCurrentMark();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getCurrentMark();
+            return result;
+        }
+    }
+    async getCurrentMode(): Promise<ModesView> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getCurrentMode();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getCurrentMode();
+            return result;
+        }
+    }
     async getElectricalStatus(): Promise<string> {
         if (this.processError) {
             try {
@@ -248,6 +499,20 @@ export class Backend implements backendInterface {
             ];
         }
     }
+    async getFactionWeapons(arg0: string): Promise<Array<string> | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getFactionWeapons(arg0);
+                return from_candid_opt_n1(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getFactionWeapons(arg0);
+            return from_candid_opt_n1(this._uploadFile, this._downloadFile, result);
+        }
+    }
     async getFireStatus(): Promise<string> {
         if (this.processError) {
             try {
@@ -273,6 +538,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.getGasStatus();
+            return result;
+        }
+    }
+    async getGravityGunStatus(): Promise<GravityGunStatusView> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getGravityGunStatus();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getGravityGunStatus();
             return result;
         }
     }
@@ -470,6 +749,34 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async getWeapon(arg0: string): Promise<WeaponView | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getWeapon(arg0);
+                return from_candid_opt_n2(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getWeapon(arg0);
+            return from_candid_opt_n2(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getWeaponsCount(): Promise<bigint> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getWeaponsCount();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getWeaponsCount();
+            return result;
+        }
+    }
     async removeWarningSensor(arg0: bigint): Promise<void> {
         if (this.processError) {
             try {
@@ -526,6 +833,20 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async switchFaction(arg0: string): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.switchFaction(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.switchFaction(arg0);
+            return result;
+        }
+    }
     async switchHudDisplay(arg0: string): Promise<void> {
         if (this.processError) {
             try {
@@ -537,6 +858,34 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.switchHudDisplay(arg0);
+            return result;
+        }
+    }
+    async switchMode(arg0: string): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.switchMode(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.switchMode(arg0);
+            return result;
+        }
+    }
+    async toggleGravityGun(): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.toggleGravityGun();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.toggleGravityGun();
             return result;
         }
     }
@@ -596,6 +945,12 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+}
+function from_candid_opt_n1(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [Array<string>]): Array<string> | null {
+    return value.length === 0 ? null : value[0];
+}
+function from_candid_opt_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_WeaponView]): WeaponView | null {
+    return value.length === 0 ? null : value[0];
 }
 export interface CreateActorOptions {
     agent?: Agent;

@@ -8,7 +8,7 @@ interface Stats {
   hazard: number;
 }
 
-interface Modules {
+interface ModuleToggles {
   helmet: boolean;
   respirator: boolean;
   longJump: boolean;
@@ -21,21 +21,43 @@ interface Modules {
   moduleSync: boolean;
 }
 
-interface SuitState {
-  stats: Stats;
-  modules: Modules;
-  setHealth: (value: number) => void;
-  setArmor: (value: number) => void;
-  setAux: (value: number) => void;
-  setAmmo: (value: number) => void;
-  setHazard: (value: number) => void;
-  toggleModule: (module: keyof Modules) => void;
-  setModules: (modules: Modules) => void;
-  setModuleState: (module: keyof Modules, value: boolean) => void;
-  reset: () => void;
+interface DamageEvent {
+  direction: 'top' | 'bottom' | 'left' | 'right';
+  timestamp: number;
 }
 
-const initialStats: Stats = {
+interface SuitState {
+  stats: Stats;
+  modules: ModuleToggles;
+  damageEvents: DamageEvent[];
+  previousStats: Stats;
+
+  // Stats setters
+  setHealth: (health: number) => void;
+  setArmor: (armor: number) => void;
+  setAux: (aux: number) => void;
+  setAmmo: (ammo: number) => void;
+  setHazard: (hazard: number) => void;
+
+  // Module toggles
+  toggleModule: (module: keyof ModuleToggles) => void;
+  setModules: (modules: ModuleToggles) => void;
+
+  // Damage tracking
+  addDamageEvent: (direction: 'top' | 'bottom' | 'left' | 'right') => void;
+  clearOldDamageEvents: () => void;
+
+  // Threshold checks
+  isHealthCritical: () => boolean;
+  isArmorLow: () => boolean;
+  isAmmoLow: () => boolean;
+
+  // Reset
+  reset: () => void;
+  resetStats: () => void;
+}
+
+const defaultStats: Stats = {
   health: 100,
   armor: 100,
   aux: 100,
@@ -43,7 +65,7 @@ const initialStats: Stats = {
   hazard: 0,
 };
 
-const initialModules: Modules = {
+const defaultModules: ModuleToggles = {
   helmet: false,
   respirator: false,
   longJump: false,
@@ -56,20 +78,100 @@ const initialModules: Modules = {
   moduleSync: false,
 };
 
-export const useSuitStore = create<SuitState>((set) => ({
-  stats: initialStats,
-  modules: initialModules,
-  setHealth: (value) => set((state) => ({ stats: { ...state.stats, health: Math.max(0, Math.min(100, value)) } })),
-  setArmor: (value) => set((state) => ({ stats: { ...state.stats, armor: Math.max(0, Math.min(100, value)) } })),
-  setAux: (value) => set((state) => ({ stats: { ...state.stats, aux: Math.max(0, Math.min(100, value)) } })),
-  setAmmo: (value) => set((state) => ({ stats: { ...state.stats, ammo: Math.max(0, Math.min(999, value)) } })),
-  setHazard: (value) => set((state) => ({ stats: { ...state.stats, hazard: Math.max(0, Math.min(100, value)) } })),
-  toggleModule: (module) => set((state) => ({
-    modules: { ...state.modules, [module]: !state.modules[module] }
-  })),
+export const useSuitStore = create<SuitState>((set, get) => ({
+  stats: { ...defaultStats },
+  modules: { ...defaultModules },
+  damageEvents: [],
+  previousStats: { ...defaultStats },
+
+  setHealth: (health) =>
+    set((state) => {
+      const newHealth = Math.max(0, Math.min(100, health));
+      const damageEvents = [...state.damageEvents];
+
+      // Add damage event if health decreased
+      if (newHealth < state.stats.health) {
+        const directions: Array<'top' | 'bottom' | 'left' | 'right'> = ['top', 'bottom', 'left', 'right'];
+        const randomDirection = directions[Math.floor(Math.random() * directions.length)];
+        damageEvents.push({
+          direction: randomDirection,
+          timestamp: Date.now(),
+        });
+      }
+
+      return {
+        previousStats: state.stats,
+        stats: { ...state.stats, health: newHealth },
+        damageEvents,
+      };
+    }),
+
+  setArmor: (armor) =>
+    set((state) => ({
+      previousStats: state.stats,
+      stats: { ...state.stats, armor: Math.max(0, Math.min(100, armor)) },
+    })),
+
+  setAux: (aux) =>
+    set((state) => ({
+      previousStats: state.stats,
+      stats: { ...state.stats, aux: Math.max(0, Math.min(100, aux)) },
+    })),
+
+  setAmmo: (ammo) =>
+    set((state) => ({
+      previousStats: state.stats,
+      stats: { ...state.stats, ammo: Math.max(0, ammo) },
+    })),
+
+  setHazard: (hazard) =>
+    set((state) => ({
+      previousStats: state.stats,
+      stats: { ...state.stats, hazard: Math.max(0, Math.min(100, hazard)) },
+    })),
+
+  toggleModule: (module) =>
+    set((state) => ({
+      modules: {
+        ...state.modules,
+        [module]: !state.modules[module],
+      },
+    })),
+
   setModules: (modules) => set({ modules }),
-  setModuleState: (module, value) => set((state) => ({
-    modules: { ...state.modules, [module]: value }
-  })),
-  reset: () => set({ stats: initialStats, modules: initialModules }),
+
+  addDamageEvent: (direction) =>
+    set((state) => ({
+      damageEvents: [
+        ...state.damageEvents,
+        {
+          direction,
+          timestamp: Date.now(),
+        },
+      ],
+    })),
+
+  clearOldDamageEvents: () =>
+    set((state) => ({
+      damageEvents: state.damageEvents.filter((event) => Date.now() - event.timestamp < 2000),
+    })),
+
+  isHealthCritical: () => get().stats.health < 25,
+  isArmorLow: () => get().stats.armor < 15,
+  isAmmoLow: () => get().stats.ammo < 20,
+
+  reset: () =>
+    set({
+      stats: { ...defaultStats },
+      modules: { ...defaultModules },
+      damageEvents: [],
+      previousStats: { ...defaultStats },
+    }),
+
+  resetStats: () =>
+    set({
+      stats: { ...defaultStats },
+      damageEvents: [],
+      previousStats: { ...defaultStats },
+    }),
 }));

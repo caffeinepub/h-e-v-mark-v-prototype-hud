@@ -61,6 +61,18 @@ export default {
           DEFAULT: "oklch(var(--critical))",
           foreground: "oklch(var(--critical-foreground))",
         },
+        hecu: {
+          DEFAULT: "oklch(0.65 0.20 145)",
+          foreground: "oklch(0.98 0.01 90)",
+        },
+        security: {
+          DEFAULT: "oklch(0.60 0.20 240)",
+          foreground: "oklch(0.98 0.01 90)",
+        },
+        resistance: {
+          DEFAULT: "oklch(0.70 0.22 60)",
+          foreground: "oklch(0.98 0.01 90)",
+        },
       },
     },
   },

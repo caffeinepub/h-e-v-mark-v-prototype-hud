@@ -1,7 +1,7 @@
 // UI sound effects helpers for common interactions
 
 import { audioBus } from './audioBus';
-import { useInfoSettingsStore } from '../state/infoSettingsState';
+import { useInfoSettingsStore } from '../state/infoSettingsStore';
 
 export const uiSfx = {
   tabSwitch: () => {
@@ -44,6 +44,12 @@ export const uiSfx = {
     const { voiceEnabled } = useInfoSettingsStore.getState();
     if (voiceEnabled) {
       audioBus.playSfx('/assets/audio/ui-toggle-01.mp3', 0.35);
+    }
+  },
+  confirm: () => {
+    const { voiceEnabled } = useInfoSettingsStore.getState();
+    if (voiceEnabled) {
+      audioBus.playSfx('/assets/audio/ui-toggle-01.mp3', 0.5);
     }
   },
 };

@@ -1,28 +1,34 @@
 {
-  "name": "H.E.V Mark V Prototype HUD",
-  "short_name": "H.E.V HUD",
-  "description": "Hazardous Environment Suit Mark V Prototype HUD Interface",
+  "name": "H.E.V Mark IV HUD System",
+  "short_name": "HEV HUD",
+  "description": "Hazardous Environment Suit Mark IV Heads-Up Display",
   "start_url": "/",
-  "scope": "/",
   "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#ff8800",
   "orientation": "any",
-  "theme_color": "#1a0f0a",
-  "background_color": "#0a0604",
+  "scope": "/",
   "icons": [
     {
-      "src": "/pwa/icon-192.png",
+      "src": "/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/pwa/icon-512.png",
+      "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/pwa/icon-512-maskable.png",
+      "src": "/icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-512-maskable.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"

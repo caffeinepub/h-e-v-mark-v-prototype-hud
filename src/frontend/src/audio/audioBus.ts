@@ -4,14 +4,11 @@ class AudioBus {
   private audioContext: AudioContext | null = null;
   private isInitialized = false;
   private unlocked = false;
-  private speechSynthesis: SpeechSynthesis | null = null;
-  private currentUtterance: SpeechSynthesisUtterance | null = null;
 
   initialize() {
     if (this.isInitialized) return;
     try {
       this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-      this.speechSynthesis = window.speechSynthesis;
       this.isInitialized = true;
     } catch (e) {
       console.warn('AudioContext not available');
@@ -33,87 +30,6 @@ class AudioBus {
     } catch (e) {
       // Silently fail
     }
-  }
-
-  /**
-   * Get a female voice from available voices
-   */
-  private getFemaleVoice(): SpeechSynthesisVoice | null {
-    if (!this.speechSynthesis) return null;
-    
-    const voices = this.speechSynthesis.getVoices();
-    
-    // Try to find a female voice (prefer English)
-    const femaleVoice = voices.find(voice => 
-      voice.lang.startsWith('en') && 
-      (voice.name.toLowerCase().includes('female') || 
-       voice.name.toLowerCase().includes('samantha') ||
-       voice.name.toLowerCase().includes('victoria') ||
-       voice.name.toLowerCase().includes('karen') ||
-       voice.name.toLowerCase().includes('zira'))
-    );
-    
-    if (femaleVoice) return femaleVoice;
-    
-    // Fallback: any English voice
-    return voices.find(voice => voice.lang.startsWith('en')) || voices[0] || null;
-  }
-
-  /**
-   * Speak the boot sequence script with female voice
-   */
-  async speakBootSequence(): Promise<void> {
-    if (!this.speechSynthesis) {
-      this.initialize();
-      if (!this.speechSynthesis) return;
-    }
-
-    try {
-      await this.unlockAudio();
-      
-      // Cancel any ongoing speech
-      this.speechSynthesis.cancel();
-      
-      const script = "Hello welcome to the H.E.V mark prototype protective systems. " +
-                    "Initialization procedures active. " +
-                    "Comms. Active. " +
-                    "Advanced medical systems. Active. " +
-                    "Advanced weaponry systems engaged. " +
-                    "Vital signs Activated. " +
-                    "Tactical engagement systems Activated. " +
-                    "Environmental hazard and informational tabs Activated. " +
-                    "Power and health monitoring systems Activated. " +
-                    "Boot up sequence finished. " +
-                    "Have a very safe day.";
-      
-      const utterance = new SpeechSynthesisUtterance(script);
-      
-      // Set voice to female if available
-      const femaleVoice = this.getFemaleVoice();
-      if (femaleVoice) {
-        utterance.voice = femaleVoice;
-      }
-      
-      // Configure speech parameters
-      utterance.rate = 0.95;  // Slightly slower for clarity
-      utterance.pitch = 1.1;  // Slightly higher pitch
-      utterance.volume = 0.9;
-      
-      this.currentUtterance = utterance;
-      this.speechSynthesis.speak(utterance);
-    } catch (e) {
-      // Silently fail
-    }
-  }
-
-  /**
-   * Stop any ongoing speech
-   */
-  stopSpeech(): void {
-    if (this.speechSynthesis) {
-      this.speechSynthesis.cancel();
-    }
-    this.currentUtterance = null;
   }
 
   async playSfx(path: string, volume: number = 0.5): Promise<void> {

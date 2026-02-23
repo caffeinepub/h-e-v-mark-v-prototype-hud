@@ -1,61 +1,211 @@
 {
   "kind": "build_request",
-  "title": "Add female voice narration and enhanced visuals to boot sequence",
-  "projectName": "H.E.V Mark Prototype",
-  "priority": "normal",
+  "title": "Create three complete faction-specific HUDs with enhanced polish and mobile optimization",
+  "projectName": "Half-Life Faction HUD",
+  "priority": "high",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Add female text-to-speech voice narration to the boot sequence that speaks the following script: \"Hello welcome to the H.E.V mark prototype protective systems. Initialization procedures active. Comms. Active. Advanced medical systems. Active. Advanced weaponry systems engaged. Vital signs Activated. Tactical engagement systems Activated. Environmental hazard and informational tabs Activated. Power and health monitoring systems Activated. Boot up sequence finished. Have a very safe day.\"",
+      "text": "Create three completely separate faction HUD systems (HECU, Security, Resistance), each with its own complete interface design, tab structure, and layouts. Each faction should have distinct visual identity while maintaining all existing HUD functionality.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-13"
+          "msg-5"
         ],
         "quotes": [
-          "Can you add a voice during startup?",
-          "make the voice female and make it say \"hello welcome to the H.E.V mark prototype protective systems...\""
+          "Make the tabs seperate and add faction specific huds like security tab for security, etc.",
+          "Thierry own complete hud design"
         ]
       },
       "acceptanceCriteria": [
-        "Female voice plays automatically during boot sequence",
-        "Voice narration matches the provided script exactly",
-        "Voice playback is synchronized with boot sequence stages",
-        "Voice respects the existing voiceEnabled setting from infoSettingsState"
+        "Three distinct faction HUD layouts exist with separate routing/view components",
+        "Each faction maintains all core tabs (Basics, Hazards, Medical, Tactical, Weapons, etc.)",
+        "Faction selection persists in settings and loads the correct HUD on app start",
+        "Visual identity is consistent throughout each faction's interface"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Enhance the boot sequence visuals in BootSequenceOverlay.tsx to be more informative and visually engaging, displaying system initialization stages with corresponding status indicators, progress bars, or animated elements that correlate with each voice announcement",
+      "text": "Apply faction-specific color schemes consistently across all UI elements: HECU uses green, Security uses blue, and Resistance uses yellow-orange. Colors should affect borders, accents, progress bars, badges, buttons, and all interactive elements within each faction's HUD.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-13"
+          "msg-5"
         ],
         "quotes": [
-          "make the boot up sequence have way cooler and informative visuals"
+          "HECU should be green, security blue, and resistance yellow-orange"
         ]
       },
       "acceptanceCriteria": [
-        "Boot sequence displays distinct visual stages for each system initialization step",
-        "Visual elements animate smoothly and provide clear feedback about initialization progress",
-        "Visuals are synchronized with voice narration timing",
-        "Enhanced visuals maintain consistency with existing HUD aesthetic and color scheme",
-        "Boot sequence remains performant and does not cause layout shifts or visual glitches"
+        "HECU HUD uses green color scheme throughout all components",
+        "Security HUD uses blue color scheme throughout all components",
+        "Resistance HUD uses yellow-orange color scheme throughout all components",
+        "Color theming applies to borders, progress bars, badges, buttons, and highlights"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Implement faction-specific weapon arsenals with predefined weapon sets for each faction that appear automatically based on selected faction. Additionally, provide user customization capability to modify which weapons appear for each faction.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ],
+        "quotes": [
+          "add faction specific guns as well",
+          "Yes to both"
+        ]
+      },
+      "acceptanceCriteria": [
+        "HECU faction displays military-grade weapons (MP5, SPAS-12, M4A1, explosives)",
+        "Security faction displays security equipment (9mm Pistol, MP5, shotgun, stun stick)",
+        "Resistance faction displays improvised/rebel weapons (Pulse Rifle, Crossbow, SMG, grenades)",
+        "Users can customize weapon lists per faction in settings",
+        "Weapon data persists per faction selection"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Enhance the boot sequence with more realistic system initialization including sequential loading text, multiple initialization stages, glitch effects, and progressive system checks. Make the boot-up feel like a real computer system starting up.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "more system initialization and more polish",
+          "More system initialization text, sequential loading, glitch effects for realism"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Boot sequence displays multiple initialization stages with descriptive text",
+        "Systems load sequentially with visual progression indicators",
+        "Glitch effects appear during boot for added realism",
+        "Boot sequence includes faction-specific initialization messages",
+        "Audio accompanies boot sequence stages"
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Polish tab selection interactions with smooth transitions, better visual feedback, hover effects, and active state indicators. Make tab switching feel responsive and professional.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "Can you polish tab selection",
+          "Polished tab transitions with visual feedback"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Tab hover states show clear visual feedback",
+        "Active tab has distinct styling from inactive tabs",
+        "Tab transitions are smooth with CSS animations",
+        "Tab switching triggers appropriate UI sound effects",
+        "Keyboard navigation (1-9 keys) works with visual feedback"
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "text": "Implement comprehensive quality of life features including keyboard shortcuts for all major actions, tooltips on interactive elements, quick-switch between factions, saved user preferences, and auto-hide functionality for non-critical elements.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ],
+        "quotes": [
+          "Quality of life features: keyboard shortcuts, tooltips, quick-switch between factions, saved preferences, auto-hide elements"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Keyboard shortcuts work for faction switching (e.g., Ctrl+1/2/3)",
+        "Tooltips appear on hover for buttons, badges, and controls",
+        "User preferences persist across sessions (localStorage/settings)",
+        "Quick-faction switcher accessible from settings or keyboard",
+        "Auto-hide feature for secondary UI elements when inactive"
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "text": "Optimize all HUD layouts for mobile devices with semi-compact responsive design that is 100% friendly for small screens. Ensure all faction HUDs, tabs, panels, and controls are fully functional and readable on mobile viewports.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ],
+        "quotes": [
+          "make everything user friendly and semi compact but make sure it is 100% friendly for small screens",
+          "Semi-compact design that's 100% friendly for small screens"
+        ]
+      },
+      "acceptanceCriteria": [
+        "All faction HUDs render correctly on mobile devices (320px+)",
+        "Touch targets are appropriately sized for mobile interaction",
+        "Text remains readable without zooming on small screens",
+        "Layouts adapt responsively without horizontal scrolling",
+        "Mobile-specific optimizations for tab navigation and panels"
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "text": "Add professional sectioning and layout organization with small visual details like dividers, section headers, subtle spacing adjustments, and grouped related elements. Make the interface feel polished and well-organized.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-6"
+        ],
+        "quotes": [
+          "Add small details like sectioning, etc.",
+          "Small sectioning details for professional look"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Panels use section headers to group related content",
+        "Visual dividers separate distinct sections within tabs",
+        "Related controls are grouped with appropriate spacing",
+        "Consistent padding and margins throughout interface",
+        "Professional visual hierarchy with clear information organization"
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "text": "Preserve all existing features including H.E.V Mark selection (Prototype through Mark V), Mark I glitch effects, Prototype hybrid visual style, all current tabs and panels, module toggles, and stat tracking. Ensure no functionality is lost during faction system integration.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-6"
+        ],
+        "quotes": [
+          "Don't lose any features like H.E.V mark selection, etc.",
+          "Preserving Core Features: H.E.V Mark selection system (keeping all marks)"
+        ]
+      },
+      "acceptanceCriteria": [
+        "H.E.V Mark selector remains functional with all marks available",
+        "Mark I glitch effects still activate for Mark I suits",
+        "Prototype hybrid visual styling is preserved",
+        "All existing tabs remain accessible (Basics, Hazards, HEV, Medical, Tactical, Weapons, Utilities, Vehicles, Security, Military, Info, Settings)",
+        "Module states, stats, and backend queries continue working as before"
       ]
     }
   ],
   "constraints": [
-    "Voice narration must respect the existing voiceEnabled setting in infoSettingsState",
-    "Boot sequence enhancements must work within the existing BootSequenceOverlay.tsx component structure",
-    "Audio playback must integrate with existing audioBus.ts system",
-    "Visuals must support reduced-motion preferences"
+    "Maintain single-actor Motoko backend architecture",
+    "Do not modify immutable frontend paths: useInternetIdentity.ts, useInternetIdentity.tsx, useActor.ts, main.tsx, and components/ui",
+    "Preserve all existing backend data structures and query/update functions",
+    "Keep React, Tailwind CSS, Shadcn, and React Query as the frontend stack",
+    "Maintain PWA functionality with service worker and manifest",
+    "Preserve audio system with audioBus, hevVoice, and uiSfx",
+    "Keep all existing Zustand stores for state management"
   ],
   "nonGoals": [
-    "Modifying backend voice alert logic",
-    "Creating new audio settings beyond existing voiceEnabled toggle",
-    "Changing the overall HUD theme or color scheme",
-    "Adding voice alerts outside of the boot sequence"
+    "Adding real-time multiplayer or WebSocket features",
+    "Implementing backend language changes (no Rust, JavaScript, etc.)",
+    "Adding external authentication beyond Internet Identity",
+    "Integrating third-party APIs or services",
+    "Adding new frameworks or replacing existing tech stack",
+    "Creating mobile native apps (React Native, Flutter)"
   ],
   "imageRequirements": {
     "required": [],

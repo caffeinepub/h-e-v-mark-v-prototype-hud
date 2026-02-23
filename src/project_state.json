@@ -1,27 +1,77 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "H.E.V Mark Prototype protective systems interface with startup sequence and voice alerts",
+  "summary": "Half-Life faction-based HUD system with HECU, Security, and Resistance interfaces, each with complete faction-specific layouts, weapons, and H.E.V Mark selection",
   "architectural_notes": [
-    "Text-to-speech voice system for startup sequence announcements",
-    "Multi-stage boot sequence visualization displaying system initialization states"
+    "Three complete faction HUDs with independent layouts and color schemes",
+    "Preserve H.E.V Mark selection system across all factions",
+    "Faction color theming: HECU green, Security blue, Resistance yellow-orange",
+    "Responsive design prioritizing mobile/small screen compatibility"
   ],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-add-female-text-to-speech-voice-narration-to-the-boot-sequence-that-speaks-the-following-script-hello-welcome-to-the-h-e-v-mark-prototype-protective-systems-initialization-procedures-active-comms-active-advanced-medical-systems-active-advanced-weaponry-systems-engaged-vital-signs-activated-tactical-engagement-systems-activated-environmental-hazard-and-informational-tabs-activated-power-and-health-monitoring-systems-activated-boot-up-sequence-finished-have-a-very-safe-day",
-      "title": "Add female text-to-speech voice narration to the boot sequence that speaks the following script: \"Hello welcome to the H.E.V mark prototype protective systems. Initialization procedures active. Comms. Active. Advanced medical systems. Active. Advanced weaponry systems engaged. Vital signs Activated. Tactical engagement systems Activated. Environmental hazard and informational tabs Activated. Power and health monitoring systems Activated. Boot up sequence finished. Have a very safe day.\"",
+      "id": "feature-apply-faction-specific-color-schemes-consistently-across-all-ui-elements-hecu-uses-green-security-uses-blue-and-resistance-uses-yellow-orange-colors-should-affect-borders-accents-progress-bars-badges-buttons-and-all-interactive-elements-within-each-faction-s-hud",
+      "title": "Apply faction-specific color schemes consistently across all UI elements: HECU uses green, Security uses blue, and Resistance uses yellow-orange. Colors should affect borders, accents, progress bars, badges, buttons, and all interactive elements within each faction's HUD.",
       "reqIds": [
-        "REQ-1"
+        "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-enhance-the-boot-sequence-visuals-in-bootsequenceoverlay-tsx-to-be-more-informative-and-visually-engaging-displaying-system-initialization-stages-with-corresponding-status-indicators-progress-bars-or-animated-elements-that-correlate-with-each-voice-announcement",
-      "title": "Enhance the boot sequence visuals in BootSequenceOverlay.tsx to be more informative and visually engaging, displaying system initialization stages with corresponding status indicators, progress bars, or animated elements that correlate with each voice announcement",
+      "id": "feature-implement-faction-specific-weapon-arsenals-with-predefined-weapon-sets-for-each-faction-that-appear-automatically-based-on-selected-faction-additionally-provide-user-customization-capability-to-modify-which-weapons-appear-for-each-faction",
+      "title": "Implement faction-specific weapon arsenals with predefined weapon sets for each faction that appear automatically based on selected faction. Additionally, provide user customization capability to modify which weapons appear for each faction.",
       "reqIds": [
-        "REQ-2"
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-enhance-the-boot-sequence-with-more-realistic-system-initialization-including-sequential-loading-text-multiple-initialization-stages-glitch-effects-and-progressive-system-checks-make-the-boot-up-feel-like-a-real-computer-system-starting-up",
+      "title": "Enhance the boot sequence with more realistic system initialization including sequential loading text, multiple initialization stages, glitch effects, and progressive system checks. Make the boot-up feel like a real computer system starting up.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-polish-tab-selection-interactions-with-smooth-transitions-better-visual-feedback-hover-effects-and-active-state-indicators-make-tab-switching-feel-responsive-and-professional",
+      "title": "Polish tab selection interactions with smooth transitions, better visual feedback, hover effects, and active state indicators. Make tab switching feel responsive and professional.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-comprehensive-quality-of-life-features-including-keyboard-shortcuts-for-all-major-actions-tooltips-on-interactive-elements-quick-switch-between-factions-saved-user-preferences-and-auto-hide-functionality-for-non-critical-elements",
+      "title": "Implement comprehensive quality of life features including keyboard shortcuts for all major actions, tooltips on interactive elements, quick-switch between factions, saved user preferences, and auto-hide functionality for non-critical elements.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-optimize-all-hud-layouts-for-mobile-devices-with-semi-compact-responsive-design-that-is-100-friendly-for-small-screens-ensure-all-faction-huds-tabs-panels-and-controls-are-fully-functional-and-readable-on-mobile-viewports",
+      "title": "Optimize all HUD layouts for mobile devices with semi-compact responsive design that is 100% friendly for small screens. Ensure all faction HUDs, tabs, panels, and controls are fully functional and readable on mobile viewports.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-professional-sectioning-and-layout-organization-with-small-visual-details-like-dividers-section-headers-subtle-spacing-adjustments-and-grouped-related-elements-make-the-interface-feel-polished-and-well-organized",
+      "title": "Add professional sectioning and layout organization with small visual details like dividers, section headers, subtle spacing adjustments, and grouped related elements. Make the interface feel polished and well-organized.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-preserve-all-existing-features-including-h-e-v-mark-selection-prototype-through-mark-v-mark-i-glitch-effects-prototype-hybrid-visual-style-all-current-tabs-and-panels-module-toggles-and-stat-tracking-ensure-no-functionality-is-lost-during-faction-system-integration",
+      "title": "Preserve all existing features including H.E.V Mark selection (Prototype through Mark V), Mark I glitch effects, Prototype hybrid visual style, all current tabs and panels, module toggles, and stat tracking. Ensure no functionality is lost during faction system integration.",
+      "reqIds": [
+        "REQ-9"
       ],
       "version": 1
     }
@@ -29,18 +79,56 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Add female voice alert system during startup with specific H.E.V Mark script",
+      "summary": "Three separate complete faction HUDs (HECU green, Security blue, Resistance yellow-orange) with faction-specific tabs and layouts",
       "reqIds": [],
       "status": "pending"
     },
     {
       "id": "AR-2",
-      "summary": "Enhance boot up sequence with cooler and more informative visuals",
+      "summary": "Faction-specific weapon sets (predefined + customizable) for each faction",
       "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Enhanced boot sequence with system initialization text, sequential loading, and glitch effects",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Polished tab transitions with visual feedback and hover effects",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Quality of life features: keyboard shortcuts, tooltips, quick-faction switching, saved preferences, auto-hide elements",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Mobile-optimized semi-compact responsive design (100% small screen friendly)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Professional sectioning and layout organization with small details",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Create three completely separate faction HUD systems (HECU, Security, Resistance), each with its own complete interface design, tab structure, and layouts. Each faction should have distinct visual identity while maintaining all existing HUD functionality.",
+      "reqIds": [
+        "REQ-1"
+      ],
       "status": "pending"
     }
   ],
-  "projectName": "H.E.V Mark Prototype",
+  "projectName": "Half-Life Faction HUD System",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

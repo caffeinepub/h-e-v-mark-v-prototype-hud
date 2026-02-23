@@ -1,6 +1,6 @@
 import { useHazardsStore } from '../../state/hazardsState';
+import { GLYPHS } from '@/lib/glyphs';
 import { cn } from '@/lib/utils';
-import { GLYPHS } from '../../lib/glyphs';
 
 export function EnvironmentalHazardsPanel() {
   const { levels, getHazardStatus } = useHazardsStore();
@@ -31,9 +31,17 @@ export function EnvironmentalHazardsPanel() {
             
             return (
               <div key={key} className={cn('hazard-row', statusClass)}>
-                <span className="hazard-icon glyph-icon">{icon}</span>
+                <div className="hazard-icons">
+                  <span className="hazard-icon">{icon}</span>
+                </div>
                 <div className="hazard-info">
                   <div className="hazard-label">{label}</div>
+                  <div className="hazard-progress-bar">
+                    <div 
+                      className={cn('hazard-progress-fill', `${key}-fill`)}
+                      style={{ width: `${level}%` }}
+                    />
+                  </div>
                   <div className="hazard-status-text">{status}</div>
                 </div>
                 <div className="hazard-level-value">{level}%</div>

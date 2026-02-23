@@ -1,122 +1,108 @@
-import { useRef, useEffect } from 'react';
-import { useInfoSettingsStore } from '../../state/infoSettingsState';
-import { useUIStore } from '../../state/uiState';
-import { useViewportOrientation } from '../../hooks/useViewportOrientation';
-import { useAlertState } from '../../state/hazardAlerts';
-import { useHudPresence } from '../../hooks/useHudPresence';
-import { useAutoUiScale } from '../../hooks/useAutoUiScale';
+import { ReactNode, useRef, useEffect } from 'react';
+import { useInfoSettingsStore } from '@/state/infoSettingsStore';
+import { useSuitStore } from '@/state/suitState';
+import { useHazardsStore } from '@/state/hazardsState';
+import { useHudPresence } from '@/hooks/useHudPresence';
+import { useAutoUiScale } from '@/hooks/useAutoUiScale';
 import { HudGlobalEffects } from './HudGlobalEffects';
-import { SiX, SiGithub } from 'react-icons/si';
-import { Heart } from 'lucide-react';
+import { EnhancedStatusIndicators } from './EnhancedStatusIndicators';
+import { FactionLayoutWrapper } from './FactionLayoutWrapper';
+import { MarkIGlitchOverlay } from './MarkIGlitchOverlay';
+import { getMarkTheme } from '@/lib/markThemes';
 
 interface HudLayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export function HudLayout({ children }: HudLayoutProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { hudColorScheme, uiScale } = useInfoSettingsStore();
-  const { landscapeModeEnabled } = useUIStore();
-  const isLandscape = useViewportOrientation();
-  const { isCriticalFlashing } = useAlertState();
+  const {
+    systemStyle,
+    hudStyleMode,
+    hudOpacity,
+    operatorName,
+    hevMark,
+    separateMarkStyleFromFunction,
+    functionalMark,
+  } = useInfoSettingsStore();
+  const { stats } = useSuitStore();
+  const { getAggregateHazard } = useHazardsStore();
   const autoScale = useAutoUiScale();
 
-  // Apply HUD presence tracking for reactive effects
   useHudPresence(containerRef);
 
-  // Apply effective UI scale (manual * auto) CSS variable
-  useEffect(() => {
-    if (containerRef.current) {
-      const effectiveScale = uiScale * autoScale;
-      containerRef.current.style.setProperty('--hud-scale', effectiveScale.toString());
+  const aggregateHazard = getAggregateHazard();
+  const isCritical = stats.health < 25 || stats.armor < 20 || aggregateHazard > 75;
+
+  // Get faction display name
+  const getFactionDisplayName = () => {
+    switch (systemStyle) {
+      case 'hev':
+        return getMarkTheme(hevMark).name;
+      case 'hecu':
+        return 'HECU MARINE';
+      case 'security':
+      case 'guard':
+        return 'SECURITY GUARD';
+      case 'resistance':
+        return 'RESISTANCE FIGHTER';
+      default:
+        return 'H.E.V. MARK V';
     }
-  }, [uiScale, autoScale]);
+  };
 
-  // Determine if landscape layout should be active
-  const shouldUseLandscape = landscapeModeEnabled || isLandscape;
-  
-  // Check if viewport is ultra-compact (short landscape)
-  const isUltraCompact = typeof window !== 'undefined' && 
-    window.innerHeight <= 480 && 
-    window.innerWidth > window.innerHeight;
+  // Apply Mark theme to CSS variables
+  useEffect(() => {
+    const visualMark = hevMark;
+    const theme = getMarkTheme(visualMark);
 
-  const schemeClass = `hud-scheme-${hudColorScheme.toLowerCase()}`;
-  const landscapeClass = shouldUseLandscape ? 'hud-landscape' : '';
-  const compactClass = isUltraCompact ? 'hud-ultra-compact' : '';
-  const criticalClass = isCriticalFlashing ? 'hud-critical-alert' : '';
-
-  const currentYear = new Date().getFullYear();
-  const appIdentifier = typeof window !== 'undefined' 
-    ? encodeURIComponent(window.location.hostname)
-    : 'hev-suit-hud';
+    if (containerRef.current) {
+      const root = containerRef.current;
+      root.style.setProperty('--primary', theme.colors.primary);
+      root.style.setProperty('--accent', theme.colors.accent);
+      root.style.setProperty('--border', theme.colors.border);
+      root.style.setProperty('--background', theme.colors.background);
+      root.style.setProperty('--foreground', theme.colors.foreground);
+      
+      // Add visual style class
+      root.setAttribute('data-mark-style', theme.visualStyle);
+      root.setAttribute('data-mark', visualMark);
+    }
+  }, [hevMark]);
 
   return (
-    <div 
+    <div
       ref={containerRef}
-      className={`hud-container ${schemeClass} ${landscapeClass} ${compactClass} ${criticalClass}`}
+      className="hud-container"
+      data-system-style={systemStyle}
+      data-hud-mode={hudStyleMode}
+      style={
+        {
+          '--hud-opacity': hudOpacity,
+          '--hud-scale': autoScale,
+        } as React.CSSProperties
+      }
     >
-      {/* CRT Overlay */}
-      <div className="hud-crt-overlay" />
-      
-      {/* Scanlines */}
-      <div className="hud-scanlines" />
+      <HudGlobalEffects isCriticalFlashing={isCritical} />
+      <EnhancedStatusIndicators />
+      <MarkIGlitchOverlay />
 
-      {/* Global Effects (bloom, critical, presence) */}
-      <HudGlobalEffects isCriticalFlashing={isCriticalFlashing} />
-
-      {/* Main Layout */}
-      <div className="hud-layout">
-        <header className="hud-header">
-          <div className="hud-header-content">
-            <h1 className="hud-title">H.E.V SUIT INTERFACE</h1>
-            <div className="hud-user">OPERATOR: LEON KRYWIAK</div>
-          </div>
-        </header>
-
-        <main className="hud-main">
-          {children}
-        </main>
-
-        <footer className="hud-footer">
-          <div className="hud-footer-content">
-            <div className="hud-footer-left">
-              © {currentYear} BLACK MESA RESEARCH FACILITY
+      <FactionLayoutWrapper>
+        <div className="hud-layout">
+          <header className="hud-header">
+            <div className="hud-header-content">
+              <h1 className="hud-title">{getFactionDisplayName()}</h1>
+              <div className="hud-subtitle">
+                <span className="operator-name">{operatorName}</span>
+                <span className="hud-status-dot" />
+                <span>SYSTEM ONLINE</span>
+              </div>
             </div>
-            <div className="hud-footer-center">
-              Built with <Heart className="inline w-4 h-4 text-primary" fill="currentColor" /> using{' '}
-              <a 
-                href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${appIdentifier}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hud-link"
-              >
-                caffeine.ai
-              </a>
-            </div>
-            <div className="hud-footer-right">
-              <a 
-                href="https://twitter.com/blackmesa" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="hud-link"
-                aria-label="Twitter"
-              >
-                <SiX className="inline w-4 h-4" />
-              </a>
-              {' '}
-              <a 
-                href="https://github.com/blackmesa" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="hud-link"
-                aria-label="GitHub"
-              >
-                <SiGithub className="inline w-4 h-4" />
-              </a>
-            </div>
-          </div>
-        </footer>
-      </div>
+          </header>
+
+          <main className="hud-main">{children}</main>
+        </div>
+      </FactionLayoutWrapper>
     </div>
   );
 }

@@ -71,13 +71,8 @@ export function useToggleModule() {
       await actor.toggleModule(moduleName);
     },
     onMutate: async (moduleName) => {
-      // Cancel any outgoing refetches
       await queryClient.cancelQueries({ queryKey: ['modules'] });
-
-      // Snapshot the previous value
       const previousModules = queryClient.getQueryData(['modules']);
-
-      // Optimistically update the query cache only
       queryClient.setQueryData(['modules'], (old: any) => {
         if (!old) return old;
         return {
@@ -85,18 +80,113 @@ export function useToggleModule() {
           [moduleName]: !old[moduleName],
         };
       });
-
       return { previousModules };
     },
     onError: (err, moduleName, context) => {
-      // Rollback on error
       if (context?.previousModules) {
         queryClient.setQueryData(['modules'], context.previousModules);
       }
     },
     onSettled: () => {
-      // Refetch to ensure sync with backend
       queryClient.invalidateQueries({ queryKey: ['modules'] });
     },
   });
 }
+
+export function useGetGravityGunStatus() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery({
+    queryKey: ['gravityGun'],
+    queryFn: async () => {
+      if (!actor) return null;
+      return actor.getGravityGunStatus();
+    },
+    enabled: !!actor && !isFetching,
+    refetchInterval: 2000,
+  });
+}
+
+export function useToggleGravityGun() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      if (!actor) throw new Error('Actor not initialized');
+      await actor.toggleGravityGun();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['gravityGun'] });
+    },
+  });
+}
+
+export function useChargeGravityGun() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      if (!actor) throw new Error('Actor not initialized');
+      await actor.chargeGravityGun();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['gravityGun'] });
+    },
+  });
+}
+
+export function useGetVehicles() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery({
+    queryKey: ['vehicles'],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.getAllComprehensiveVehicleInfo();
+    },
+    enabled: !!actor && !isFetching,
+    refetchInterval: 3000,
+  });
+}
+
+export function useGetFactionWeapons() {
+  const { actor, isFetching } = useActor();
+  const { systemStyle } = useInfoSettingsStore();
+
+  return useQuery({
+    queryKey: ['factionWeapons', systemStyle],
+    queryFn: async () => {
+      if (!actor) return null;
+      const factionMap: Record<string, string> = {
+        hev: 'default',
+        hecu: 'hecu',
+        security: 'blackMesaSecurity',
+        guard: 'blackMesaSecurity',
+        resistance: 'halfLife2',
+      };
+      const faction = factionMap[systemStyle] || 'default';
+      return actor.getFactionWeapons(faction);
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
+export function useCustomizeFactionWeapons() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ faction, weaponList }: { faction: string; weaponList: string[] }) => {
+      if (!actor) throw new Error('Actor not initialized');
+      await actor.customizeFactionWeapons(faction, weaponList);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['factionWeapons'] });
+    },
+  });
+}
+
+// Import at top
+import { useInfoSettingsStore } from '@/state/infoSettingsStore';

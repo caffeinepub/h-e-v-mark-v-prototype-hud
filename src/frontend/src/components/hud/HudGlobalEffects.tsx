@@ -1,4 +1,5 @@
 import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { useInfoSettingsStore } from '@/state/infoSettingsStore';
 
 interface HudGlobalEffectsProps {
   isCriticalFlashing: boolean;
@@ -6,10 +7,11 @@ interface HudGlobalEffectsProps {
 
 /**
  * Global HUD effects overlay component
- * Renders non-interactive visual effects (bloom, critical overlay, presence glow)
+ * Renders non-interactive visual effects (bloom, critical overlay, presence glow, scan-lines for HL1 mode)
  */
 export function HudGlobalEffects({ isCriticalFlashing }: HudGlobalEffectsProps) {
   const prefersReducedMotion = useReducedMotion();
+  const { hudStyleMode } = useInfoSettingsStore();
 
   return (
     <>
@@ -32,6 +34,11 @@ export function HudGlobalEffects({ isCriticalFlashing }: HudGlobalEffectsProps) 
       {/* Presence glow - reactive to pointer/touch */}
       {!prefersReducedMotion && (
         <div className="hud-presence-glow" />
+      )}
+
+      {/* HL1 scan-line effect */}
+      {hudStyleMode === 'hl1' && !prefersReducedMotion && (
+        <div className="hud-hl1-scanlines" />
       )}
     </>
   );
