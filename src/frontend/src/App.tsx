@@ -1,48 +1,79 @@
 import { useState, useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Toaster } from '@/components/ui/sonner';
 import { HudLayout } from './components/hud/HudLayout';
-import { HudOfflineOverlay } from './components/hud/HudOfflineOverlay';
-import { MinimalHudView } from './components/hud/MinimalHudView';
-import { TacticalHudShell } from './components/hud/TacticalHudShell';
-import { EmergencyModeView } from './components/hud/EmergencyModeView';
-import { HudTabsBar } from './components/hud/HudTabsBar';
 import { BootSequenceOverlay } from './components/boot/BootSequenceOverlay';
-import { BasicsTab } from './tabs/BasicsTab';
-import { MedicalTab } from './tabs/MedicalTab';
-import { InfoTab } from './tabs/InfoTab';
-import { UtilitiesTab } from './tabs/UtilitiesTab';
-import { WeaponsTab } from './tabs/WeaponsTab';
-import { SettingsTab } from './tabs/SettingsTab';
-import { HazardsTab } from './tabs/HazardsTab';
+import { FactionSwitchOverlay } from './components/boot/FactionSwitchOverlay';
+import { MainTab } from './tabs/MainTab';
 import { TacticalTab } from './tabs/TacticalTab';
-import { VehiclesTab } from './tabs/VehiclesTab';
-import { SecurityTab } from './tabs/SecurityTab';
-import { MilitaryTab } from './tabs/MilitaryTab';
-import { HevTab } from './tabs/HevTab';
+import { InfoTab } from './tabs/InfoTab';
+import { MedicalTab } from './tabs/MedicalTab';
+import { ObjectivesTab } from './tabs/ObjectivesTab';
+import { ArsenalTab } from './tabs/ArsenalTab';
+import { SystemsDiagnosticsTab } from './tabs/SystemsDiagnosticsTab';
+import { UtilitiesTab } from './tabs/UtilitiesTab';
+import { ResearchLabTab } from './tabs/ResearchLabTab';
+import { CommandBriefingTab } from './tabs/CommandBriefingTab';
+import { FacilityMonitoringTab } from './tabs/FacilityMonitoringTab';
 import { useInfoSettingsStore } from './state/infoSettingsStore';
 import { useSuitStore } from './state/suitState';
 import { useGetModuleStates } from './hooks/useQueries';
 import { registerServiceWorker } from './pwa/registerServiceWorker';
-import { uiSfx } from './audio/uiSfx';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { MiniAudioPlayer } from './components/utilities/MiniAudioPlayer';
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
       retry: 1,
+      staleTime: 30000,
     },
   },
 });
 
+type TabId = 'main' | 'tactical' | 'info' | 'medical' | 'objectives' | 'arsenal' | 'diagnostics' | 'utilities' | 'research' | 'command' | 'facility';
+
 function AppContent() {
-  const [bootComplete, setBootComplete] = useState(false);
-  const [activeTab, setActiveTab] = useState('basics');
-  const { displayMode, hudOnline, showTacticalTab, emergencyMode, setDisplayMode, systemStyle } = useInfoSettingsStore();
-  const { stats } = useSuitStore();
+  const [bootComplete, setBootComplete] = useState(() => {
+    return sessionStorage.getItem('bootSequenceComplete') === 'true';
+  });
+  const [activeTab, setActiveTab] = useState<TabId>('main');
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+  
+  const { systemStyle, factionSwitching } = useInfoSettingsStore();
   const { data: modules } = useGetModuleStates();
   const setSuitModules = useSuitStore((state) => state.setModules);
+
+  // Preload critical images
+  useEffect(() => {
+    const imagesToPreload = [
+      '/assets/generated/lambda-boot.dim_800x800.png',
+      '/assets/generated/hev-logo.dim_256x256.png',
+      '/assets/generated/hecu-logo.dim_256x256.png',
+      '/assets/generated/security-logo.dim_256x256.png',
+    ];
+
+    let loadedCount = 0;
+    const totalImages = imagesToPreload.length;
+
+    imagesToPreload.forEach((src) => {
+      const img = new Image();
+      img.onload = () => {
+        loadedCount++;
+        if (loadedCount === totalImages) {
+          setImagesLoaded(true);
+        }
+      };
+      img.onerror = () => {
+        loadedCount++;
+        if (loadedCount === totalImages) {
+          setImagesLoaded(true);
+        }
+      };
+      img.src = src;
+    });
+  }, []);
 
   // Sync backend module state to Zustand store
   useEffect(() => {
@@ -56,230 +87,104 @@ function AppContent() {
     registerServiceWorker();
   }, []);
 
-  // Auto-activate emergency mode when vitals are critical
-  useEffect(() => {
-    if (stats.health < 25 || stats.armor < 20) {
-      if (displayMode !== 'EMERGENCY' && !emergencyMode) {
-        setDisplayMode('EMERGENCY');
-      }
+  const handleBootComplete = () => {
+    setBootComplete(true);
+    sessionStorage.setItem('bootSequenceComplete', 'true');
+  };
+
+  // Show boot sequence if not complete or images not loaded
+  if (!bootComplete || !imagesLoaded) {
+    return <BootSequenceOverlay onComplete={handleBootComplete} />;
+  }
+
+  // Show faction switch overlay
+  if (factionSwitching) {
+    return <FactionSwitchOverlay />;
+  }
+
+  // Get available tabs based on faction
+  const getAvailableTabs = (): TabId[] => {
+    const baseTabs: TabId[] = ['main', 'tactical', 'info', 'medical', 'objectives', 'arsenal', 'diagnostics', 'utilities'];
+    
+    switch (systemStyle) {
+      case 'hev':
+        return [...baseTabs, 'research'];
+      case 'hecu':
+        return [...baseTabs, 'command'];
+      case 'security':
+      case 'guard':
+        return [...baseTabs, 'facility'];
+      default:
+        return baseTabs;
     }
-  }, [stats.health, stats.armor, displayMode, emergencyMode, setDisplayMode]);
+  };
 
-  // Keyboard shortcuts for tab navigation, display mode switching, and faction switching
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't trigger shortcuts when typing in inputs
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
-        return;
-      }
+  const availableTabs = getAvailableTabs();
 
-      // Faction switching shortcuts (Ctrl+1/2/3/4)
-      if (e.ctrlKey || e.metaKey) {
-        const factionMap: Record<string, 'hev' | 'hecu' | 'security' | 'resistance'> = {
-          '1': 'hev',
-          '2': 'hecu',
-          '3': 'security',
-          '4': 'resistance',
-        };
+  // Render active tab content
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'main':
+        return <MainTab />;
+      case 'tactical':
+        return <TacticalTab />;
+      case 'info':
+        return <InfoTab />;
+      case 'medical':
+        return <MedicalTab />;
+      case 'objectives':
+        return <ObjectivesTab />;
+      case 'arsenal':
+        return <ArsenalTab />;
+      case 'diagnostics':
+        return <SystemsDiagnosticsTab />;
+      case 'utilities':
+        return <UtilitiesTab />;
+      case 'research':
+        return systemStyle === 'hev' ? <ResearchLabTab /> : <MainTab />;
+      case 'command':
+        return systemStyle === 'hecu' ? <CommandBriefingTab /> : <MainTab />;
+      case 'facility':
+        return (systemStyle === 'security' || systemStyle === 'guard') ? <FacilityMonitoringTab /> : <MainTab />;
+      default:
+        return <MainTab />;
+    }
+  };
 
-        if (factionMap[e.key]) {
-          e.preventDefault();
-          useInfoSettingsStore.getState().setSystemStyle(factionMap[e.key]);
-          uiSfx.confirm();
-          return;
-        }
-      }
-
-      // Display mode hotkeys (F1-F4)
-      if (e.key === 'F1') {
-        e.preventDefault();
-        setDisplayMode('STANDARD');
-        uiSfx.toggle();
-        return;
-      }
-      if (e.key === 'F2') {
-        e.preventDefault();
-        setDisplayMode('MINIMAL');
-        uiSfx.toggle();
-        return;
-      }
-      if (e.key === 'F3') {
-        e.preventDefault();
-        setDisplayMode('TACTICAL');
-        uiSfx.toggle();
-        return;
-      }
-      if (e.key === 'F4') {
-        e.preventDefault();
-        setDisplayMode('EMERGENCY');
-        uiSfx.toggle();
-        return;
-      }
-
-      // Tab navigation shortcuts (1-9)
-      const tabMap: Record<string, string> = {
-        '1': 'basics',
-        '2': 'medical',
-        '3': 'info',
-        '4': 'utilities',
-        '5': 'weapons',
-        '6': 'hazards',
-        '7': showTacticalTab ? 'tactical' : 'vehicles',
-        '8': 'vehicles',
-        '9': 'settings',
-      };
-
-      if (tabMap[e.key]) {
-        e.preventDefault();
-        setActiveTab(tabMap[e.key]);
-        uiSfx.tabSwitch();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [showTacticalTab, setDisplayMode]);
-
-  if (!bootComplete) {
-    return <BootSequenceOverlay onComplete={() => setBootComplete(true)} />;
-  }
-
-  // Emergency mode
-  if (displayMode === 'EMERGENCY' || emergencyMode) {
-    return (
-      <HudLayout>
-        <EmergencyModeView />
-      </HudLayout>
-    );
-  }
-
-  // Minimal display mode
-  if (displayMode === 'MINIMAL') {
-    return (
-      <HudLayout>
-        <MinimalHudView />
-      </HudLayout>
-    );
-  }
-
-  // Tactical display mode
-  if (displayMode === 'TACTICAL') {
-    return (
-      <HudLayout>
-        <TacticalHudShell>
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <HudTabsBar activeTab={activeTab} onTabChange={setActiveTab} />
-            <TabsContent value="basics" className="tab-content-animated">
-              <BasicsTab />
-            </TabsContent>
-            <TabsContent value="medical" className="tab-content-animated">
-              <MedicalTab />
-            </TabsContent>
-            <TabsContent value="info" className="tab-content-animated">
-              <InfoTab />
-            </TabsContent>
-            <TabsContent value="utilities" className="tab-content-animated">
-              <UtilitiesTab />
-            </TabsContent>
-            <TabsContent value="weapons" className="tab-content-animated">
-              <WeaponsTab />
-            </TabsContent>
-            <TabsContent value="hazards" className="tab-content-animated">
-              <HazardsTab />
-            </TabsContent>
-            {showTacticalTab && (
-              <TabsContent value="tactical" className="tab-content-animated">
-                <TacticalTab />
-              </TabsContent>
-            )}
-            {(systemStyle === 'security' || systemStyle === 'guard') && (
-              <TabsContent value="security" className="tab-content-animated">
-                <SecurityTab />
-              </TabsContent>
-            )}
-            {systemStyle === 'hecu' && (
-              <TabsContent value="military" className="tab-content-animated">
-                <MilitaryTab />
-              </TabsContent>
-            )}
-            {systemStyle === 'hev' && (
-              <TabsContent value="hev" className="tab-content-animated">
-                <HevTab />
-              </TabsContent>
-            )}
-            <TabsContent value="vehicles" className="tab-content-animated">
-              <VehiclesTab />
-            </TabsContent>
-            <TabsContent value="settings" className="tab-content-animated">
-              <SettingsTab />
-            </TabsContent>
-          </Tabs>
-        </TacticalHudShell>
-      </HudLayout>
-    );
-  }
-
-  // Standard display mode
   return (
     <HudLayout>
-      {!hudOnline && <HudOfflineOverlay />}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <HudTabsBar activeTab={activeTab} onTabChange={setActiveTab} />
-        <TabsContent value="basics" className="tab-content-animated">
-          <BasicsTab />
-        </TabsContent>
-        <TabsContent value="medical" className="tab-content-animated">
-          <MedicalTab />
-        </TabsContent>
-        <TabsContent value="info" className="tab-content-animated">
-          <InfoTab />
-        </TabsContent>
-        <TabsContent value="utilities" className="tab-content-animated">
-          <UtilitiesTab />
-        </TabsContent>
-        <TabsContent value="weapons" className="tab-content-animated">
-          <WeaponsTab />
-        </TabsContent>
-        <TabsContent value="hazards" className="tab-content-animated">
-          <HazardsTab />
-        </TabsContent>
-        {showTacticalTab && (
-          <TabsContent value="tactical" className="tab-content-animated">
-            <TacticalTab />
-          </TabsContent>
-        )}
-        {(systemStyle === 'security' || systemStyle === 'guard') && (
-          <TabsContent value="security" className="tab-content-animated">
-            <SecurityTab />
-          </TabsContent>
-        )}
-        {systemStyle === 'hecu' && (
-          <TabsContent value="military" className="tab-content-animated">
-            <MilitaryTab />
-          </TabsContent>
-        )}
-        {systemStyle === 'hev' && (
-          <TabsContent value="hev" className="tab-content-animated">
-            <HevTab />
-          </TabsContent>
-        )}
-        <TabsContent value="vehicles" className="tab-content-animated">
-          <VehiclesTab />
-        </TabsContent>
-        <TabsContent value="settings" className="tab-content-animated">
-          <SettingsTab />
-        </TabsContent>
-      </Tabs>
+      <div className="hud-tabs-container">
+        {/* Tab Navigation */}
+        <div className="hud-tabs-bar">
+          {availableTabs.map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`hud-tab-button ${activeTab === tab ? 'active' : ''}`}
+            >
+              {tab.toUpperCase()}
+            </button>
+          ))}
+        </div>
+
+        {/* Tab Content */}
+        <div className="hud-tab-content">
+          {renderTabContent()}
+        </div>
+      </div>
+      <MiniAudioPlayer />
     </HudLayout>
   );
 }
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AppContent />
-      <Toaster />
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <AppContent />
+        <Toaster />
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

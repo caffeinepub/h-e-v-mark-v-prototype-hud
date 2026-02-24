@@ -34,11 +34,6 @@ export interface DamageResistance {
         radiation: bigint;
     };
 }
-export interface Faction {
-    defaultWeapons: Array<string>;
-    name: string;
-    description: string;
-}
 export interface TacticalCapabilities {
     speed: bigint;
     acceleration: bigint;
@@ -112,13 +107,19 @@ export interface VehicleLore {
     notableUpgrades: string;
     purpose: string;
 }
+export interface FactionView {
+    defaultWeapons: Array<string>;
+    name: string;
+    description: string;
+    customTab?: string;
+}
 export interface backendInterface {
     addWarningSensor(id: bigint, location: string): Promise<void>;
     changeMark(markType: bigint): Promise<void>;
     chargeGravityGun(): Promise<void>;
     customizeFactionWeapons(faction: string, weaponList: Array<string>): Promise<void>;
     getAllComprehensiveVehicleInfo(): Promise<Array<ComprehensiveVehicleInfo>>;
-    getAllFactions(): Promise<Array<Faction>>;
+    getAllFactions(): Promise<Array<FactionView>>;
     getAllHazardStatuses(): Promise<{
         bio: string;
         gas: string;
@@ -130,9 +131,10 @@ export interface backendInterface {
     getBioStatus(): Promise<string>;
     getCommunicationInfo(): Promise<[boolean, string, string, boolean]>;
     getComprehensiveVehicleInfo(vehicleName: string): Promise<ComprehensiveVehicleInfo>;
-    getCurrentFaction(): Promise<string>;
+    getCurrentFaction(): Promise<string | null>;
     getCurrentMark(): Promise<settingsView>;
     getCurrentMode(): Promise<ModesView>;
+    getCustomTab(tabName: string): Promise<string | null>;
     getElectricalStatus(): Promise<string>;
     getEnvProtectionInfo(): Promise<[boolean, bigint, bigint, string]>;
     getFactionWeapons(faction: string): Promise<Array<string> | null>;
@@ -152,6 +154,7 @@ export interface backendInterface {
     getWeapon(name: string): Promise<WeaponView | null>;
     getWeaponsCount(): Promise<bigint>;
     removeWarningSensor(id: bigint): Promise<void>;
+    setCustomTab(tabName: string, data: string): Promise<void>;
     setErrorState(errorType: string): Promise<void>;
     setSuitState(key: string, value: string): Promise<void>;
     setTemperature(tempVal: bigint): Promise<void>;

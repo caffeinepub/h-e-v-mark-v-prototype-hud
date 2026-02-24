@@ -1,214 +1,445 @@
 {
   "kind": "build_request",
-  "title": "Create three complete faction-specific HUDs with enhanced polish and mobile optimization",
+  "title": "Rebuild Complete Multi-Faction Half-Life HUD",
   "projectName": "Half-Life Faction HUD",
   "priority": "high",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Create three completely separate faction HUD systems (HECU, Security, Resistance), each with its own complete interface design, tab structure, and layouts. Each faction should have distinct visual identity while maintaining all existing HUD functionality.",
-      "target": "frontend",
+      "text": "Fix the black screen/flickering issue from previous build by ensuring proper component mounting, asset loading sequence, and error boundaries throughout the application",
+      "target": "both",
       "source": {
         "messageIds": [
-          "msg-5"
+          "msg-last"
         ],
         "quotes": [
-          "Make the tabs seperate and add faction specific huds like security tab for security, etc.",
-          "Thierry own complete hud design"
+          "Yes please try again"
         ]
       },
       "acceptanceCriteria": [
-        "Three distinct faction HUD layouts exist with separate routing/view components",
-        "Each faction maintains all core tabs (Basics, Hazards, Medical, Tactical, Weapons, etc.)",
-        "Faction selection persists in settings and loads the correct HUD on app start",
-        "Visual identity is consistent throughout each faction's interface"
+        "Application loads without black screen",
+        "Boot sequence displays correctly on initial load",
+        "All faction switches complete without screen flickering",
+        "Error boundaries catch and display any loading failures gracefully"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Apply faction-specific color schemes consistently across all UI elements: HECU uses green, Security uses blue, and Resistance uses yellow-orange. Colors should affect borders, accents, progress bars, badges, buttons, and all interactive elements within each faction's HUD.",
+      "text": "Implement cinematic boot sequence with Lambda logo animation featuring particle system, glow effects, system initialization text scrolling (e.g., 'INITIALIZING H.E.V SYSTEMS...', 'LOADING FACTION DATA...', 'BIOMETRIC SCAN COMPLETE...'), smooth fade transitions, and progress indicators",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-5"
+          "msg-plan"
         ],
         "quotes": [
-          "HECU should be green, security blue, and resistance yellow-orange"
+          "Cinematic Lambda logo animation with glow effects and particle system"
         ]
       },
       "acceptanceCriteria": [
-        "HECU HUD uses green color scheme throughout all components",
-        "Security HUD uses blue color scheme throughout all components",
-        "Resistance HUD uses yellow-orange color scheme throughout all components",
-        "Color theming applies to borders, progress bars, badges, buttons, and highlights"
+        "Lambda logo displays with animated glow and particle effects",
+        "Initialization text scrolls through multiple stages",
+        "Progress bar shows loading status",
+        "Smooth fade transition from boot to main HUD",
+        "Respects reduced motion preferences"
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Implement faction-specific weapon arsenals with predefined weapon sets for each faction that appear automatically based on selected faction. Additionally, provide user customization capability to modify which weapons appear for each faction.",
+      "text": "Create four-faction system with complete HUD transformations: H.E.V (orange monochrome + black), HECU Marines (military green monochrome + black), Security (blue monochrome + black), and Combine (blue AND white - not monochrome restricted). Each faction must have distinct visual styling, logos, and color schemes applied consistently across all UI elements",
       "target": "both",
       "source": {
         "messageIds": [
-          "msg-5"
+          "msg-plan"
         ],
         "quotes": [
-          "add faction specific guns as well",
-          "Yes to both"
+          "H.E.V (Orange Monochrome)",
+          "HECU Marines (Military Green Monochrome)",
+          "Security (Blue Monochrome)",
+          "Combine (Blue/White - Exception)"
         ]
       },
       "acceptanceCriteria": [
-        "HECU faction displays military-grade weapons (MP5, SPAS-12, M4A1, explosives)",
-        "Security faction displays security equipment (9mm Pistol, MP5, shotgun, stun stick)",
-        "Resistance faction displays improvised/rebel weapons (Pulse Rifle, Crossbow, SMG, grenades)",
-        "Users can customize weapon lists per faction in settings",
-        "Weapon data persists per faction selection"
+        "All four factions selectable from settings",
+        "Monochrome color schemes enforced for H.E.V, HECU, Security",
+        "Combine uses both blue and white colors",
+        "Faction logos display prominently in HUD",
+        "All UI elements (buttons, panels, text, borders) use faction color scheme",
+        "Smooth transitions when switching factions"
       ]
     },
     {
       "id": "REQ-4",
-      "text": "Enhance the boot sequence with more realistic system initialization including sequential loading text, multiple initialization stages, glitch effects, and progressive system checks. Make the boot-up feel like a real computer system starting up.",
+      "text": "Build Main tab displaying compact visual overview of health bar with numerical readout and damage indicators, armor/power with shield integrity percentage, ammo counter (current magazine / reserve), auxiliary power meter with drain rate, environmental hazards (radiation levels with Geiger counter visual, toxic atmosphere warnings, temperature extremes), weapon quick-select with highlighted current weapon, mission objective summary (top 3 active), and suit power consumption graph",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "msg-plan"
         ],
         "quotes": [
-          "more system initialization and more polish",
-          "More system initialization text, sequential loading, glitch effects for realism"
+          "Main tab with all the basics you don't Need a basics but it's just compacts and visualy appealing while still informative"
         ]
       },
       "acceptanceCriteria": [
-        "Boot sequence displays multiple initialization stages with descriptive text",
-        "Systems load sequentially with visual progression indicators",
-        "Glitch effects appear during boot for added realism",
-        "Boot sequence includes faction-specific initialization messages",
-        "Audio accompanies boot sequence stages"
+        "All critical stats visible in one screen",
+        "Visual progress bars for health, armor, aux power",
+        "Ammo display shows current/reserve format",
+        "Environmental hazards displayed with icons and severity levels",
+        "Current weapon highlighted in quick-select",
+        "Top 3 mission objectives summarized",
+        "Power consumption shows real-time drain rate"
       ]
     },
     {
       "id": "REQ-5",
-      "text": "Polish tab selection interactions with smooth transitions, better visual feedback, hover effects, and active state indicators. Make tab switching feel responsive and professional.",
+      "text": "Implement Tactical tab with simplified radar/map showing relative positioning, threat assessment matrix (enemy detection, alert levels GREEN/YELLOW/ORANGE/RED), squad/team status indicators (for HECU shows squad members), communication log (radio chatter, incoming messages, command updates), inventory system (key cards, access badges, collected items with icons), tactical equipment status (grenades, medical kits, batteries), zone control map showing faction territories, objective waypoint markers, and enemy type identification with threat ratings",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "msg-plan"
         ],
         "quotes": [
-          "Can you polish tab selection",
-          "Polished tab transitions with visual feedback"
+          "Tactical tab with radar/map, threat assessment, communication log, inventory system"
         ]
       },
       "acceptanceCriteria": [
-        "Tab hover states show clear visual feedback",
-        "Active tab has distinct styling from inactive tabs",
-        "Tab transitions are smooth with CSS animations",
-        "Tab switching triggers appropriate UI sound effects",
-        "Keyboard navigation (1-9 keys) works with visual feedback"
+        "Radar displays contacts with relative positions",
+        "Threat levels color-coded (GREEN/YELLOW/ORANGE/RED)",
+        "Squad status shows for HECU faction",
+        "Communication log scrollable with timestamps",
+        "Inventory displays collected items with icons",
+        "Waypoint markers show distance and bearing",
+        "Enemy types identified with threat ratings"
       ]
     },
     {
       "id": "REQ-6",
-      "text": "Implement comprehensive quality of life features including keyboard shortcuts for all major actions, tooltips on interactive elements, quick-switch between factions, saved user preferences, and auto-hide functionality for non-critical elements.",
+      "text": "Create Info tab containing H.E.V Suit lore (complete history, Mark I-V evolution, technical specs, notable wearers), Black Mesa lore (facility history, research divisions, incident timeline, key personnel), faction-specific intel (H.E.V: resistance movement; HECU: military command; Security: clearance levels; Combine: overwatch operations), and character Easter eggs that trigger when operator name matches known characters (Gordon Freeman with full biography and MIT education, Adrian Shephard with HECU background, Barney Calhoun with security career and beer debt reference, plus Alyx Vance, Isaac Kleiner, Eli Vance, Wallace Breen)",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-5"
+          "msg-plan"
         ],
         "quotes": [
-          "Quality of life features: keyboard shortcuts, tooltips, quick-switch between factions, saved preferences, auto-hide elements"
+          "Info tab with lore & Easter eggs",
+          "Gordon Freeman: Full biography, MIT education",
+          "Barney Calhoun: Security guard career, beer debt to Gordon"
         ]
       },
       "acceptanceCriteria": [
-        "Keyboard shortcuts work for faction switching (e.g., Ctrl+1/2/3)",
-        "Tooltips appear on hover for buttons, badges, and controls",
-        "User preferences persist across sessions (localStorage/settings)",
-        "Quick-faction switcher accessible from settings or keyboard",
-        "Auto-hide feature for secondary UI elements when inactive"
+        "Collapsible sections for suit lore, Black Mesa history, and faction intel",
+        "Character Easter eggs display when operator name matches",
+        "At least 7 characters with detailed biographies",
+        "Lore text is readable and well-formatted",
+        "Content adapts based on selected faction"
       ]
     },
     {
       "id": "REQ-7",
-      "text": "Optimize all HUD layouts for mobile devices with semi-compact responsive design that is 100% friendly for small screens. Ensure all faction HUDs, tabs, panels, and controls are fully functional and readable on mobile viewports.",
+      "text": "Build Medical tab displaying real-time vital signs (heart rate BPM, blood pressure, respiratory rate, body temperature), injury diagnostic system with location-based damage display (head, torso, arms, legs), toxicity levels (radiation exposure tracking, chemical contamination), medical supply inventory (medkits, morphine, antidote, antitoxin), suit bio-monitoring readouts with graphs, health regeneration rate calculator, stimulant/enhancement status, biometric authentication status, quarantine protocols for hazardous exposure, and prognosis with recommended treatment actions",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-5"
+          "msg-plan"
         ],
         "quotes": [
-          "make everything user friendly and semi compact but make sure it is 100% friendly for small screens",
-          "Semi-compact design that's 100% friendly for small screens"
+          "Medical tab with real-time vital signs, injury diagnostic system, toxicity levels"
         ]
       },
       "acceptanceCriteria": [
-        "All faction HUDs render correctly on mobile devices (320px+)",
-        "Touch targets are appropriately sized for mobile interaction",
-        "Text remains readable without zooming on small screens",
-        "Layouts adapt responsively without horizontal scrolling",
-        "Mobile-specific optimizations for tab navigation and panels"
+        "Vitals update in real-time based on suit stats",
+        "Injury locations mapped to body diagram",
+        "Toxicity meters track radiation and chemical exposure",
+        "Medical inventory shows available supplies",
+        "Bio-monitoring displays graphs for key metrics",
+        "Prognosis updates based on current health status"
       ]
     },
     {
       "id": "REQ-8",
-      "text": "Add professional sectioning and layout organization with small visual details like dividers, section headers, subtle spacing adjustments, and grouped related elements. Make the interface feel polished and well-organized.",
+      "text": "Implement Objectives/Mission tab with faction-specific mission briefings, primary objectives with completion checkboxes, secondary objectives (optional goals), hidden objectives (discovered during gameplay), priority levels (CRITICAL, HIGH, MEDIUM, LOW), objective location markers, estimated completion time, rewards/benefits display, mission failure consequences, and story context/background information",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-6"
+          "msg-plan"
         ],
         "quotes": [
-          "Add small details like sectioning, etc.",
-          "Small sectioning details for professional look"
+          "Objectives/Mission tab with faction-specific missions, priority levels, completion tracking"
         ]
       },
       "acceptanceCriteria": [
-        "Panels use section headers to group related content",
-        "Visual dividers separate distinct sections within tabs",
-        "Related controls are grouped with appropriate spacing",
-        "Consistent padding and margins throughout interface",
-        "Professional visual hierarchy with clear information organization"
+        "Objectives organized by priority level with visual badges",
+        "Checkboxes for tracking completion status",
+        "Location markers show distance and bearing",
+        "Story context provides mission background",
+        "Different mission sets for each faction"
       ]
     },
     {
       "id": "REQ-9",
-      "text": "Preserve all existing features including H.E.V Mark selection (Prototype through Mark V), Mark I glitch effects, Prototype hybrid visual style, all current tabs and panels, module toggles, and stat tracking. Ensure no functionality is lost during faction system integration.",
-      "target": "both",
+      "text": "Create faction-specific custom tabs: Research Lab Access for H.E.V (Black Mesa research database, experiment logs, anomalous materials data, Xen specimen analysis, teleportation tech research, Lambda Complex clearances), Command Briefing for HECU (military chain of command, operation orders, ROE, tactical situation reports, asset deployment, classified intelligence), Facility Monitoring for Security (sector security status, access card management, alarm/lockdown controls, surveillance camera feeds mockups, containment breach protocols, emergency evacuation procedures), and Overwatch Command for Combine (citizen suppression metrics, resistance activity tracking, transhuman forces deployment, Civil Protection directives, Breencast propaganda feeds, portal storm monitoring)",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-6"
+          "msg-plan"
         ],
         "quotes": [
-          "Don't lose any features like H.E.V mark selection, etc.",
-          "Preserving Core Features: H.E.V Mark selection system (keeping all marks)"
+          "H.E.V - Research Lab Access",
+          "HECU - Command Briefing",
+          "Security - Facility Monitoring",
+          "Combine - Overwatch Command"
         ]
       },
       "acceptanceCriteria": [
-        "H.E.V Mark selector remains functional with all marks available",
-        "Mark I glitch effects still activate for Mark I suits",
-        "Prototype hybrid visual styling is preserved",
-        "All existing tabs remain accessible (Basics, Hazards, HEV, Medical, Tactical, Weapons, Utilities, Vehicles, Security, Military, Info, Settings)",
-        "Module states, stats, and backend queries continue working as before"
+        "Each faction has at least one unique custom tab",
+        "Custom tabs only visible when corresponding faction is active",
+        "Content is detailed and immersive for each faction theme",
+        "Visual styling matches faction aesthetic"
+      ]
+    },
+    {
+      "id": "REQ-10",
+      "text": "Build Arsenal/Weapons tab displaying complete faction-specific weapon loadout with detailed 3D wireframe or schematic visualizations, full weapon names and designations, damage statistics (per shot, DPS), accuracy rating, fire rate (rounds per minute), magazine capacity and reserve ammo, effective range, reload time, special attributes (armor-piercing, explosive, energy-based), ammunition type compatibility, weapon history and development background, weapon comparison tool, ammo conservation tips, and maintenance status per weapon. Weapon sets: H.E.V (Crowbar, Gravity Gun, Pulse Rifle, .357 Magnum, Crossbow, Shotgun, SMG, Grenades), HECU (MP5, M4 Carbine, Combat Shotgun, Sniper Rifle, Hand Grenades, SAW, Desert Eagle), Security (9mm Pistol, Security Shotgun, Stun Stick, Taser, Flashbang, Pepper Spray), Combine (Pulse Rifle, AR2 Energy Rifle, Combine Elite Gun, Stunstick, Manhacks, Energy Balls)",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-plan"
+        ],
+        "quotes": [
+          "Arsenal/Weapons tab with detailed faction-specific weapon stats",
+          "Each weapon shows detailed 3D wireframe or schematic visualization"
+        ]
+      },
+      "acceptanceCriteria": [
+        "All faction weapons listed with complete specifications",
+        "Visual schematics or wireframes for each weapon",
+        "Detailed stats tables (damage, accuracy, fire rate, range, reload time)",
+        "Weapon comparison feature allows side-by-side analysis",
+        "Weapon history provides background lore",
+        "Different weapon sets display based on active faction"
+      ]
+    },
+    {
+      "id": "REQ-11",
+      "text": "Implement Systems Diagnostics tab with suit power management dashboard, energy consumption breakdown by system, power cell status and charge remaining, system integrity checks for all modules, diagnostic codes and error reporting, maintenance schedule and alerts, performance optimization suggestions, and reboot/restart system options",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-plan"
+        ],
+        "quotes": [
+          "Systems Diagnostics tab with suit power management, system integrity checks"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Power consumption shows breakdown per system/module",
+        "Power cell charge level displayed with time remaining estimate",
+        "Module integrity checks show pass/fail/warning status",
+        "Diagnostic codes list any system errors",
+        "Maintenance alerts appear for modules needing attention",
+        "Reboot option triggers system restart sequence"
+      ]
+    },
+    {
+      "id": "REQ-12",
+      "text": "Build Utilities tab with complete audio system (radio/ambient music toggle ON/OFF, custom music file upload via drag-and-drop or file browser, audio player with play/pause/stop/skip controls, volume slider 0-100%, track selection dropdown, now playing display, playlist management add/remove/reorder, persistent playback across all tabs, mini music controller accessible from any screen), equipment toggles for Helmet (visor HUD overlay), HUD Display (all interface elements), Long Jump Module, Flashlight (with battery drain), Enhanced Bio-Monitoring, Sprint Module, Oxygen Supply, and Geiger Counter (audio/visual warnings), visual settings (scanline overlay intensity 0-100%, glitch effect frequency toggle, HUD opacity adjustment, color intensity slider, screen shake toggle, vignette effect toggle), and system settings (faction selection with preview, operator name changer, H.E.V Mark Selector Mark I-V with stats, time format 12h/24h)",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-plan"
+        ],
+        "quotes": [
+          "Utilities with persistent music playback, equipment toggles",
+          "Music continues playing when navigating to other tabs",
+          "Equipment Toggles: Helmet, HUD Display, Long Jump Module, Flashlight, Enhanced Bio-Monitoring"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Music player uploads and plays custom audio files",
+        "Audio continues playing when switching tabs",
+        "Mini player visible from all screens for playback control",
+        "All equipment items have functional on/off toggles",
+        "Equipment toggles show visual feedback and affect auxiliary power drain",
+        "Visual settings adjustments apply in real-time",
+        "Mark selector changes available features based on suit version"
+      ]
+    },
+    {
+      "id": "REQ-13",
+      "text": "Create system log displaying chronological event feed with timestamps, showing system initialization messages, faction switches, operator name changes, equipment toggles, mission updates, damage taken events, items collected, area transitions, and warning/error messages. Include severity levels (INFO, WARNING, ERROR, CRITICAL), filter options by category, export log functionality, and auto-scroll with pause option",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-plan"
+        ],
+        "quotes": [
+          "System log with chronological event feed, timestamps, severity levels"
+        ]
+      },
+      "acceptanceCriteria": [
+        "All major system events logged with timestamps",
+        "Severity levels color-coded and filterable",
+        "Log auto-scrolls to newest entries",
+        "Pause auto-scroll when user scrolls up",
+        "Export functionality saves log to file",
+        "Log persists across sessions up to last 100 entries"
+      ]
+    },
+    {
+      "id": "REQ-14",
+      "text": "Implement operator console with command-line interface styled like Half-Life's developer console (green or faction-colored text on black background, blinking cursor for input, command history with up/down arrow navigation), supporting commands: /help (display all commands), /status (current system status), /faction [name] (switch faction), /name [text] (change operator name), /health [value] (set health), /armor [value] (set armor), /ammo [value] (set ammunition), /power [value] (set auxiliary power), /clear (clear console history), /log (display system log), /equip [item] (toggle equipment), /mark [number] (change H.E.V mark), /mission (show objectives), /map (display tactical map), /scan (run environmental scan), /reboot (restart systems), /credits (show credits). Each command must provide feedback and confirmation",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-plan"
+        ],
+        "quotes": [
+          "Operator console with command-line interface",
+          "/help shows all available commands"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Console accepts text input with blinking cursor",
+        "All listed commands functional and provide feedback",
+        "Command history navigable with arrow keys",
+        "Help command lists all available commands with descriptions",
+        "Commands trigger appropriate state changes in backend/frontend",
+        "Invalid commands show error messages"
+      ]
+    },
+    {
+      "id": "REQ-15",
+      "text": "Add Half-Life themed visual polish including Lambda Core terminal styling with geometric patterns, suit power meter showing real-time drain mechanics, Geiger counter visual animation with clicking intensity based on radiation levels, Vortigaunt energy readings as ambient visual element, Black Mesa announcement system with periodic text messages in yellow warning boxes, hazard course training mode toggle (practice interface), Xen border world visual effects (ethereal particles, dimensional rifts), headcrab warning indicators, Combine scanner drone detection alerts, and G-Man Easter egg (rare glitch showing his silhouette)",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-plan"
+        ],
+        "quotes": [
+          "Lambda Core terminal styling",
+          "Geiger counter visual animation",
+          "G-Man Easter egg: rare glitch showing his silhouette"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Lambda geometric patterns appear in UI elements",
+        "Suit power meter displays and drains based on active equipment",
+        "Geiger counter animates with clicking sounds when radiation present",
+        "Ambient Vortigaunt energy effects appear occasionally",
+        "Black Mesa announcements appear as periodic yellow notifications",
+        "G-Man silhouette appears rarely as glitch effect"
+      ]
+    },
+    {
+      "id": "REQ-16",
+      "text": "Ensure 100% mobile optimization with portrait and landscape orientation support, touch-optimized controls with minimum 44px tap targets, responsive breakpoints (mobile 320px+, tablet 768px+, desktop 1024px+), hamburger menu for tab navigation on small screens, gesture controls (swipe between tabs, pinch to zoom on tactical map), bottom navigation bar for primary actions, collapsible panels to maximize screen real estate, optimized asset loading for mobile bandwidth, hardware acceleration for 60fps animations, and service worker for offline functionality",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-plan"
+        ],
+        "quotes": [
+          "100% mobile-optimized",
+          "Touch-friendly button sizes (minimum 44px tap targets)",
+          "Swipe gestures for tab navigation"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Application functions perfectly on mobile devices",
+        "All buttons and interactive elements at least 44px for touch",
+        "Swipe gestures work for tab navigation",
+        "Layout adapts to portrait and landscape modes",
+        "Hamburger menu appears on mobile screens",
+        "Animations run at 60fps on mobile devices",
+        "Service worker enables offline access"
+      ]
+    },
+    {
+      "id": "REQ-17",
+      "text": "Store persistent data in backend including selected faction, operator name, H.E.V Mark selection, equipment toggle states, audio settings and uploaded track list, visual preferences, system log history, mission progress, and custom settings. Implement state migration when upgrading existing data structures",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-plan"
+        ],
+        "quotes": [
+          "Persistent data stored: Selected faction, Operator name, H.E.V Mark selection, Equipment toggle states"
+        ]
+      },
+      "acceptanceCriteria": [
+        "All user settings persist across sessions",
+        "Faction selection saved and restored on reload",
+        "Custom operator name preserved",
+        "Equipment states maintained between visits",
+        "Audio playlist and preferences saved",
+        "Migration handles old data formats gracefully"
+      ]
+    },
+    {
+      "id": "REQ-18",
+      "text": "Apply monochrome color schemes consistently across all UI elements for each faction: H.E.V uses shades of orange + black, HECU uses shades of military green + black, Security uses shades of blue + black, Combine uses blue AND white (not restricted to monochrome). Color schemes must affect buttons, panels, text, borders, progress bars, badges, icons, overlays, and all visual elements with smooth transitions when switching factions",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-plan"
+        ],
+        "quotes": [
+          "H.E.V (Orange Monochrome): Shades of orange + black color scheme throughout entire interface",
+          "Combine (Blue/White - Exception): Can use both blue AND white colors (not monochrome restricted)"
+        ]
+      },
+      "acceptanceCriteria": [
+        "All UI elements use faction-specific color palette",
+        "H.E.V limited to orange and black shades",
+        "HECU limited to green and black shades",
+        "Security limited to blue and black shades",
+        "Combine uses both blue and white freely",
+        "Color transitions smooth when switching factions",
+        "No color leakage between factions"
+      ]
+    },
+    {
+      "id": "REQ-19",
+      "text": "Render all generated images from imageRequirements as static assets in frontend/public/assets/generated directory. Reference these images from frontend components using relative paths. Do not route generated images through the backend",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-plan"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Generated images placed in frontend/public/assets/generated/",
+        "Frontend components reference images using /assets/generated/ paths",
+        "Images load correctly without backend routing",
+        "All faction logos and facility maps display properly"
       ]
     }
   ],
   "constraints": [
-    "Maintain single-actor Motoko backend architecture",
-    "Do not modify immutable frontend paths: useInternetIdentity.ts, useInternetIdentity.tsx, useActor.ts, main.tsx, and components/ui",
-    "Preserve all existing backend data structures and query/update functions",
-    "Keep React, Tailwind CSS, Shadcn, and React Query as the frontend stack",
-    "Maintain PWA functionality with service worker and manifest",
-    "Preserve audio system with audioBus, hevVoice, and uiSfx",
-    "Keep all existing Zustand stores for state management"
+    "Do not modify immutable frontend paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui",
+    "Maintain single-actor Motoko architecture in backend/main.mo",
+    "Only generate backend/migration.mo when upgrading existing state structures",
+    "Use React, Tailwind CSS, React Query, and TypeScript only - no other frontend frameworks",
+    "Preserve all existing file references and generated image filenames from project state",
+    "Ensure proper asset loading sequence to prevent black screen issues"
   ],
   "nonGoals": [
-    "Adding real-time multiplayer or WebSocket features",
-    "Implementing backend language changes (no Rust, JavaScript, etc.)",
-    "Adding external authentication beyond Internet Identity",
-    "Integrating third-party APIs or services",
-    "Adding new frameworks or replacing existing tech stack",
-    "Creating mobile native apps (React Native, Flutter)"
+    "Real-time multiplayer features or WebSocket connections",
+    "External database integration",
+    "Third-party authentication beyond Internet Identity",
+    "Actual 3D rendering of weapons or characters",
+    "Real backend computation for combat or physics simulations",
+    "Mobile app deployment to app stores",
+    "Server-side rendering or static site generation"
   ],
   "imageRequirements": {
-    "required": [],
+    "required": [
+      "Animated Lambda logo with orange glow and particle effects on dark background for boot sequence (lambda-boot.dim_800x800.png)",
+      "H.E.V faction logo in orange monochrome geometric style (hev-logo.dim_256x256.png)",
+      "HECU Marines faction emblem in military green monochrome tactical style (hecu-logo.dim_256x256.png)",
+      "Black Mesa Security badge in blue monochrome official style (security-logo.dim_256x256.png)",
+      "Combine Overwatch insignia in blue and white authoritarian style (combine-logo.dim_256x256.png)",
+      "Black Mesa facility floor plan blueprint in blue technical schematic style (facility-map.dim_1200x800.png)"
+    ],
     "edits": []
   }
 }

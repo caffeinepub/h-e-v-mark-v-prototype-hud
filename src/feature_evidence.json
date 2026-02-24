@@ -2,11 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-apply-faction-specific-color-schemes-consistently-across-all-ui-elements-hecu-uses-green-security-uses-blue-and-resistance-uses-yellow-orange-colors-should-affect-borders-accents-progress-bars-badges-buttons-and-all-interactive-elements-within-each-faction-s-hud",
-      "featureTitle": "Apply faction-specific color schemes consistently across all UI elements: HECU uses green, Security uses blue, and Resistance uses yellow-orange. Colors should affect borders, accents, progress bars, badges, buttons, and all interactive elements within each faction's HUD.",
+      "featureId": "feature-fix-the-black-screen-flickering-issue-from-previous-build-by-ensuring-proper-component-mounting-asset-loading-sequence-and-error-boundaries-throughout-the-application",
+      "featureTitle": "Fix the black screen/flickering issue from previous build by ensuring proper component mounting, asset loading sequence, and error boundaries throughout the application",
       "files": [
-        "frontend/src/index.css",
-        "frontend/tailwind.config.js"
+        "frontend/src/App.tsx",
+        "frontend/src/components/ErrorBoundary.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -16,15 +16,15 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-2"
+        "REQ-1"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-implement-faction-specific-weapon-arsenals-with-predefined-weapon-sets-for-each-faction-that-appear-automatically-based-on-selected-faction-additionally-provide-user-customization-capability-to-modify-which-weapons-appear-for-each-faction",
-      "featureTitle": "Implement faction-specific weapon arsenals with predefined weapon sets for each faction that appear automatically based on selected faction. Additionally, provide user customization capability to modify which weapons appear for each faction.",
+      "featureId": "feature-create-four-faction-system-with-complete-hud-transformations-h-e-v-orange-monochrome-black-hecu-marines-military-green-monochrome-black-security-blue-monochrome-black-and-combine-blue-and-white-not-monochrome-restricted-each-faction-must-have-distinct-visual-styling-logos-and-color-schemes-applied-consistently-across-all-ui-elements",
+      "featureTitle": "Create four-faction system with complete HUD transformations: H.E.V (orange monochrome + black), HECU Marines (military green monochrome + black), Security (blue monochrome + black), and Combine (blue AND white - not monochrome restricted). Each faction must have distinct visual styling, logos, and color schemes applied consistently across all UI elements",
       "files": [
-        "frontend/src/hooks/useQueries.ts"
+        "frontend/src/index.css"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -39,30 +39,10 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-enhance-the-boot-sequence-with-more-realistic-system-initialization-including-sequential-loading-text-multiple-initialization-stages-glitch-effects-and-progressive-system-checks-make-the-boot-up-feel-like-a-real-computer-system-starting-up",
-      "featureTitle": "Enhance the boot sequence with more realistic system initialization including sequential loading text, multiple initialization stages, glitch effects, and progressive system checks. Make the boot-up feel like a real computer system starting up.",
+      "featureId": "feature-implement-tactical-tab-with-simplified-radar-map-showing-relative-positioning-threat-assessment-matrix-enemy-detection-alert-levels-green-yellow-orange-red-squad-team-status-indicators-for-hecu-shows-squad-members-communication-log-radio-chatter-incoming-messages-command-updates-inventory-system-key-cards-access-badges-collected-items-with-icons-tactical-equipment-status-grenades-medical-kits-batteries-zone-control-map-showing-faction-territories-objective-waypoint-markers-and-enemy-type-identification-with-threat-ratings",
+      "featureTitle": "Implement Tactical tab with simplified radar/map showing relative positioning, threat assessment matrix (enemy detection, alert levels GREEN/YELLOW/ORANGE/RED), squad/team status indicators (for HECU shows squad members), communication log (radio chatter, incoming messages, command updates), inventory system (key cards, access badges, collected items with icons), tactical equipment status (grenades, medical kits, batteries), zone control map showing faction territories, objective waypoint markers, and enemy type identification with threat ratings",
       "files": [
-        "frontend/src/components/boot/BootSequenceOverlay.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-4"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-polish-tab-selection-interactions-with-smooth-transitions-better-visual-feedback-hover-effects-and-active-state-indicators-make-tab-switching-feel-responsive-and-professional",
-      "featureTitle": "Polish tab selection interactions with smooth transitions, better visual feedback, hover effects, and active state indicators. Make tab switching feel responsive and professional.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/hud/HudTabsBar.tsx",
-        "frontend/src/index.css"
+        "frontend/src/tabs/TacticalTab.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -77,71 +57,13 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-implement-comprehensive-quality-of-life-features-including-keyboard-shortcuts-for-all-major-actions-tooltips-on-interactive-elements-quick-switch-between-factions-saved-user-preferences-and-auto-hide-functionality-for-non-critical-elements",
-      "featureTitle": "Implement comprehensive quality of life features including keyboard shortcuts for all major actions, tooltips on interactive elements, quick-switch between factions, saved user preferences, and auto-hide functionality for non-critical elements.",
+      "featureId": "feature-create-faction-specific-custom-tabs-research-lab-access-for-h-e-v-black-mesa-research-database-experiment-logs-anomalous-materials-data-xen-specimen-analysis-teleportation-tech-research-lambda-complex-clearances-command-briefing-for-hecu-military-chain-of-command-operation-orders-roe-tactical-situation-reports-asset-deployment-classified-intelligence-facility-monitoring-for-security-sector-security-status-access-card-management-alarm-lockdown-controls-surveillance-camera-feeds-mockups-containment-breach-protocols-emergency-evacuation-procedures-and-overwatch-command-for-combine-citizen-suppression-metrics-resistance-activity-tracking-transhuman-forces-deployment-civil-protection-directives-breencast-propaganda-feeds-portal-storm-monitoring",
+      "featureTitle": "Create faction-specific custom tabs: Research Lab Access for H.E.V (Black Mesa research database, experiment logs, anomalous materials data, Xen specimen analysis, teleportation tech research, Lambda Complex clearances), Command Briefing for HECU (military chain of command, operation orders, ROE, tactical situation reports, asset deployment, classified intelligence), Facility Monitoring for Security (sector security status, access card management, alarm/lockdown controls, surveillance camera feeds mockups, containment breach protocols, emergency evacuation procedures), and Overwatch Command for Combine (citizen suppression metrics, resistance activity tracking, transhuman forces deployment, Civil Protection directives, Breencast propaganda feeds, portal storm monitoring)",
       "files": [
         "frontend/src/App.tsx",
-        "frontend/src/components/common/HudTooltip.tsx",
-        "frontend/src/components/hud/HudTabsBar.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-6"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-optimize-all-hud-layouts-for-mobile-devices-with-semi-compact-responsive-design-that-is-100-friendly-for-small-screens-ensure-all-faction-huds-tabs-panels-and-controls-are-fully-functional-and-readable-on-mobile-viewports",
-      "featureTitle": "Optimize all HUD layouts for mobile devices with semi-compact responsive design that is 100% friendly for small screens. Ensure all faction HUDs, tabs, panels, and controls are fully functional and readable on mobile viewports.",
-      "files": [
-        "frontend/src/components/hud/HudTabsBar.tsx",
-        "frontend/src/index.css",
-        "frontend/tailwind.config.js"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-7"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-professional-sectioning-and-layout-organization-with-small-visual-details-like-dividers-section-headers-subtle-spacing-adjustments-and-grouped-related-elements-make-the-interface-feel-polished-and-well-organized",
-      "featureTitle": "Add professional sectioning and layout organization with small visual details like dividers, section headers, subtle spacing adjustments, and grouped related elements. Make the interface feel polished and well-organized.",
-      "files": [
-        "frontend/src/components/common/HudDivider.tsx",
-        "frontend/src/components/common/HudSection.tsx",
-        "frontend/src/index.css"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-8"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-preserve-all-existing-features-including-h-e-v-mark-selection-prototype-through-mark-v-mark-i-glitch-effects-prototype-hybrid-visual-style-all-current-tabs-and-panels-module-toggles-and-stat-tracking-ensure-no-functionality-is-lost-during-faction-system-integration",
-      "featureTitle": "Preserve all existing features including H.E.V Mark selection (Prototype through Mark V), Mark I glitch effects, Prototype hybrid visual style, all current tabs and panels, module toggles, and stat tracking. Ensure no functionality is lost during faction system integration.",
-      "files": [
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/index.css"
+        "frontend/src/tabs/CommandBriefingTab.tsx",
+        "frontend/src/tabs/FacilityMonitoringTab.tsx",
+        "frontend/src/tabs/ResearchLabTab.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -152,6 +74,61 @@
       ],
       "testIds": [
         "REQ-9"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-build-utilities-tab-with-complete-audio-system-radio-ambient-music-toggle-on-off-custom-music-file-upload-via-drag-and-drop-or-file-browser-audio-player-with-play-pause-stop-skip-controls-volume-slider-0-100-track-selection-dropdown-now-playing-display-playlist-management-add-remove-reorder-persistent-playback-across-all-tabs-mini-music-controller-accessible-from-any-screen-equipment-toggles-for-helmet-visor-hud-overlay-hud-display-all-interface-elements-long-jump-module-flashlight-with-battery-drain-enhanced-bio-monitoring-sprint-module-oxygen-supply-and-geiger-counter-audio-visual-warnings-visual-settings-scanline-overlay-intensity-0-100-glitch-effect-frequency-toggle-hud-opacity-adjustment-color-intensity-slider-screen-shake-toggle-vignette-effect-toggle-and-system-settings-faction-selection-with-preview-operator-name-changer-h-e-v-mark-selector-mark-i-v-with-stats-time-format-12h-24h",
+      "featureTitle": "Build Utilities tab with complete audio system (radio/ambient music toggle ON/OFF, custom music file upload via drag-and-drop or file browser, audio player with play/pause/stop/skip controls, volume slider 0-100%, track selection dropdown, now playing display, playlist management add/remove/reorder, persistent playback across all tabs, mini music controller accessible from any screen), equipment toggles for Helmet (visor HUD overlay), HUD Display (all interface elements), Long Jump Module, Flashlight (with battery drain), Enhanced Bio-Monitoring, Sprint Module, Oxygen Supply, and Geiger Counter (audio/visual warnings), visual settings (scanline overlay intensity 0-100%, glitch effect frequency toggle, HUD opacity adjustment, color intensity slider, screen shake toggle, vignette effect toggle), and system settings (faction selection with preview, operator name changer, H.E.V Mark Selector Mark I-V with stats, time format 12h/24h)",
+      "files": [
+        "frontend/src/components/utilities/MiniAudioPlayer.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-12"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-ensure-100-mobile-optimization-with-portrait-and-landscape-orientation-support-touch-optimized-controls-with-minimum-44px-tap-targets-responsive-breakpoints-mobile-320px-tablet-768px-desktop-1024px-hamburger-menu-for-tab-navigation-on-small-screens-gesture-controls-swipe-between-tabs-pinch-to-zoom-on-tactical-map-bottom-navigation-bar-for-primary-actions-collapsible-panels-to-maximize-screen-real-estate-optimized-asset-loading-for-mobile-bandwidth-hardware-acceleration-for-60fps-animations-and-service-worker-for-offline-functionality",
+      "featureTitle": "Ensure 100% mobile optimization with portrait and landscape orientation support, touch-optimized controls with minimum 44px tap targets, responsive breakpoints (mobile 320px+, tablet 768px+, desktop 1024px+), hamburger menu for tab navigation on small screens, gesture controls (swipe between tabs, pinch to zoom on tactical map), bottom navigation bar for primary actions, collapsible panels to maximize screen real estate, optimized asset loading for mobile bandwidth, hardware acceleration for 60fps animations, and service worker for offline functionality",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/index.css"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-16"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-apply-monochrome-color-schemes-consistently-across-all-ui-elements-for-each-faction-h-e-v-uses-shades-of-orange-black-hecu-uses-shades-of-military-green-black-security-uses-shades-of-blue-black-combine-uses-blue-and-white-not-restricted-to-monochrome-color-schemes-must-affect-buttons-panels-text-borders-progress-bars-badges-icons-overlays-and-all-visual-elements-with-smooth-transitions-when-switching-factions",
+      "featureTitle": "Apply monochrome color schemes consistently across all UI elements for each faction: H.E.V uses shades of orange + black, HECU uses shades of military green + black, Security uses shades of blue + black, Combine uses blue AND white (not restricted to monochrome). Color schemes must affect buttons, panels, text, borders, progress bars, badges, icons, overlays, and all visual elements with smooth transitions when switching factions",
+      "files": [
+        "frontend/src/index.css"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-18"
       ],
       "confidence": "high"
     }

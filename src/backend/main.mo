@@ -6,6 +6,7 @@ import Nat "mo:core/Nat";
 import Runtime "mo:core/Runtime";
 import Migration "migration";
 
+// Apply data migration on upgrades - must be first line of actor definition
 (with migration = Migration.run)
 actor {
   /////////////////////////////////////////////////////////////////////////////
@@ -34,6 +35,11 @@ actor {
 
   type FireHazard = {
     var temp : Nat;
+    var status : Text;
+  };
+
+  type HazardLevel = {
+    var level : Nat;
     var status : Text;
   };
 
@@ -66,12 +72,11 @@ actor {
   };
 
   type EnvironmentalHazards = {
-    var levels : EnvironmentHazardLevels;
-    fire : FireHazard;
-    bio : BioHazard;
-    radiation : RadiationHazard;
-    electrical : ElectricalHazard;
-    gas : GasHazard;
+    fire : HazardLevel;
+    bio : HazardLevel;
+    radiation : HazardLevel;
+    electrical : HazardLevel;
+    gas : HazardLevel;
   };
 
   type LifeSupportSystem = {
@@ -180,6 +185,7 @@ actor {
     name : Text;
     description : Text;
     defaultWeapons : [Text];
+    customTab : ?Text;
   };
 
   type Modes = {
@@ -250,10 +256,13 @@ actor {
     moduleSync : Bool;
   };
 
-  // Map for Mark Selection
-  let markFeatures = Map.empty<Nat, FeatureSet>();
+  public type settingsView = {
+    currentMark : Nat;
+    availableFeatures : FeatureSet;
+  };
 
-  // Current Mark
+  // Initialize feature map with all marks
+  let markFeatures = Map.empty<Nat, FeatureSet>();
   var currentMark : Nat = 5;
 
   let mark1Features : FeatureSet = {
@@ -351,9 +360,11 @@ actor {
     moduleSync = true;
   };
 
-  public type settingsView = {
-    currentMark : Nat;
-    availableFeatures : FeatureSet;
+  public type FactionView = {
+    name : Text;
+    description : Text;
+    defaultWeapons : [Text];
+    customTab : ?Text;
   };
 
   // Initialize feature map with all marks
@@ -391,7 +402,7 @@ actor {
     };
     supportSystems = {
       navigation = "Ultrasonic mapping";
-      communication = "Radio + blue tooth";
+      communication = "Radio + bluetooth";
       sensors = "Temperature and environmental";
       automation = "Autopilot";
     };
@@ -410,7 +421,7 @@ actor {
     engineSpecs = {
       engineType = "V8 Custom";
       powerOutput = 620;
-      torque = 800; // Nm
+      torque = 800;
       transmission = "7-speed manual";
     };
     tacticalCapabilities = {
@@ -449,7 +460,7 @@ actor {
     engineSpecs = {
       engineType = "Retro High-Performance";
       powerOutput = 340;
-      torque = 550; // Nm
+      torque = 550;
       transmission = "5-speed manual";
     };
     tacticalCapabilities = {
@@ -499,9 +510,10 @@ actor {
   /////////////////////////////////////////////////////////////////////////////
   // Factions System
   /////////////////////////////////////////////////////////////////////////////
-  let factions = Map.empty<Text, Faction>();
-  var currentFaction : Text = "default";
-  let factionWeapons = Map.empty<Text, [Text]>();
+  var factions = Map.empty<Text, Faction>();
+  var factionWeapons = Map.empty<Text, [Text]>();
+  var currentFaction : ?Text = null;
+  var customFactionTabs = Map.empty<Text, Text>();
 
   // Add Faction
   func addFaction(faction : Faction) {
@@ -514,36 +526,39 @@ actor {
       name = "hecu";
       description = "Highly trained military force specializing in hazardous environment combat.";
       defaultWeapons = ["MP5", "Shotgun", "Desert Eagle", "M249 SAW", "Sniper Rifle", "Grenade Launcher"];
+      customTab = ?"military_tactical";
     });
     addFaction({
       name = "blackMesaSecurity";
       description = "Black Mesa's security personnel equipped to handle internal threats.";
       defaultWeapons = ["Glock", "MP5 (BMS)", "Shotgun (BMS)", "Crowbar"];
+      customTab = ?"security";
     });
     addFaction({
       name = "halfLife2";
       description = "Resistance fighters and Combine forces in post-apocalyptic world.";
       defaultWeapons = ["Pulse Rifle", "Gravity Gun"];
+      customTab = ?"hev_suit_overview";
     });
     addFaction({
       name = "default";
       description = "Default faction with basic equipment.";
       defaultWeapons = [];
+      customTab = null;
     });
   };
 
   /////////////////////////////////////////////////////////////////////////////
   // Weapons System
   /////////////////////////////////////////////////////////////////////////////
-  let weaponData = Map.empty<Text, Weapon>();
+  var weaponData = Map.empty<Text, Weapon>();
 
   func addWeapon(weapon : Weapon) {
     weaponData.add(weapon.name, weapon);
   };
 
-  /////////////////////////////////////////////////////////////////////////////
-  // HECU Weapons
-  func initializeHECUWeapons() {
+  func initializeWeapons() {
+    // HECU Weapons
     addWeapon({
       name = "MP5";
       weaponType = "Submachine Gun";
@@ -604,11 +619,8 @@ actor {
       description = "Launches explosive grenades.";
       lore = "Essential for clearing heavily armored targets and fortified positions.";
     });
-  };
 
-  /////////////////////////////////////////////////////////////////////////////
-  // Black Mesa Security Weapons
-  func initializeBlackMesaWeapons() {
+    // Black Mesa Security Weapons
     addWeapon({
       name = "Glock";
       weaponType = "Handgun";
@@ -649,11 +661,8 @@ actor {
       description = "Sturdy melee weapon.";
       lore = "Not just for opening crates, but a reliable tool in a pinch.";
     });
-  };
 
-  /////////////////////////////////////////////////////////////////////////////
-  // Default Half-Life 2 Weapons
-  func initializeHalfLife2Weapons() {
+    // Half-Life 2 Weapons
     addWeapon({
       name = "Pulse Rifle";
       weaponType = "Rifle";
@@ -676,26 +685,15 @@ actor {
     });
   };
 
-  /////////////////////////////////////////////////////////////////////////////
-  // Initialize All Weapons
-  func initializeWeapons() {
-    initializeHECUWeapons();
-    initializeBlackMesaWeapons();
-    initializeHalfLife2Weapons();
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // Faction Weapons Customization
-  /////////////////////////////////////////////////////////////////////////////
   func initializeDefaultFactionWeapons() {
     for ((factionName, faction) in factions.entries()) {
       factionWeapons.add(factionName, faction.defaultWeapons);
     };
   };
 
-  initializeFactions(); // factions first!
-  initializeWeapons(); // weapons second!
-  initializeDefaultFactionWeapons(); // custom faction sets last!
+  initializeFactions();
+  initializeWeapons();
+  initializeDefaultFactionWeapons();
 
   /////////////////////////////////////////////////////////////////////////////
   // Existing Core Systems (Unchanged from original)
@@ -731,33 +729,11 @@ actor {
   };
 
   var envHazards : EnvironmentalHazards = {
-    var levels = {
-      var fire = 0;
-      var bio = 0;
-      var radiation = 0;
-      var electrical = 0;
-      var gas = 0;
-    };
-    fire = {
-      var temp = 21;
-      var status = "safe";
-    };
-    bio = {
-      var hazardLevel = 0;
-      var status = "minimal";
-    };
-    radiation = {
-      var radLevel = 0;
-      var status = "background";
-    };
-    electrical = {
-      var voltage = 0;
-      var status = "stable";
-    };
-    gas = {
-      var gasLevel = 0;
-      var status = "normal";
-    };
+    fire = { var level = 0; var status = "safe" };
+    bio = { var level = 0; var status = "minimal" };
+    radiation = { var level = 0; var status = "background" };
+    electrical = { var level = 0; var status = "stable" };
+    gas = { var level = 0; var status = "normal" };
   };
 
   var eps : EnvProtectionSystem = {
@@ -814,11 +790,11 @@ actor {
   /////////////////////////////////////////////////////////////////////////////
   // Faction Management
   /////////////////////////////////////////////////////////////////////////////
-  public query ({ caller }) func getCurrentFaction() : async Text {
+  public query ({ caller }) func getCurrentFaction() : async ?Text {
     currentFaction;
   };
 
-  public query ({ caller }) func getAllFactions() : async [Faction] {
+  public query ({ caller }) func getAllFactions() : async [FactionView] {
     let iter = factions.values();
     iter.toArray();
   };
@@ -826,7 +802,7 @@ actor {
   public shared ({ caller }) func switchFaction(factionName : Text) : async () {
     switch (factions.get(factionName)) {
       case (?_f) {
-        currentFaction := factionName;
+        currentFaction := ?factionName;
       };
       case (null) { Runtime.trap("Invalid Faction") };
     };
@@ -834,21 +810,11 @@ actor {
 
   public shared ({ caller }) func changeMark(markType : Nat) : async () {
     switch (markType) {
-      case (1) {
-        currentMark := 1;
-      };
-      case (2) {
-        currentMark := 2;
-      };
-      case (3) {
-        currentMark := 3;
-      };
-      case (4) {
-        currentMark := 4;
-      };
-      case (5) {
-        currentMark := 5;
-      };
+      case (1) { currentMark := 1 };
+      case (2) { currentMark := 2 };
+      case (3) { currentMark := 3 };
+      case (4) { currentMark := 4 };
+      case (5) { currentMark := 5 };
       case (_) { Runtime.trap("Invalid Mark") };
     };
   };
@@ -860,7 +826,6 @@ actor {
     };
   };
 
-  ////// Helper for Mark Features
   func getCurrentFeatures() : FeatureSet {
     let result = markFeatures.get(currentMark);
     switch (result) {
@@ -873,9 +838,8 @@ actor {
   // Faction Weapons Management
   /////////////////////////////////////////////////////////////////////////////
   public shared ({ caller }) func customizeFactionWeapons(faction : Text, weaponList : [Text]) : async () {
-    // When a faction is selected without a specific custom mapping, fallback to defaultWeapons
     switch (factions.get(faction)) {
-      case (?f) {
+      case (?_f) {
         factionWeapons.add(faction, weaponList);
       };
       case (null) { Runtime.trap("Faction not found.") };
@@ -1091,41 +1055,40 @@ actor {
 
   public shared ({ caller }) func setTemperature(tempVal : Nat) : async () {
     lss.temperature := tempVal;
-    envHazards.fire.temp := tempVal;
     if (tempVal > 25) {
-      envHazards.fire.status := "overheating";
+      setHazardLevel("fire", 2);
       lss.airPurificationStatus := "caution";
     } else {
-      envHazards.fire.status := "safe";
+      setHazardLevel("fire", 1);
       lss.airPurificationStatus := "good";
     };
   };
 
   public shared ({ caller }) func toggleHazard(hazardType : Text, level : Nat) : async () {
-    func setHazardStatus(hazardType : Text, newStatus : Text, hazardVar : { var status : Text }) {
-      hazardVar.status := hazardType # " hazard: " # newStatus;
-    };
+    setHazardLevel(hazardType, level);
+  };
 
+  func setHazardLevel(hazardType : Text, level : Nat) {
     switch (hazardType) {
       case ("fire") {
-        envHazards.levels.fire := level;
-        setHazardStatus("fire", statusText(level), envHazards.fire);
+        envHazards.fire.level := level;
+        envHazards.fire.status := statusText(level);
       };
       case ("bio") {
-        envHazards.levels.bio := level;
-        setHazardStatus("bio", statusText(level), envHazards.bio);
+        envHazards.bio.level := level;
+        envHazards.bio.status := statusText(level);
       };
       case ("radiation") {
-        envHazards.levels.radiation := level;
-        setHazardStatus("radiation", statusText(level), envHazards.radiation);
+        envHazards.radiation.level := level;
+        envHazards.radiation.status := statusText(level);
       };
       case ("electrical") {
-        envHazards.levels.electrical := level;
-        setHazardStatus("electrical", statusText(level), envHazards.electrical);
+        envHazards.electrical.level := level;
+        envHazards.electrical.status := statusText(level);
       };
       case ("gas") {
-        envHazards.levels.gas := level;
-        setHazardStatus("gas", statusText(level), envHazards.gas);
+        envHazards.gas.level := level;
+        envHazards.gas.status := statusText(level);
       };
       case (_) {};
     };
@@ -1137,7 +1100,7 @@ actor {
   };
 
   public shared ({ caller }) func getHazardData() : async (Nat, Nat, Nat, Nat, Nat) {
-    (lss.temperature, envHazards.levels.fire, envHazards.levels.bio, envHazards.levels.radiation, envHazards.levels.gas);
+    (lss.temperature, envHazards.fire.level, envHazards.bio.level, envHazards.radiation.level, envHazards.gas.level);
   };
 
   public shared ({ caller }) func getFireStatus() : async Text {
@@ -1260,5 +1223,13 @@ actor {
         sysStatus.state := "critical";
       };
     };
+  };
+
+  public query ({ caller }) func getCustomTab(tabName : Text) : async ?Text {
+    customFactionTabs.get(tabName);
+  };
+
+  public shared ({ caller }) func setCustomTab(tabName : Text, data : Text) : async () {
+    customFactionTabs.add(tabName, data);
   };
 };

@@ -7,8 +7,7 @@ import { useAutoUiScale } from '@/hooks/useAutoUiScale';
 import { HudGlobalEffects } from './HudGlobalEffects';
 import { EnhancedStatusIndicators } from './EnhancedStatusIndicators';
 import { FactionLayoutWrapper } from './FactionLayoutWrapper';
-import { MarkIGlitchOverlay } from './MarkIGlitchOverlay';
-import { getMarkTheme } from '@/lib/markThemes';
+import { cn } from '@/lib/utils';
 
 interface HudLayoutProps {
   children: ReactNode;
@@ -21,9 +20,7 @@ export function HudLayout({ children }: HudLayoutProps) {
     hudStyleMode,
     hudOpacity,
     operatorName,
-    hevMark,
-    separateMarkStyleFromFunction,
-    functionalMark,
+    uiScale,
   } = useInfoSettingsStore();
   const { stats } = useSuitStore();
   const { getAggregateHazard } = useHazardsStore();
@@ -38,7 +35,7 @@ export function HudLayout({ children }: HudLayoutProps) {
   const getFactionDisplayName = () => {
     switch (systemStyle) {
       case 'hev':
-        return getMarkTheme(hevMark).name;
+        return 'H.E.V. MARK V';
       case 'hecu':
         return 'HECU MARINE';
       case 'security':
@@ -51,41 +48,32 @@ export function HudLayout({ children }: HudLayoutProps) {
     }
   };
 
-  // Apply Mark theme to CSS variables
+  // Apply faction-specific CSS class to root
   useEffect(() => {
-    const visualMark = hevMark;
-    const theme = getMarkTheme(visualMark);
-
     if (containerRef.current) {
       const root = containerRef.current;
-      root.style.setProperty('--primary', theme.colors.primary);
-      root.style.setProperty('--accent', theme.colors.accent);
-      root.style.setProperty('--border', theme.colors.border);
-      root.style.setProperty('--background', theme.colors.background);
-      root.style.setProperty('--foreground', theme.colors.foreground);
-      
-      // Add visual style class
-      root.setAttribute('data-mark-style', theme.visualStyle);
-      root.setAttribute('data-mark', visualMark);
+      // Remove all faction classes
+      root.classList.remove('faction-hev', 'faction-hecu', 'faction-security', 'faction-resistance');
+      // Add current faction class
+      root.classList.add(`faction-${systemStyle}`);
     }
-  }, [hevMark]);
+  }, [systemStyle]);
 
   return (
     <div
       ref={containerRef}
-      className="hud-container"
+      className={cn('hud-container', `faction-${systemStyle}`)}
       data-system-style={systemStyle}
       data-hud-mode={hudStyleMode}
       style={
         {
           '--hud-opacity': hudOpacity,
-          '--hud-scale': autoScale,
+          '--hud-scale': uiScale * autoScale,
         } as React.CSSProperties
       }
     >
       <HudGlobalEffects isCriticalFlashing={isCritical} />
       <EnhancedStatusIndicators />
-      <MarkIGlitchOverlay />
 
       <FactionLayoutWrapper>
         <div className="hud-layout">
@@ -93,13 +81,11 @@ export function HudLayout({ children }: HudLayoutProps) {
             <div className="hud-header-content">
               <h1 className="hud-title">{getFactionDisplayName()}</h1>
               <div className="hud-subtitle">
-                <span className="operator-name">{operatorName}</span>
-                <span className="hud-status-dot" />
-                <span>SYSTEM ONLINE</span>
+                <span className="hud-operator">{operatorName}</span>
+                <span className="hud-status">ONLINE</span>
               </div>
             </div>
           </header>
-
           <main className="hud-main">{children}</main>
         </div>
       </FactionLayoutWrapper>

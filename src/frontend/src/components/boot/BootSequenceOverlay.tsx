@@ -51,14 +51,16 @@ export function BootSequenceOverlay({ onComplete }: BootSequenceOverlayProps) {
   const [completedStages, setCompletedStages] = useState<number[]>([]);
   const [progress, setProgress] = useState(0);
   const [showGlitch, setShowGlitch] = useState(false);
+  const [showLogo, setShowLogo] = useState(false);
   const reducedMotion = useReducedMotion();
   const { systemStyle } = useInfoSettingsStore();
 
   useEffect(() => {
     if (currentStage >= BOOT_STAGES.length) {
+      setShowLogo(true);
       const timer = setTimeout(() => {
         onComplete();
-      }, 800);
+      }, 1500);
       return () => clearTimeout(timer);
     }
 
@@ -86,6 +88,34 @@ export function BootSequenceOverlay({ onComplete }: BootSequenceOverlayProps) {
     }
     return stage.label;
   };
+
+  const getFactionLogo = () => {
+    switch (systemStyle) {
+      case 'hev':
+        return '/assets/generated/hev-logo.dim_512x512.png';
+      case 'hecu':
+        return '/assets/generated/hecu-logo.dim_512x512.png';
+      case 'security':
+        return '/assets/generated/security-logo.dim_512x512.png';
+      default:
+        return '/assets/generated/hev-logo.dim_512x512.png';
+    }
+  };
+
+  if (showLogo) {
+    return (
+      <div className={cn('boot-sequence-overlay', 'boot-logo-reveal')}>
+        <div className="boot-logo-container">
+          <img
+            src={getFactionLogo()}
+            alt="Faction Logo"
+            className="boot-logo"
+          />
+          <div className="boot-logo-glow" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={cn('boot-sequence-overlay', showGlitch && 'boot-glitch')}>

@@ -37,10 +37,11 @@ export interface EngineSpecs {
   'torque' : bigint,
   'engineType' : string,
 }
-export interface Faction {
+export interface FactionView {
   'defaultWeapons' : Array<string>,
   'name' : string,
   'description' : string,
+  'customTab' : [] | [string],
 }
 export interface FeatureSet {
   'communication' : boolean,
@@ -124,7 +125,7 @@ export interface _SERVICE {
     [],
     Array<ComprehensiveVehicleInfo>
   >,
-  'getAllFactions' : ActorMethod<[], Array<Faction>>,
+  'getAllFactions' : ActorMethod<[], Array<FactionView>>,
   'getAllHazardStatuses' : ActorMethod<
     [],
     {
@@ -142,9 +143,10 @@ export interface _SERVICE {
     [string],
     ComprehensiveVehicleInfo
   >,
-  'getCurrentFaction' : ActorMethod<[], string>,
+  'getCurrentFaction' : ActorMethod<[], [] | [string]>,
   'getCurrentMark' : ActorMethod<[], settingsView>,
   'getCurrentMode' : ActorMethod<[], ModesView>,
+  'getCustomTab' : ActorMethod<[string], [] | [string]>,
   'getElectricalStatus' : ActorMethod<[], string>,
   'getEnvProtectionInfo' : ActorMethod<[], [boolean, bigint, bigint, string]>,
   'getFactionWeapons' : ActorMethod<[string], [] | [Array<string>]>,
@@ -167,6 +169,7 @@ export interface _SERVICE {
   'getWeapon' : ActorMethod<[string], [] | [WeaponView]>,
   'getWeaponsCount' : ActorMethod<[], bigint>,
   'removeWarningSensor' : ActorMethod<[bigint], undefined>,
+  'setCustomTab' : ActorMethod<[string, string], undefined>,
   'setErrorState' : ActorMethod<[string], undefined>,
   'setSuitState' : ActorMethod<[string, string], undefined>,
   'setTemperature' : ActorMethod<[bigint], undefined>,

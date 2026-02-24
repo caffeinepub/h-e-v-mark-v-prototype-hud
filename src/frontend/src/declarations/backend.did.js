@@ -53,10 +53,11 @@ export const ComprehensiveVehicleInfo = IDL.Record({
   'diagnostics' : IDL.Text,
   'integrity' : IDL.Nat,
 });
-export const Faction = IDL.Record({
+export const FactionView = IDL.Record({
   'defaultWeapons' : IDL.Vec(IDL.Text),
   'name' : IDL.Text,
   'description' : IDL.Text,
+  'customTab' : IDL.Opt(IDL.Text),
 });
 export const WeaponView = IDL.Record({
   'damage' : IDL.Nat,
@@ -124,7 +125,7 @@ export const idlService = IDL.Service({
       [IDL.Vec(ComprehensiveVehicleInfo)],
       ['query'],
     ),
-  'getAllFactions' : IDL.Func([], [IDL.Vec(Faction)], ['query']),
+  'getAllFactions' : IDL.Func([], [IDL.Vec(FactionView)], ['query']),
   'getAllHazardStatuses' : IDL.Func(
       [],
       [
@@ -150,9 +151,10 @@ export const idlService = IDL.Service({
       [ComprehensiveVehicleInfo],
       ['query'],
     ),
-  'getCurrentFaction' : IDL.Func([], [IDL.Text], ['query']),
+  'getCurrentFaction' : IDL.Func([], [IDL.Opt(IDL.Text)], ['query']),
   'getCurrentMark' : IDL.Func([], [settingsView], ['query']),
   'getCurrentMode' : IDL.Func([], [ModesView], ['query']),
+  'getCustomTab' : IDL.Func([IDL.Text], [IDL.Opt(IDL.Text)], ['query']),
   'getElectricalStatus' : IDL.Func([], [IDL.Text], []),
   'getEnvProtectionInfo' : IDL.Func(
       [],
@@ -196,6 +198,7 @@ export const idlService = IDL.Service({
   'getWeapon' : IDL.Func([IDL.Text], [IDL.Opt(WeaponView)], ['query']),
   'getWeaponsCount' : IDL.Func([], [IDL.Nat], ['query']),
   'removeWarningSensor' : IDL.Func([IDL.Nat], [], []),
+  'setCustomTab' : IDL.Func([IDL.Text, IDL.Text], [], []),
   'setErrorState' : IDL.Func([IDL.Text], [], []),
   'setSuitState' : IDL.Func([IDL.Text, IDL.Text], [], []),
   'setTemperature' : IDL.Func([IDL.Nat], [], []),
@@ -257,10 +260,11 @@ export const idlFactory = ({ IDL }) => {
     'diagnostics' : IDL.Text,
     'integrity' : IDL.Nat,
   });
-  const Faction = IDL.Record({
+  const FactionView = IDL.Record({
     'defaultWeapons' : IDL.Vec(IDL.Text),
     'name' : IDL.Text,
     'description' : IDL.Text,
+    'customTab' : IDL.Opt(IDL.Text),
   });
   const WeaponView = IDL.Record({
     'damage' : IDL.Nat,
@@ -328,7 +332,7 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(ComprehensiveVehicleInfo)],
         ['query'],
       ),
-    'getAllFactions' : IDL.Func([], [IDL.Vec(Faction)], ['query']),
+    'getAllFactions' : IDL.Func([], [IDL.Vec(FactionView)], ['query']),
     'getAllHazardStatuses' : IDL.Func(
         [],
         [
@@ -354,9 +358,10 @@ export const idlFactory = ({ IDL }) => {
         [ComprehensiveVehicleInfo],
         ['query'],
       ),
-    'getCurrentFaction' : IDL.Func([], [IDL.Text], ['query']),
+    'getCurrentFaction' : IDL.Func([], [IDL.Opt(IDL.Text)], ['query']),
     'getCurrentMark' : IDL.Func([], [settingsView], ['query']),
     'getCurrentMode' : IDL.Func([], [ModesView], ['query']),
+    'getCustomTab' : IDL.Func([IDL.Text], [IDL.Opt(IDL.Text)], ['query']),
     'getElectricalStatus' : IDL.Func([], [IDL.Text], []),
     'getEnvProtectionInfo' : IDL.Func(
         [],
@@ -404,6 +409,7 @@ export const idlFactory = ({ IDL }) => {
     'getWeapon' : IDL.Func([IDL.Text], [IDL.Opt(WeaponView)], ['query']),
     'getWeaponsCount' : IDL.Func([], [IDL.Nat], ['query']),
     'removeWarningSensor' : IDL.Func([IDL.Nat], [], []),
+    'setCustomTab' : IDL.Func([IDL.Text, IDL.Text], [], []),
     'setErrorState' : IDL.Func([IDL.Text], [], []),
     'setSuitState' : IDL.Func([IDL.Text, IDL.Text], [], []),
     'setTemperature' : IDL.Func([IDL.Nat], [], []),

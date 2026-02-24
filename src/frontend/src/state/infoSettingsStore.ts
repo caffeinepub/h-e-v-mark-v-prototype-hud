@@ -28,6 +28,8 @@ interface InfoSettingsState {
   hevMark: HevMark;
   separateMarkStyleFromFunction: boolean;
   functionalMark: HevMark;
+  factionSwitching: boolean;
+  targetFaction: SystemStyle | null;
 
   // Computed properties
   halfLife2ThemeActive: boolean;
@@ -62,6 +64,7 @@ interface InfoSettingsState {
   setHevMark: (mark: HevMark) => void;
   setSeparateMarkStyleFromFunction: () => void;
   setFunctionalMark: (mark: HevMark) => void;
+  completeFactionSwitch: () => void;
   resetSettings: () => void;
 }
 
@@ -87,6 +90,8 @@ const defaultSettings = {
   hevMark: 'mark-v' as HevMark,
   separateMarkStyleFromFunction: false,
   functionalMark: 'mark-v' as HevMark,
+  factionSwitching: false,
+  targetFaction: null as SystemStyle | null,
 };
 
 export const useInfoSettingsStore = create<InfoSettingsState>()(
@@ -126,7 +131,18 @@ export const useInfoSettingsStore = create<InfoSettingsState>()(
       setUiScale: (scale) => set({ uiScale: scale }),
       setDisplayMode: (mode) => set({ displayMode: mode }),
       toggleTacticalTab: () => set((state) => ({ tacticalTabEnabled: !state.tacticalTabEnabled })),
-      setSystemStyle: (style) => set({ systemStyle: style }),
+      setSystemStyle: (style) => {
+        const currentStyle = get().systemStyle;
+        if (currentStyle !== style) {
+          set({ factionSwitching: true, targetFaction: style });
+        }
+      },
+      completeFactionSwitch: () => {
+        const targetFaction = get().targetFaction;
+        if (targetFaction) {
+          set({ systemStyle: targetFaction, factionSwitching: false, targetFaction: null });
+        }
+      },
       toggleMinimalLayout: () => set((state) => ({ minimalLayoutEnabled: !state.minimalLayoutEnabled })),
       setOperatorName: (name) => set({ operatorName: name }),
       toggleUseHl1Weapons: () => set((state) => ({ useHl1Weapons: !state.useHl1Weapons })),

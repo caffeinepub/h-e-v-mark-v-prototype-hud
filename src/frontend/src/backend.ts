@@ -116,11 +116,6 @@ export interface DamageResistance {
         radiation: bigint;
     };
 }
-export interface Faction {
-    defaultWeapons: Array<string>;
-    name: string;
-    description: string;
-}
 export interface TacticalCapabilities {
     speed: bigint;
     acceleration: bigint;
@@ -194,13 +189,19 @@ export interface VehicleLore {
     notableUpgrades: string;
     purpose: string;
 }
+export interface FactionView {
+    defaultWeapons: Array<string>;
+    name: string;
+    description: string;
+    customTab?: string;
+}
 export interface backendInterface {
     addWarningSensor(id: bigint, location: string): Promise<void>;
     changeMark(markType: bigint): Promise<void>;
     chargeGravityGun(): Promise<void>;
     customizeFactionWeapons(faction: string, weaponList: Array<string>): Promise<void>;
     getAllComprehensiveVehicleInfo(): Promise<Array<ComprehensiveVehicleInfo>>;
-    getAllFactions(): Promise<Array<Faction>>;
+    getAllFactions(): Promise<Array<FactionView>>;
     getAllHazardStatuses(): Promise<{
         bio: string;
         gas: string;
@@ -212,9 +213,10 @@ export interface backendInterface {
     getBioStatus(): Promise<string>;
     getCommunicationInfo(): Promise<[boolean, string, string, boolean]>;
     getComprehensiveVehicleInfo(vehicleName: string): Promise<ComprehensiveVehicleInfo>;
-    getCurrentFaction(): Promise<string>;
+    getCurrentFaction(): Promise<string | null>;
     getCurrentMark(): Promise<settingsView>;
     getCurrentMode(): Promise<ModesView>;
+    getCustomTab(tabName: string): Promise<string | null>;
     getElectricalStatus(): Promise<string>;
     getEnvProtectionInfo(): Promise<[boolean, bigint, bigint, string]>;
     getFactionWeapons(faction: string): Promise<Array<string> | null>;
@@ -234,6 +236,7 @@ export interface backendInterface {
     getWeapon(name: string): Promise<WeaponView | null>;
     getWeaponsCount(): Promise<bigint>;
     removeWarningSensor(id: bigint): Promise<void>;
+    setCustomTab(tabName: string, data: string): Promise<void>;
     setErrorState(errorType: string): Promise<void>;
     setSuitState(key: string, value: string): Promise<void>;
     setTemperature(tempVal: bigint): Promise<void>;
@@ -246,7 +249,7 @@ export interface backendInterface {
     toggleModule(moduleName: string): Promise<void>;
     updateStats(stat: string, value: bigint): Promise<void>;
 }
-import type { WeaponView as _WeaponView } from "./declarations/backend.did.d.ts";
+import type { FactionView as _FactionView, WeaponView as _WeaponView } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
     async addWarningSensor(arg0: bigint, arg1: string): Promise<void> {
@@ -319,18 +322,18 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async getAllFactions(): Promise<Array<Faction>> {
+    async getAllFactions(): Promise<Array<FactionView>> {
         if (this.processError) {
             try {
                 const result = await this.actor.getAllFactions();
-                return result;
+                return from_candid_vec_n1(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getAllFactions();
-            return result;
+            return from_candid_vec_n1(this._uploadFile, this._downloadFile, result);
         }
     }
     async getAllHazardStatuses(): Promise<{
@@ -419,18 +422,18 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async getCurrentFaction(): Promise<string> {
+    async getCurrentFaction(): Promise<string | null> {
         if (this.processError) {
             try {
                 const result = await this.actor.getCurrentFaction();
-                return result;
+                return from_candid_opt_n4(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getCurrentFaction();
-            return result;
+            return from_candid_opt_n4(this._uploadFile, this._downloadFile, result);
         }
     }
     async getCurrentMark(): Promise<settingsView> {
@@ -459,6 +462,20 @@ export class Backend implements backendInterface {
         } else {
             const result = await this.actor.getCurrentMode();
             return result;
+        }
+    }
+    async getCustomTab(arg0: string): Promise<string | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getCustomTab(arg0);
+                return from_candid_opt_n4(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getCustomTab(arg0);
+            return from_candid_opt_n4(this._uploadFile, this._downloadFile, result);
         }
     }
     async getElectricalStatus(): Promise<string> {
@@ -503,14 +520,14 @@ export class Backend implements backendInterface {
         if (this.processError) {
             try {
                 const result = await this.actor.getFactionWeapons(arg0);
-                return from_candid_opt_n1(this._uploadFile, this._downloadFile, result);
+                return from_candid_opt_n5(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getFactionWeapons(arg0);
-            return from_candid_opt_n1(this._uploadFile, this._downloadFile, result);
+            return from_candid_opt_n5(this._uploadFile, this._downloadFile, result);
         }
     }
     async getFireStatus(): Promise<string> {
@@ -753,14 +770,14 @@ export class Backend implements backendInterface {
         if (this.processError) {
             try {
                 const result = await this.actor.getWeapon(arg0);
-                return from_candid_opt_n2(this._uploadFile, this._downloadFile, result);
+                return from_candid_opt_n6(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getWeapon(arg0);
-            return from_candid_opt_n2(this._uploadFile, this._downloadFile, result);
+            return from_candid_opt_n6(this._uploadFile, this._downloadFile, result);
         }
     }
     async getWeaponsCount(): Promise<bigint> {
@@ -788,6 +805,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.removeWarningSensor(arg0);
+            return result;
+        }
+    }
+    async setCustomTab(arg0: string, arg1: string): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.setCustomTab(arg0, arg1);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.setCustomTab(arg0, arg1);
             return result;
         }
     }
@@ -946,11 +977,38 @@ export class Backend implements backendInterface {
         }
     }
 }
-function from_candid_opt_n1(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [Array<string>]): Array<string> | null {
+function from_candid_FactionView_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _FactionView): FactionView {
+    return from_candid_record_n3(_uploadFile, _downloadFile, value);
+}
+function from_candid_opt_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [string]): string | null {
     return value.length === 0 ? null : value[0];
 }
-function from_candid_opt_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_WeaponView]): WeaponView | null {
+function from_candid_opt_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [Array<string>]): Array<string> | null {
     return value.length === 0 ? null : value[0];
+}
+function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_WeaponView]): WeaponView | null {
+    return value.length === 0 ? null : value[0];
+}
+function from_candid_record_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    defaultWeapons: Array<string>;
+    name: string;
+    description: string;
+    customTab: [] | [string];
+}): {
+    defaultWeapons: Array<string>;
+    name: string;
+    description: string;
+    customTab?: string;
+} {
+    return {
+        defaultWeapons: value.defaultWeapons,
+        name: value.name,
+        description: value.description,
+        customTab: record_opt_to_undefined(from_candid_opt_n4(_uploadFile, _downloadFile, value.customTab))
+    };
+}
+function from_candid_vec_n1(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_FactionView>): Array<FactionView> {
+    return value.map((x)=>from_candid_FactionView_n2(_uploadFile, _downloadFile, x));
 }
 export interface CreateActorOptions {
     agent?: Agent;

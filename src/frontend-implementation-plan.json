@@ -1,325 +1,698 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Create three complete faction-specific HUDs with enhanced polish and mobile optimization",
+  "title": "Rebuild Complete Multi-Faction Half-Life HUD - Frontend Implementation",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Create three completely separate faction HUD systems (HECU, Security, Resistance), each with its own complete interface design, tab structure, and layouts",
+      "summary": "Fix black screen/flickering by ensuring proper component mounting, asset loading, and error boundaries",
       "acceptanceCriteria": [
-        "Three distinct faction HUD layouts exist with separate routing/view components",
-        "Each faction maintains all core tabs (Basics, Hazards, Medical, Tactical, Weapons, etc.)",
-        "Faction selection persists in settings and loads the correct HUD on app start",
-        "Visual identity is consistent throughout each faction's interface"
+        "Application loads without black screen",
+        "Boot sequence displays correctly on initial load",
+        "All faction switches complete without screen flickering",
+        "Error boundaries catch and display any loading failures gracefully"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/hud/FactionHudShell.tsx",
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Add comprehensive error boundary with fallback UI, implement asset preloading before boot sequence starts, ensure proper async/await handling for backend calls, add loading states for all critical data fetches, and prevent premature rendering until core assets are ready"
+        },
+        {
+          "path": "frontend/src/components/boot/BootSequenceOverlay.tsx",
+          "operation": "modify",
+          "description": "Ensure Lambda logo image at frontend/public/assets/generated/lambda-boot.dim_800x800.png loads before animation starts, add image load error handling with fallback, implement proper unmounting cleanup to prevent memory leaks"
+        },
+        {
+          "path": "frontend/src/components/boot/FactionSwitchOverlay.tsx",
+          "operation": "modify",
+          "description": "Preload all faction logo images (hev-logo.dim_256x256.png, hecu-logo.dim_256x256.png, security-logo.dim_256x256.png, combine-logo.dim_256x256.png) before showing overlay, add loading states, prevent flickering during faction transitions with proper z-index layering"
+        },
+        {
+          "path": "frontend/src/components/ErrorBoundary.tsx",
           "operation": "create",
-          "description": "Create faction-specific HUD shell component that wraps all tabs and applies faction-specific layout structures. This component will receive the selected faction from settings and conditionally render HECU, Security, or Resistance layouts with their unique visual structures while maintaining all existing tab functionality."
+          "description": "Create React error boundary component that catches rendering errors, displays faction-styled fallback UI with error details, provides reset button to attempt recovery, and logs errors to system log store"
         },
         {
-          "path": "frontend/src/components/hud/HudLayout.tsx",
+          "path": "frontend/src/main.tsx",
           "operation": "modify",
-          "description": "Integrate FactionHudShell into the main HUD layout to route between faction-specific interfaces. Update the component to read faction selection from infoSettingsStore and pass it to FactionHudShell, ensuring faction choice persists across sessions."
-        },
-        {
-          "path": "frontend/src/state/infoSettingsStore.ts",
-          "operation": "modify",
-          "description": "Add faction selection state (selectedFaction: 'HECU' | 'Security' | 'Resistance') with persistence. Include actions to switch factions and ensure the selection is restored on app initialization."
-        },
-        {
-          "path": "frontend/src/tabs/SettingsTab.tsx",
-          "operation": "modify",
-          "description": "Add faction selector UI control in the settings tab that allows users to choose between HECU, Security, and Resistance. Wire the selector to infoSettingsStore actions and display the current faction selection."
+          "description": "Wrap App component with ErrorBoundary, add service worker registration error handling, implement fallback for failed QueryClient initialization"
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Apply faction-specific color schemes consistently across all UI elements (HECU green, Security blue, Resistance yellow-orange)",
+      "summary": "Implement cinematic boot sequence with Lambda logo animation, particle system, glow effects, and system initialization text",
       "acceptanceCriteria": [
-        "HECU HUD uses green color scheme throughout all components",
-        "Security HUD uses blue color scheme throughout all components",
-        "Resistance HUD uses yellow-orange color scheme throughout all components",
-        "Color theming applies to borders, progress bars, badges, buttons, and highlights"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "Define faction-specific CSS custom properties for HECU (green tones), Security (blue tones), and Resistance (yellow-orange tones). Add faction-scoped class selectors (.faction-hecu, .faction-security, .faction-resistance) that override standard color variables for borders, accents, progress bars, badges, buttons, and interactive elements."
-        },
-        {
-          "path": "frontend/tailwind.config.js",
-          "operation": "modify",
-          "description": "Extend Tailwind theme with faction-specific color utilities (hecu, security, resistance) using OKLCH color space. Ensure these colors can be used throughout components for consistent theming."
-        },
-        {
-          "path": "frontend/src/components/hud/FactionHudShell.tsx",
-          "operation": "modify",
-          "description": "Apply faction-specific CSS classes to the root HUD container based on selected faction, ensuring all child components inherit faction color theming through CSS custom properties."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Implement faction-specific weapon arsenals with predefined weapon sets and user customization capability",
-      "acceptanceCriteria": [
-        "HECU faction displays military-grade weapons (MP5, SPAS-12, M4A1, explosives)",
-        "Security faction displays security equipment (9mm Pistol, MP5, shotgun, stun stick)",
-        "Resistance faction displays improvised/rebel weapons (Pulse Rifle, Crossbow, SMG, grenades)",
-        "Users can customize weapon lists per faction in settings",
-        "Weapon data persists per faction selection"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/lib/factionWeapons.ts",
-          "operation": "create",
-          "description": "Create faction weapon configuration library defining default weapon sets for HECU (military-grade: MP5, SPAS-12, M4A1, explosives), Security (security equipment: 9mm Pistol, MP5, shotgun, stun stick), and Resistance (improvised: Pulse Rifle, Crossbow, SMG, grenades). Export lookup functions to retrieve weapons by faction."
-        },
-        {
-          "path": "frontend/src/tabs/WeaponsTab.tsx",
-          "operation": "modify",
-          "description": "Update WeaponsTab to filter and display weapons based on selected faction using faction weapon configuration. Wire in the useGetFactionWeapons query hook to fetch customized weapon lists and fall back to default faction sets when no customization exists."
-        },
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Add useGetFactionWeapons query hook that calls backend.getFactionWeapons(faction) and returns the weapon list. Add useCustomizeFactionWeapons mutation hook that calls backend.customizeFactionWeapons(faction, weaponList) to persist user customizations."
-        },
-        {
-          "path": "frontend/src/tabs/SettingsTab.tsx",
-          "operation": "modify",
-          "description": "Add faction weapon customization UI in settings tab allowing users to add/remove weapons from their faction's arsenal. Display current weapons for selected faction with checkboxes or multi-select, and use useCustomizeFactionWeapons mutation to save changes."
-        }
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "summary": "Enhance boot sequence with more realistic system initialization including sequential loading, glitch effects, and progressive system checks",
-      "acceptanceCriteria": [
-        "Boot sequence displays multiple initialization stages with descriptive text",
-        "Systems load sequentially with visual progression indicators",
-        "Glitch effects appear during boot for added realism",
-        "Boot sequence includes faction-specific initialization messages",
-        "Audio accompanies boot sequence stages"
+        "Lambda logo displays with animated glow and particle effects",
+        "Initialization text scrolls through multiple stages",
+        "Progress bar shows loading status",
+        "Smooth fade transition from boot to main HUD",
+        "Respects reduced motion preferences"
       ],
       "file_operations": [
         {
           "path": "frontend/src/components/boot/BootSequenceOverlay.tsx",
           "operation": "modify",
-          "description": "Expand boot sequence with additional initialization stages including BIOS checks, driver loading, system diagnostics, module sync, and faction-specific subsystem initialization. Add sequential loading text for each stage with timing delays. Integrate glitch effects (flicker, scanline, color shift) during early boot stages. Include faction-specific initialization messages based on selected faction from settings."
+          "description": "Replace existing boot sequence with cinematic version featuring Lambda logo from frontend/public/assets/generated/lambda-boot.dim_800x800.png with CSS-based glow effects and pulsing animation. Add canvas-based particle system with orange particles radiating from logo center. Implement text scroller showing initialization messages ('INITIALIZING H.E.V SYSTEMS...', 'LOADING FACTION DATA...', 'BIOMETRIC SCAN COMPLETE...', 'NEURAL LINK ESTABLISHED...', 'HAZARD SYSTEMS ONLINE...', 'WEAPON SYSTEMS CALIBRATED...', 'TACTICAL OVERLAY ACTIVE...', 'MEDICAL MONITORING ENGAGED...', 'COMMUNICATIONS SYNCHRONIZED...', 'BOOT SEQUENCE COMPLETE'). Add smooth progress bar animation. Implement fade-out transition to main HUD. Respect prefers-reduced-motion by disabling particles and using simple fade transitions"
         },
         {
-          "path": "frontend/src/audio/audioBus.ts",
+          "path": "frontend/src/components/boot/ParticleSystem.tsx",
+          "operation": "create",
+          "description": "Create canvas-based particle system component that renders orange glowing particles with physics (velocity, gravity, fade). Particles spawn from center and radiate outward. Respects reduced motion preferences by returning null when motion is reduced"
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Create four-faction system with complete HUD transformations and distinct visual styling",
+      "acceptanceCriteria": [
+        "All four factions selectable from settings",
+        "Monochrome color schemes enforced for H.E.V, HECU, Security",
+        "Combine uses both blue and white colors",
+        "Faction logos display prominently in HUD",
+        "All UI elements (buttons, panels, text, borders) use faction color scheme",
+        "Smooth transitions when switching factions"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
           "operation": "modify",
-          "description": "Add support for multi-stage boot audio sequences allowing different sounds to play at specific boot stages (e.g., system startup beep, initialization hum, subsystem online confirmation)."
+          "description": "Add Combine faction theme with blue and white color variables (not monochrome restricted). Ensure H.E.V uses orange + black, HECU uses military green + black, Security uses blue + black. Define CSS custom properties for each faction covering all UI elements (backgrounds, borders, text, accents, glows, shadows). Add transition properties for smooth color changes"
+        },
+        {
+          "path": "frontend/tailwind.config.js",
+          "operation": "modify",
+          "description": "Add Combine color palette to theme extension using blue and white shades. Ensure existing hecu, security, and resistance colors remain monochrome-based. Configure transition utilities for faction switching animations"
+        },
+        {
+          "path": "frontend/src/components/hud/HudLayout.tsx",
+          "operation": "modify",
+          "description": "Add faction logo display in header area showing current faction's logo image (hev-logo.dim_256x256.png, hecu-logo.dim_256x256.png, security-logo.dim_256x256.png, or combine-logo.dim_256x256.png from frontend/public/assets/generated/). Apply faction-specific CSS classes to root container. Add transition classes for smooth faction switching"
+        },
+        {
+          "path": "frontend/src/state/infoSettingsStore.ts",
+          "operation": "modify",
+          "description": "Add Combine faction option to faction switching logic. Ensure faction state properly triggers UI re-renders. Add faction logo path getter that returns correct image path from frontend/public/assets/generated/ based on selected faction"
+        },
+        {
+          "path": "frontend/src/tabs/SettingsTab.tsx",
+          "operation": "modify",
+          "description": "Add Combine faction to faction selector with description emphasizing blue and white color scheme (not monochrome). Update faction descriptions to clarify color restrictions. Show faction logo preview when selecting each faction"
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Build Main tab with compact visual overview of all critical stats and systems",
+      "acceptanceCriteria": [
+        "All critical stats visible in one screen",
+        "Visual progress bars for health, armor, aux power",
+        "Ammo display shows current/reserve format",
+        "Environmental hazards displayed with icons and severity levels",
+        "Current weapon highlighted in quick-select",
+        "Top 3 mission objectives summarized",
+        "Power consumption shows real-time drain rate"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/tabs/BasicsTab.tsx",
+          "operation": "modify",
+          "description": "Expand Main tab to include all required components in single-screen layout: health bar with numerical readout and damage indicators, armor/power with shield integrity percentage, ammo counter showing current/reserve format, auxiliary power meter with real-time drain rate calculation, environmental hazards panel with severity indicators, weapon quick-select grid highlighting current weapon, top 3 mission objectives summary from tactical store, suit power consumption graph showing drain by module. Use responsive grid layout optimized for mobile and desktop"
+        },
+        {
+          "path": "frontend/src/components/main/WeaponQuickSelect.tsx",
+          "operation": "create",
+          "description": "Create weapon quick-select component displaying grid of available weapons from weaponSystemsState with icons, highlighting currently selected weapon with faction-colored border. Show ammo count per weapon. Support touch and click interactions to switch weapons"
+        },
+        {
+          "path": "frontend/src/components/main/MissionObjectivesSummary.tsx",
+          "operation": "create",
+          "description": "Create compact mission objectives component showing top 3 active objectives from tacticalState with priority badges, completion checkboxes, and distance indicators. Use collapsible design to save space"
+        },
+        {
+          "path": "frontend/src/components/main/PowerConsumptionGraph.tsx",
+          "operation": "create",
+          "description": "Create mini graph component showing suit power consumption over time with sparkline visualization. Calculate drain rate from active modules in suitState. Display current drain rate in units per second"
         }
       ]
     },
     {
       "id": "REQ-5",
-      "summary": "Polish tab selection interactions with smooth transitions, better visual feedback, hover effects, and active state indicators",
+      "summary": "Implement Tactical tab with radar, threat assessment, squad status, communication log, inventory, and zone control",
       "acceptanceCriteria": [
-        "Tab hover states show clear visual feedback",
-        "Active tab has distinct styling from inactive tabs",
-        "Tab transitions are smooth with CSS animations",
-        "Tab switching triggers appropriate UI sound effects",
-        "Keyboard navigation (1-9 keys) works with visual feedback"
+        "Radar displays contacts with relative positions",
+        "Threat levels color-coded (GREEN/YELLOW/ORANGE/RED)",
+        "Squad status shows for HECU faction",
+        "Communication log scrollable with timestamps",
+        "Inventory displays collected items with icons",
+        "Waypoint markers show distance and bearing",
+        "Enemy types identified with threat ratings"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/hud/HudTabsBar.tsx",
+          "path": "frontend/src/tabs/TacticalTab.tsx",
           "operation": "modify",
-          "description": "Enhance tab button styles with distinct hover, active, and focus states. Add smooth CSS transitions for background, border, and color changes. Ensure active tab has a prominent visual indicator (e.g., border highlight, background glow) that matches faction colors. Add visual feedback for keyboard shortcuts by briefly highlighting the tab when activated via number keys."
+          "description": "Expand Tactical tab with all required components in organized layout: simplified radar showing relative positioning, threat assessment matrix with GREEN/YELLOW/ORANGE/RED alert levels, squad/team status panel (visible only for HECU faction), scrollable communication log with timestamps, inventory system showing collected items with icons, zone control map with faction territories, waypoint markers with distance/bearing, enemy type identification with threat ratings. Use responsive grid adapting to screen size"
         },
         {
-          "path": "frontend/src/index.css",
+          "path": "frontend/src/components/tactical/SquadStatusPanel.tsx",
           "operation": "modify",
-          "description": "Add CSS animation keyframes for tab transitions including fade-in, slide effects, and glow pulses. Define hover and active state styles with smooth transitions respecting reduced motion preferences."
+          "description": "Add visibility condition to only show when system style is HECU. Display squad member status with callsigns, health/armor bars, and positions. Add squad communication indicators"
         },
         {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Ensure tab switching via keyboard shortcuts (1-9 keys) triggers uiSfx.playTabSwitch() sound effect and applies brief visual feedback to the activated tab."
+          "path": "frontend/src/components/tactical/CommunicationLog.tsx",
+          "operation": "create",
+          "description": "Create scrollable communication log component displaying radio messages, command updates, and incoming transmissions with timestamps. Pull from systemLog entries of type 'radio'. Auto-scroll to newest messages with pause on user scroll. Show sender callsign and message priority"
+        },
+        {
+          "path": "frontend/src/components/tactical/InventorySystem.tsx",
+          "operation": "create",
+          "description": "Create inventory grid component displaying collected items (key cards, access badges, batteries, medical supplies) with icons and quantities. Use grid layout with item tooltips showing descriptions. Support item filtering by category"
+        },
+        {
+          "path": "frontend/src/components/tactical/ZoneControlMap.tsx",
+          "operation": "create",
+          "description": "Create zone control map component overlaying faction territories on facility map from frontend/public/assets/generated/facility-map.dim_1200x800.png. Use color-coded regions for faction control. Show contested zones with striped patterns"
+        },
+        {
+          "path": "frontend/src/components/tactical/EnemyIdentification.tsx",
+          "operation": "create",
+          "description": "Create enemy type identification panel listing detected hostiles with threat ratings (LOW/MEDIUM/HIGH/EXTREME), enemy type icons, estimated count, and last known position. Color-code by threat level"
+        },
+        {
+          "path": "frontend/src/state/inventoryState.ts",
+          "operation": "create",
+          "description": "Create Zustand store managing collected inventory items with types (keycard, badge, battery, medkit, ammo), quantities, and methods to add/remove items. Persist inventory state"
         }
       ]
     },
     {
       "id": "REQ-6",
-      "summary": "Implement comprehensive quality of life features including keyboard shortcuts, tooltips, quick-switch, saved preferences, and auto-hide functionality",
+      "summary": "Create Info tab with H.E.V Suit lore, Black Mesa history, faction intel, and character Easter eggs",
       "acceptanceCriteria": [
-        "Keyboard shortcuts work for faction switching (e.g., Ctrl+1/2/3)",
-        "Tooltips appear on hover for buttons, badges, and controls",
-        "User preferences persist across sessions (localStorage/settings)",
-        "Quick-faction switcher accessible from settings or keyboard",
-        "Auto-hide feature for secondary UI elements when inactive"
+        "Collapsible sections for suit lore, Black Mesa history, and faction intel",
+        "Character Easter eggs display when operator name matches",
+        "At least 7 characters with detailed biographies",
+        "Lore text is readable and well-formatted",
+        "Content adapts based on selected faction"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/tabs/InfoTab.tsx",
           "operation": "modify",
-          "description": "Add keyboard shortcuts for quick faction switching (Ctrl+1 for HECU, Ctrl+2 for Security, Ctrl+3 for Resistance). Implement event listener for these shortcuts that updates infoSettingsStore and plays appropriate sound effects."
+          "description": "Add comprehensive lore sections to Info tab: H.E.V Suit lore panel with Mark I-V evolution, technical specs, and notable wearers; Black Mesa lore panel with facility history, research divisions, incident timeline, and key personnel; faction-specific intel panel adapting content based on selected faction (H.E.V: resistance movement, HECU: military command, Security: clearance levels, Combine: overwatch operations). Organize in collapsible HudSection components"
         },
         {
-          "path": "frontend/src/components/common/HudTooltip.tsx",
+          "path": "frontend/src/lib/characterBackstories.ts",
+          "operation": "modify",
+          "description": "Expand character backstory database to include Adrian Shephard (HECU corporal, disciplined soldier, Black Mesa survivor, Osprey crash), Alyx Vance (resistance leader, tech expert, Eli's daughter, Dog companion), Isaac Kleiner (theoretical physicist, Black Mesa scientist, teleportation research), Eli Vance (resistance scientist, prosthetic leg, Alyx's father, Combine defector), Wallace Breen (Administrator, Combine collaborator, former Black Mesa director), plus existing Gordon Freeman and Barney Calhoun entries. Ensure at least 7 detailed character profiles"
+        },
+        {
+          "path": "frontend/src/lib/blackMesaLore.ts",
           "operation": "create",
-          "description": "Create reusable HudTooltip component that wraps interactive elements and displays contextual help text on hover. Use shadcn/ui Tooltip primitives with HUD-specific styling including faction-themed backgrounds and borders."
+          "description": "Create Black Mesa lore data structure with facility history (founding, purpose, location), research divisions (Anomalous Materials, Lambda Complex, Biological Research, Quantum Mechanics), incident timeline (cascade resonance, military intervention, portal storms), and key personnel profiles. Export as structured JSON for rendering"
         },
         {
-          "path": "frontend/src/components/hud/HudTabsBar.tsx",
-          "operation": "modify",
-          "description": "Wrap tab buttons with HudTooltip components showing tab name and keyboard shortcut hint (e.g., 'Basics (1)'). Ensure tooltips respect reduced motion and touch device interactions."
-        },
-        {
-          "path": "frontend/src/components/hud/AutoHideWrapper.tsx",
+          "path": "frontend/src/lib/factionIntel.ts",
           "operation": "create",
-          "description": "Create AutoHideWrapper component that automatically hides secondary UI elements (e.g., non-critical badges, decorative indicators) after a period of inactivity. Use pointer/touch tracking to detect user activity and apply fade-out transitions with reduced motion support."
+          "description": "Create faction-specific intel data structure with content for each faction: H.E.V (Lambda resistance cells, Freeman's role, uprising coordination), HECU (military command structure, operation orders, containment protocols), Security (clearance level hierarchy, facility access, emergency procedures), Combine (Overwatch operations, Civil Protection directives, suppression tactics, Breencast propaganda). Export faction-keyed object"
         },
         {
-          "path": "frontend/src/state/infoSettingsStore.ts",
-          "operation": "modify",
-          "description": "Ensure all user preferences (faction, display mode, voice settings, UI scale, operator name) persist via localStorage using Zustand persist middleware. Verify preferences are restored on app initialization."
+          "path": "frontend/src/components/info/BlackMesaLorePanel.tsx",
+          "operation": "create",
+          "description": "Create collapsible panel component displaying Black Mesa facility lore with expandable sections for history, research divisions, incident timeline, and personnel. Use timeline visualization for incident chronology"
         },
         {
-          "path": "frontend/src/tabs/SettingsTab.tsx",
-          "operation": "modify",
-          "description": "Add quick-faction switcher buttons in settings tab for rapid faction changes. Display keyboard shortcut hints next to faction options. Include tooltips on all setting controls explaining their function."
+          "path": "frontend/src/components/info/FactionIntelPanel.tsx",
+          "operation": "create",
+          "description": "Create faction-specific intel panel that displays different content based on current faction from infoSettingsStore. Show relevant operational information, chain of command, protocols, and objectives specific to each faction"
         }
       ]
     },
     {
       "id": "REQ-7",
-      "summary": "Optimize all HUD layouts for mobile devices with semi-compact responsive design that is 100% friendly for small screens",
+      "summary": "Build Medical tab with real-time vitals, injury diagnostics, toxicity tracking, and medical inventory",
       "acceptanceCriteria": [
-        "All faction HUDs render correctly on mobile devices (320px+)",
-        "Touch targets are appropriately sized for mobile interaction",
-        "Text remains readable without zooming on small screens",
-        "Layouts adapt responsively without horizontal scrolling",
-        "Mobile-specific optimizations for tab navigation and panels"
+        "Vitals update in real-time based on suit stats",
+        "Injury locations mapped to body diagram",
+        "Toxicity meters track radiation and chemical exposure",
+        "Medical inventory shows available supplies",
+        "Bio-monitoring displays graphs for key metrics",
+        "Prognosis updates based on current health status"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/index.css",
+          "path": "frontend/src/tabs/MedicalTab.tsx",
           "operation": "modify",
-          "description": "Add mobile-first responsive typography using fluid type scales and viewport-relative units. Define breakpoints for small screens (320px-640px) with reduced padding, compact spacing, and mobile-optimized font sizes. Ensure all text remains readable on small viewports without zooming."
+          "description": "Expand Medical tab with comprehensive medical systems: real-time vital signs panel (heart rate BPM, blood pressure, respiratory rate, body temperature calculated from suit stats and hazards), injury diagnostic system with body diagram showing location-based damage (head, torso, arms, legs mapped to health/armor values), toxicity level meters (radiation exposure from hazardsState, chemical contamination), medical supply inventory (medkits, morphine, antidote, antitoxin counts), bio-monitoring graphs (Sparkline components for vitals over time), health regeneration rate calculator, stimulant/enhancement status indicators, biometric authentication display, quarantine protocol warnings for high toxicity, prognosis panel with recommended treatment actions. Use responsive grid layout"
         },
         {
-          "path": "frontend/src/components/hud/HudLayout.tsx",
+          "path": "frontend/src/components/medical/MedicalDiagram.tsx",
           "operation": "modify",
-          "description": "Implement responsive layout adjustments for mobile viewports including stacked vertical layouts, reduced sidebar widths, and collapsible sections. Use CSS Grid and Flexbox with mobile-friendly breakpoints to prevent horizontal scrolling."
+          "description": "Expand medical diagram to show detailed injury locations on body schematic from frontend/public/assets/generated/hev-medical-diagram.dim_1200x1600.png. Color-code body regions (head, torso, arms, legs) based on damage severity using health and armor percentages. Add injury severity indicators and tooltips"
         },
         {
-          "path": "frontend/src/components/hud/HudTabsBar.tsx",
-          "operation": "modify",
-          "description": "Optimize tab bar for mobile with touch-friendly button sizes (min 44x44px touch targets), horizontal scrolling for overflow tabs, and swipe gesture support. Consider vertical tab layout option for narrow screens."
+          "path": "frontend/src/components/medical/ToxicityMeters.tsx",
+          "operation": "create",
+          "description": "Create toxicity monitoring component displaying radiation exposure (from radiation hazard level), chemical contamination (from bio/gas hazard levels), and aggregate toxicity index. Show progress bars with color-coded severity and exposure time estimates"
         },
         {
-          "path": "frontend/src/components/hud/Panels.tsx",
-          "operation": "modify",
-          "description": "Adjust StatPanel and MeterPanel components for mobile with compact layouts, stacked orientations on small screens, and touch-optimized interactive elements. Ensure progress bars and meters remain readable at reduced sizes."
+          "path": "frontend/src/components/medical/MedicalInventory.tsx",
+          "operation": "create",
+          "description": "Create medical supply inventory component listing available medical items (medkit, morphine, antidote, antitoxin) with quantities, effectiveness ratings, and quick-use buttons. Integrate with inventory state store"
         },
         {
-          "path": "frontend/tailwind.config.js",
-          "operation": "modify",
-          "description": "Define mobile-specific spacing utilities, compact padding classes, and responsive breakpoints optimized for small screens. Add utilities for touch-target sizing and mobile-friendly layouts."
+          "path": "frontend/src/components/medical/PrognosisPanel.tsx",
+          "operation": "create",
+          "description": "Create prognosis panel that analyzes current health status, hazard exposure, active injuries, and toxicity to generate health assessment (STABLE/CRITICAL/DECLINING) and recommended treatment actions (apply medkit, administer antidote, seek decontamination). Update dynamically as conditions change"
+        },
+        {
+          "path": "frontend/src/components/medical/BiometricGraphs.tsx",
+          "operation": "create",
+          "description": "Create bio-monitoring graphs component using Sparkline visualizations to display vital sign trends (heart rate, blood pressure, respiration) over the last 60 seconds. Calculate values from health, armor, and hazard levels"
         }
       ]
     },
     {
       "id": "REQ-8",
-      "summary": "Add professional sectioning and layout organization with dividers, section headers, spacing adjustments, and grouped elements",
+      "summary": "Implement Objectives/Mission tab with faction-specific briefings, priority levels, and completion tracking",
       "acceptanceCriteria": [
-        "Panels use section headers to group related content",
-        "Visual dividers separate distinct sections within tabs",
-        "Related controls are grouped with appropriate spacing",
-        "Consistent padding and margins throughout interface",
-        "Professional visual hierarchy with clear information organization"
+        "Objectives organized by priority level with visual badges",
+        "Checkboxes for tracking completion status",
+        "Location markers show distance and bearing",
+        "Story context provides mission background",
+        "Different mission sets for each faction"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/common/HudSection.tsx",
+          "path": "frontend/src/components/tactical/MissionBriefingDisplay.tsx",
+          "operation": "modify",
+          "description": "Expand mission briefing to include faction-specific mission sets, primary objectives with completion checkboxes, secondary objectives marked as optional, hidden objectives revealed dynamically, priority level badges (CRITICAL/HIGH/MEDIUM/LOW) with color coding, objective location markers showing distance and bearing, estimated completion time per objective, rewards/benefits display, mission failure consequences warnings, and story context/background information. Add filtering by completion status and priority level"
+        },
+        {
+          "path": "frontend/src/state/tacticalState.ts",
+          "operation": "modify",
+          "description": "Expand tactical store to include comprehensive objective data structure with fields for priority level, completion status, optional flag, hidden flag, location coordinates, distance, bearing, estimated time, rewards, failure consequences, and story context. Add methods to toggle completion, reveal hidden objectives, and filter objectives by criteria"
+        },
+        {
+          "path": "frontend/src/lib/factionMissions.ts",
           "operation": "create",
-          "description": "Create reusable HudSection component for grouping related content with optional section headers, dividers, and consistent spacing. Include props for title, collapsible behavior, and faction-themed styling."
-        },
-        {
-          "path": "frontend/src/components/common/HudDivider.tsx",
-          "operation": "create",
-          "description": "Create HudDivider component for visual separation between sections with faction-specific colors and optional decorative elements (e.g., corner accents, gradient lines)."
-        },
-        {
-          "path": "frontend/src/tabs/BasicsTab.tsx",
-          "operation": "modify",
-          "description": "Refactor BasicsTab to use HudSection components for grouping stat panels and hazard displays. Add section headers (e.g., 'Core Systems', 'Environmental Status') and dividers between major sections."
-        },
-        {
-          "path": "frontend/src/tabs/MedicalTab.tsx",
-          "operation": "modify",
-          "description": "Organize MedicalTab content using HudSection components with clear headers for 'Vital Signs', 'Trauma Assessment', and 'Medical Systems'. Add dividers between medical readouts and interactive panels."
-        },
-        {
-          "path": "frontend/src/tabs/TacticalTab.tsx",
-          "operation": "modify",
-          "description": "Structure TacticalTab with HudSection components grouping radar, threat assessment, quick controls, and mission briefing into distinct sections with headers and dividers."
-        },
-        {
-          "path": "frontend/src/tabs/InfoTab.tsx",
-          "operation": "modify",
-          "description": "Apply HudSection components throughout InfoTab to organize operator profile, subsystems, diagnostics, and console sections with clear headers and visual separation."
-        },
-        {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "Define consistent spacing utilities for sections including standard padding, margin, and gap values. Add section header typography styles with appropriate hierarchy (e.g., uppercase labels, increased letter-spacing)."
+          "description": "Create faction-specific mission data sets with distinct objectives for each faction: H.E.V (Lambda Complex infiltration, specimen retrieval, resistance coordination), HECU (containment operations, hostile elimination, witness suppression), Security (facility lockdown, civilian evacuation, breach containment), Combine (resistance suppression, city control, portal maintenance). Include primary, secondary, and hidden objectives for each faction"
         }
       ]
     },
     {
       "id": "REQ-9",
-      "summary": "Preserve all existing features including H.E.V Mark selection, glitch effects, tabs, modules, and stat tracking",
+      "summary": "Create faction-specific custom tabs for Research Lab, Command Briefing, Facility Monitoring, and Overwatch Command",
       "acceptanceCriteria": [
-        "H.E.V Mark selector remains functional with all marks available",
-        "Mark I glitch effects still activate for Mark I suits",
-        "Prototype hybrid visual styling is preserved",
-        "All existing tabs remain accessible (Basics, Hazards, HEV, Medical, Tactical, Weapons, Utilities, Vehicles, Security, Military, Info, Settings)",
-        "Module states, stats, and backend queries continue working as before"
+        "Each faction has at least one unique custom tab",
+        "Custom tabs only visible when corresponding faction is active",
+        "Content is detailed and immersive for each faction theme",
+        "Visual styling matches faction aesthetic"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/settings/HevMarkSelector.tsx",
-          "operation": "modify",
-          "description": "Ensure H.E.V Mark selector remains fully functional and accessible in settings. Verify all marks (Prototype, Mark I-V) are available and that faction system integration does not interfere with mark selection. Maintain separate visual style and functional profile options."
+          "path": "frontend/src/tabs/ResearchLabTab.tsx",
+          "operation": "create",
+          "description": "Create Research Lab Access tab for H.E.V faction displaying Black Mesa research database with experiment logs, anomalous materials data, Xen specimen analysis reports, teleportation technology research notes, Lambda Complex security clearances, and researcher notes. Use collapsible sections for each research category with technical diagrams and classified markings"
         },
         {
-          "path": "frontend/src/components/hud/MarkIGlitchOverlay.tsx",
-          "operation": "modify",
-          "description": "Verify Mark I glitch effects continue to render correctly when Mark I is selected, ensuring faction-specific styling does not override or disable glitch animations. Test compatibility with all three faction themes."
+          "path": "frontend/src/tabs/CommandBriefingTab.tsx",
+          "operation": "create",
+          "description": "Create Command Briefing tab for HECU faction showing military chain of command structure, operation orders with mission objectives, rules of engagement (ROE) directives, tactical situation reports (SITREP), asset deployment maps, and classified intelligence reports. Use military document styling with classification headers"
         },
         {
-          "path": "frontend/src/components/hud/FactionHudShell.tsx",
-          "operation": "modify",
-          "description": "Ensure faction HUD system preserves all existing tabs (Basics, Hazards, HEV, Medical, Tactical, Weapons, Utilities, Vehicles, Security, Military, Info, Settings) and does not remove or hide any tabs. Maintain tab availability rules based on Mark feature sets."
+          "path": "frontend/src/tabs/FacilityMonitoringTab.tsx",
+          "operation": "create",
+          "description": "Create Facility Monitoring tab for Security faction displaying sector security status grid, access card management system, alarm and lockdown control panel, surveillance camera feed grid using images from frontend/public/assets/generated/security-cam-01.dim_320x240.png through security-cam-03.dim_320x240.png, containment breach protocol checklist, and emergency evacuation procedure flowchart. Use security console styling"
         },
         {
-          "path": "frontend/src/hooks/useMarkFeatures.ts",
-          "operation": "modify",
-          "description": "Verify mark feature detection continues to work correctly with faction system, ensuring feature gating for tabs and modules remains functional across all factions."
+          "path": "frontend/src/tabs/OverwatchCommandTab.tsx",
+          "operation": "create",
+          "description": "Create Overwatch Command tab for Combine faction showing citizen suppression metrics dashboard, resistance activity tracking map, transhuman forces deployment status, Civil Protection directives list, Breencast propaganda feed mockup, and portal storm monitoring readouts. Use authoritarian blue/white Combine aesthetic with surveillance-style layouts"
         },
         {
-          "path": "frontend/src/hooks/useQueries.ts",
+          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Ensure all existing query hooks (useGetStats, useGetModuleStates, useGetHazards, etc.) continue to function correctly with faction system. Verify backend queries are not disrupted by faction changes."
+          "description": "Add conditional rendering of custom faction tabs based on current faction from infoSettingsStore. Show Research Lab tab only for H.E.V, Command Briefing only for HECU, Facility Monitoring only for Security, Overwatch Command only for Combine. Wire custom tabs into main tab navigation system"
         },
         {
-          "path": "frontend/src/state/suitState.ts",
+          "path": "frontend/src/lib/researchLabData.ts",
+          "operation": "create",
+          "description": "Create research lab content data structure with Black Mesa experiments (Anti-Mass Spectrometer, Xen Crystals, Teleportation Tests), anomalous materials database, Xen specimen classifications, Lambda Complex clearance levels, and researcher personnel files. Export structured JSON"
+        }
+      ]
+    },
+    {
+      "id": "REQ-10",
+      "summary": "Build Arsenal/Weapons tab with detailed faction-specific weapon loadouts, schematics, and comprehensive stats",
+      "acceptanceCriteria": [
+        "All faction weapons listed with complete specifications",
+        "Visual schematics or wireframes for each weapon",
+        "Detailed stats tables (damage, accuracy, fire rate, range, reload time)",
+        "Weapon comparison feature allows side-by-side analysis",
+        "Weapon history provides background lore",
+        "Different weapon sets display based on active faction"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/tabs/WeaponsTab.tsx",
           "operation": "modify",
-          "description": "Verify suit state store continues to track health, armor, aux, ammo, hazards, module toggles, and damage events correctly across faction changes. Ensure state persistence works as expected."
+          "description": "Transform Weapons tab to display faction-specific weapon sets with complete specifications: H.E.V (Crowbar, Gravity Gun, Pulse Rifle, .357 Magnum, Crossbow, Shotgun, SMG, Grenades), HECU (MP5, M4 Carbine, Combat Shotgun, Sniper Rifle, Hand Grenades, SAW, Desert Eagle), Security (9mm Pistol, Security Shotgun, Stun Stick, Taser, Flashbang, Pepper Spray), Combine (Pulse Rifle, AR2 Energy Rifle, Combine Elite Gun, Stunstick, Manhacks, Energy Balls). Each weapon displays 3D wireframe schematic using weapon images from frontend/public/assets/generated/ (weapon-crowbar.dim_512x512.png, weapon-pistol.dim_512x512.png, weapon-shotgun.dim_512x512.png, weapon-smg.dim_512x512.png, weapon-gravity-device.dim_512x512.png), full designation name, damage per shot, DPS calculation, accuracy rating, fire rate RPM, magazine capacity and reserve ammo, effective range, reload time, special attributes (armor-piercing, explosive, energy-based), ammo type compatibility, weapon development history and lore, maintenance status indicator. Add weapon comparison mode with side-by-side view and ammo conservation tips panel"
+        },
+        {
+          "path": "frontend/src/components/weapons/WeaponSchematic.tsx",
+          "operation": "create",
+          "description": "Create weapon schematic display component showing wireframe visualization with technical annotations, component labels, and zoom functionality. Reference weapon images from frontend/public/assets/generated/ directory"
+        },
+        {
+          "path": "frontend/src/components/weapons/WeaponComparison.tsx",
+          "operation": "create",
+          "description": "Create weapon comparison tool allowing users to select two weapons for side-by-side stat comparison. Display all stats in parallel columns with visual indicators for superior values. Include radar chart visualization of key stats"
+        },
+        {
+          "path": "frontend/src/lib/factionWeapons.ts",
+          "operation": "create",
+          "description": "Create comprehensive faction weapon database with all weapons for H.E.V, HECU, Security, and Combine factions. Include complete specifications (damage, DPS, accuracy, fire rate, magazine size, reserve ammo, range, reload time, special attributes, ammo type, history, lore, maintenance notes) for each weapon. Structure as faction-keyed object with weapon arrays"
+        }
+      ]
+    },
+    {
+      "id": "REQ-11",
+      "summary": "Implement Systems Diagnostics tab with power management, integrity checks, and maintenance scheduling",
+      "acceptanceCriteria": [
+        "Power consumption shows breakdown per system/module",
+        "Power cell charge level displayed with time remaining estimate",
+        "Module integrity checks show pass/fail/warning status",
+        "Diagnostic codes list any system errors",
+        "Maintenance alerts appear for modules needing attention",
+        "Reboot option triggers system restart sequence"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/tabs/SystemsTab.tsx",
+          "operation": "create",
+          "description": "Create Systems Diagnostics tab displaying suit power management dashboard with energy consumption breakdown by system (life support, weapons, sensors, communications, environmental protection, medical), power cell status showing charge percentage and time remaining estimate, system integrity checks for all modules (pass/fail/warning status with progress bars), diagnostic code list showing any errors or warnings with code numbers and descriptions, maintenance schedule showing next service intervals and overdue alerts, performance optimization suggestions based on current configuration, and reboot/restart system button that triggers boot sequence overlay. Use technical diagnostic styling with system readout panels"
+        },
+        {
+          "path": "frontend/src/components/diagnostics/PowerManagementPanel.tsx",
+          "operation": "create",
+          "description": "Create power management panel component displaying total power consumption, breakdown by active module with bar chart, power cell charge level with time remaining calculation based on current drain rate. Show power efficiency rating and optimization tips"
+        },
+        {
+          "path": "frontend/src/components/diagnostics/IntegrityCheckPanel.tsx",
+          "operation": "create",
+          "description": "Create integrity check panel listing all suit modules (helmet, respirator, HUD display, medical systems, weapons interface, sensors, communications, long jump, radiation shield) with pass/fail/warning status indicators, integrity percentage bars, and last diagnostic timestamp"
+        },
+        {
+          "path": "frontend/src/components/diagnostics/DiagnosticCodesPanel.tsx",
+          "operation": "create",
+          "description": "Create diagnostic codes panel displaying active error and warning codes (e.g., 'ERR-101: Helmet HUD flickering', 'WARN-205: Aux power drain elevated') with severity badges, descriptions, and recommended actions. Pull from system log error entries"
+        },
+        {
+          "path": "frontend/src/components/diagnostics/MaintenanceSchedule.tsx",
+          "operation": "create",
+          "description": "Create maintenance schedule component listing suit modules with next service due date, service interval, hours since last service, and overdue alerts for modules exceeding service intervals. Allow manual service reset with confirmation"
+        }
+      ]
+    },
+    {
+      "id": "REQ-12",
+      "summary": "Build Utilities tab with complete audio system, equipment toggles, visual settings, and system configuration",
+      "acceptanceCriteria": [
+        "Music player uploads and plays custom audio files",
+        "Audio continues playing when switching tabs",
+        "Mini player visible from all screens for playback control",
+        "All equipment items have functional on/off toggles",
+        "Equipment toggles show visual feedback and affect auxiliary power drain",
+        "Visual settings adjustments apply in real-time",
+        "Mark selector changes available features based on suit version"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/tabs/UtilitiesTab.tsx",
+          "operation": "modify",
+          "description": "Expand Utilities tab with comprehensive controls: complete audio system (radio/ambient music toggle, custom file upload via drag-and-drop or file browser, player controls play/pause/stop/skip, volume slider 0-100%, track selection dropdown, now playing display, playlist management with add/remove/reorder), all equipment toggles (Helmet visor HUD, HUD Display, Long Jump Module, Flashlight with battery indicator, Enhanced Bio-Monitoring, Sprint Module, Oxygen Supply, Geiger Counter with audio/visual warnings) with active state indicators and power drain display, visual settings panel (scanline overlay intensity 0-100%, glitch effect frequency toggle, HUD opacity 0-100%, color intensity slider, screen shake toggle, vignette effect toggle), system settings (faction selector with preview, operator name input, H.E.V Mark selector Mark I-V with stats display, time format 12h/24h toggle). Organize in collapsible sections"
+        },
+        {
+          "path": "frontend/src/components/utilities/AudioSystemPanel.tsx",
+          "operation": "create",
+          "description": "Create comprehensive audio system panel with radio/music toggle switch, file upload zone (drag-and-drop and browse), full audio player controls (play/pause/stop/next/previous), volume slider with percentage display, track selection dropdown, now playing marquee, and playlist manager with reorderable track list and delete buttons. Integrate with audioState store"
+        },
+        {
+          "path": "frontend/src/components/utilities/EquipmentTogglesPanel.tsx",
+          "operation": "create",
+          "description": "Create equipment toggles panel with switches for all equipment items (Helmet, HUD Display, Long Jump Module, Flashlight, Enhanced Bio-Monitoring, Sprint Module, Oxygen Supply, Geiger Counter). Show active state with faction-colored indicators, display auxiliary power drain per module, show battery level for Flashlight, enable Geiger Counter audio/visual warnings when radiation is present. Integrate with module toggle mutations"
+        },
+        {
+          "path": "frontend/src/components/utilities/VisualSettingsPanel.tsx",
+          "operation": "create",
+          "description": "Create visual settings panel with sliders for scanline intensity (0-100% affecting overlay opacity), glitch frequency toggle, HUD opacity (0-100% affecting all UI elements), color intensity (0-100% affecting faction color saturation), and toggles for screen shake effects and vignette overlay. Apply settings in real-time using CSS custom properties and global state"
+        },
+        {
+          "path": "frontend/src/components/utilities/MiniAudioPlayer.tsx",
+          "operation": "create",
+          "description": "Create persistent mini audio player component that floats in corner of screen, visible from all tabs. Shows now playing track name, basic play/pause/next controls, and volume icon. Minimizable to small badge showing playback status"
+        },
+        {
+          "path": "frontend/src/components/hud/HudLayout.tsx",
+          "operation": "modify",
+          "description": "Add MiniAudioPlayer component to HudLayout so it persists across all tab navigation and remains accessible from any screen. Position in bottom-right corner with proper z-index"
+        }
+      ]
+    },
+    {
+      "id": "REQ-13",
+      "summary": "Create comprehensive system log with chronological event feed, severity filtering, and export functionality",
+      "acceptanceCriteria": [
+        "All major system events logged with timestamps",
+        "Severity levels color-coded and filterable",
+        "Log auto-scrolls to newest entries",
+        "Pause auto-scroll when user scrolls up",
+        "Export functionality saves log to file",
+        "Log persists across sessions up to last 100 entries"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/info/SystemLogView.tsx",
+          "operation": "modify",
+          "description": "Expand system log to include all event types (system initialization, faction switches, operator name changes, equipment toggles, mission updates, damage taken, items collected, area transitions, warnings, errors, critical alerts), severity level badges (INFO/WARNING/ERROR/CRITICAL) with color coding, filter controls by category and severity, export log button that downloads log as JSON or text file, auto-scroll to newest entries with automatic pause when user scrolls up, manual scroll lock toggle, search functionality, and clear log button with confirmation. Show entry count and total log size"
+        },
+        {
+          "path": "frontend/src/state/systemLog.ts",
+          "operation": "modify",
+          "description": "Expand log store to capture comprehensive system events: faction switches, operator name changes, all equipment toggle events, mission objective updates, damage events with direction and amount, item collection events, area transition events, hazard detection events, module activation/deactivation, console command execution. Add log export method that generates downloadable file. Ensure persistence of last 100 entries"
+        },
+        {
+          "path": "frontend/src/components/info/LogFilterControls.tsx",
+          "operation": "create",
+          "description": "Create log filter controls component with checkboxes for each event category (system, module, command, warning, error, hazard, radio, medical, damage, item, area) and severity level filter (INFO/WARNING/ERROR/CRITICAL). Include clear filters button and active filter count badge"
+        }
+      ]
+    },
+    {
+      "id": "REQ-14",
+      "summary": "Implement operator console with Half-Life styled command-line interface and comprehensive command set",
+      "acceptanceCriteria": [
+        "Console accepts text input with blinking cursor",
+        "All listed commands functional and provide feedback",
+        "Command history navigable with arrow keys",
+        "Help command lists all available commands with descriptions",
+        "Commands trigger appropriate state changes in backend/frontend",
+        "Invalid commands show error messages"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/info/CommandConsole.tsx",
+          "operation": "modify",
+          "description": "Expand command console with Half-Life developer console styling (faction-colored or green text on black background, blinking cursor using CSS animation, monospace font). Implement arrow key navigation for command history (up/down arrows). Add comprehensive command set: /help (list all commands with descriptions), /status (show system status summary), /faction [name] (switch faction with validation), /name [text] (change operator name), /health [value] (set health 0-100), /armor [value] (set armor 0-100), /ammo [value] (set ammo), /power [value] (set aux power), /clear (clear console history), /log (display recent system log), /equip [item] (toggle equipment module), /mark [number] (change H.E.V mark 1-5), /mission (show active objectives), /map (display tactical map), /scan (run environmental scan), /reboot (restart systems with boot sequence), /credits (show development credits). Each command provides confirmation feedback or error message. Integrate with existing executeCommand system"
+        },
+        {
+          "path": "frontend/src/lib/commands.ts",
+          "operation": "modify",
+          "description": "Expand command execution system to support all required commands. Add /map command that switches to Tactical tab, /scan command that triggers environmental hazard reading and displays results, /mission command that switches to Objectives tab and highlights active missions, /credits command that displays development credits in console output. Ensure all commands provide helpful feedback messages and error handling for invalid arguments"
+        }
+      ]
+    },
+    {
+      "id": "REQ-15",
+      "summary": "Add Half-Life themed visual polish with Lambda terminal styling, Geiger counter animation, and Easter eggs",
+      "acceptanceCriteria": [
+        "Lambda geometric patterns appear in UI elements",
+        "Suit power meter displays and drains based on active equipment",
+        "Geiger counter animates with clicking sounds when radiation present",
+        "Ambient Vortigaunt energy effects appear occasionally",
+        "Black Mesa announcements appear as periodic yellow notifications",
+        "G-Man silhouette appears rarely as glitch effect"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/hud/HudGlobalEffects.tsx",
+          "operation": "modify",
+          "description": "Add Lambda Core terminal styling with geometric Lambda patterns as subtle background elements. Add Vortigaunt energy reading visualization as ambient particle effects (green electrical arcs). Implement G-Man Easter egg that rarely (1% chance every 30 seconds) flashes his silhouette as a brief glitch overlay with distortion effects. Add Xen border world visual effects (ethereal particles, dimensional rift animations) when certain conditions met"
+        },
+        {
+          "path": "frontend/src/components/hud/GeigerCounterOverlay.tsx",
+          "operation": "create",
+          "description": "Create Geiger counter visual overlay component that displays radiation warning icon pulsing with intensity based on radiation hazard level from hazardsState. When radiation exceeds 20%, show animated clicking indicator with frequency matching radiation level. Play Geiger counter click sound effects via audioBus when radiation present. Position in corner of HUD with optional toggle from equipment"
+        },
+        {
+          "path": "frontend/src/components/hud/SuitPowerMeter.tsx",
+          "operation": "create",
+          "description": "Create suit power meter component showing real-time auxiliary power level with drain rate visualization. Calculate drain based on active equipment modules (flashlight, sprint, oxygen, etc.). Display as vertical or horizontal bar with segmented sections showing drain per module. Include numerical readout and time remaining estimate"
+        },
+        {
+          "path": "frontend/src/components/hud/BlackMesaAnnouncements.tsx",
+          "operation": "create",
+          "description": "Create Black Mesa announcement system component that periodically (every 2-5 minutes) displays yellow warning box notifications with facility announcements ('ATTENTION: Anomalous materials handling in progress', 'REMINDER: All personnel must wear proper safety equipment', 'NOTICE: Sector C test chamber will be offline for maintenance'). Announcements appear as toast notifications with speaker icon and fade out after 10 seconds"
+        },
+        {
+          "path": "frontend/src/components/hud/HazardCourseToggle.tsx",
+          "operation": "create",
+          "description": "Create hazard course training mode toggle component that enables practice interface with tutorial overlays, interactive training objectives, and safe environment simulation. Toggle accessible from Settings or Utilities tab"
+        },
+        {
+          "path": "frontend/src/components/hud/ThreatIndicators.tsx",
+          "operation": "create",
+          "description": "Create specialized threat indicator components for headcrab warning (when bio hazard high, show headcrab icon with 'PARASITE DETECTED' warning) and Combine scanner drone detection (random chance when in Combine faction, show 'SCANNER DETECTED' alert with drone icon)"
+        }
+      ]
+    },
+    {
+      "id": "REQ-16",
+      "summary": "Ensure 100% mobile optimization with responsive design, touch controls, and offline functionality",
+      "acceptanceCriteria": [
+        "Application functions perfectly on mobile devices",
+        "All buttons and interactive elements at least 44px for touch",
+        "Swipe gestures work for tab navigation",
+        "Layout adapts to portrait and landscape modes",
+        "Hamburger menu appears on mobile screens",
+        "Animations run at 60fps on mobile devices",
+        "Service worker enables offline access"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Add mobile-specific layout logic with hamburger menu for tab navigation on screens below 768px breakpoint. Implement swipe gesture detection for tab navigation (swipe left/right to switch tabs). Add bottom navigation bar for primary actions on mobile. Add orientation change handling that optimizes layout for portrait vs landscape. Ensure all touch targets meet minimum 44px size requirement"
+        },
+        {
+          "path": "frontend/src/components/mobile/HamburgerMenu.tsx",
+          "operation": "create",
+          "description": "Create hamburger menu component that slides in from side on mobile, listing all tabs with icons and close button. Use faction-colored styling. Only renders on mobile breakpoints (< 768px). Includes swipe-to-close gesture"
+        },
+        {
+          "path": "frontend/src/components/mobile/SwipeHandler.tsx",
+          "operation": "create",
+          "description": "Create swipe gesture handler component that detects horizontal swipe gestures (threshold: 50px, velocity check) and triggers tab navigation. Supports left/right swipes to move between adjacent tabs. Includes visual swipe indicator showing progress"
+        },
+        {
+          "path": "frontend/src/components/mobile/BottomNavBar.tsx",
+          "operation": "create",
+          "description": "Create bottom navigation bar component for mobile displaying 4-5 most important tabs as icons with labels. Fixed positioning at bottom of viewport. Only visible on mobile breakpoints. Includes active tab indicator"
+        },
+        {
+          "path": "frontend/tailwind.config.js",
+          "operation": "modify",
+          "description": "Add mobile-first responsive breakpoints (mobile: 320px, tablet: 768px, desktop: 1024px). Configure touch-friendly spacing utilities and minimum tap target sizes. Add safe-area-inset support for notched devices"
+        },
+        {
+          "path": "frontend/src/hooks/useSwipeGesture.ts",
+          "operation": "create",
+          "description": "Create custom React hook for detecting swipe gestures with touch events. Returns swipe direction (left/right/up/down) and distance. Supports threshold configuration and velocity detection. Include pointer event fallback for desktop testing"
+        },
+        {
+          "path": "frontend/public/service-worker.js",
+          "operation": "modify",
+          "description": "Expand service worker cache strategy to include all generated images, audio files, and critical assets for offline functionality. Implement network-first strategy for API calls with offline fallback. Add cache versioning and automatic cleanup. Ensure offline page displays when network unavailable"
         },
         {
           "path": "frontend/src/index.css",
           "operation": "modify",
-          "description": "Preserve Prototype hybrid styling (gradient borders, scanlines) and Mark I glitch animation keyframes. Ensure faction color schemes do not override these special visual styles when those marks are selected."
+          "description": "Add mobile-specific CSS optimizations: touch-action properties for gesture handling, hardware acceleration transforms for 60fps animations, reduced motion media queries for accessibility, mobile-optimized font sizes and spacing, safe-area padding for notched devices"
+        }
+      ]
+    },
+    {
+      "id": "REQ-18",
+      "summary": "Apply consistent monochrome color schemes for each faction with smooth transitions",
+      "acceptanceCriteria": [
+        "All UI elements use faction-specific color palette",
+        "H.E.V limited to orange and black shades",
+        "HECU limited to green and black shades",
+        "Security limited to blue and black shades",
+        "Combine uses both blue and white freely",
+        "Color transitions smooth when switching factions",
+        "No color leakage between factions"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Verify and enforce monochrome color restrictions for all faction themes. H.E.V theme must use only orange shades (dark to bright) plus black. HECU theme must use only military green shades (dark to bright) plus black. Security theme must use only blue shades (dark to bright) plus black. Combine theme can freely use both blue and white colors (not monochrome). Apply faction colors to all CSS custom properties affecting backgrounds, borders, text, shadows, glows, highlights, accents, progress bars, badges, buttons, and overlays. Add transition properties (transition: color 0.3s, background-color 0.3s, border-color 0.3s) to ensure smooth color changes when switching factions. Remove any multi-color elements that violate monochrome rules"
+        },
+        {
+          "path": "frontend/tailwind.config.js",
+          "operation": "modify",
+          "description": "Review and enforce monochrome color palettes in Tailwind theme extension. Ensure hecu palette contains only green shades, security palette only blue shades, and base H.E.V colors only orange shades. Verify Combine palette includes both blue and white variants. Remove any cross-color contamination. Add color transition utilities"
+        },
+        {
+          "path": "frontend/src/components/hud/Panels.tsx",
+          "operation": "modify",
+          "description": "Audit StatPanel and MeterPanel components to ensure all color applications use faction-specific color variables. Remove any hardcoded colors. Verify progress bars, backgrounds, borders, and text all respect monochrome restrictions per faction"
+        },
+        {
+          "path": "frontend/src/components/hud/HudLayout.tsx",
+          "operation": "modify",
+          "description": "Ensure root HUD container applies faction color theme classes that cascade to all child components. Add smooth transition classes for faction switches. Verify no color leakage occurs during faction transitions"
+        }
+      ]
+    },
+    {
+      "id": "REQ-19",
+      "summary": "Reference all generated images as static frontend assets from frontend/public/assets/generated directory",
+      "acceptanceCriteria": [
+        "Generated images placed in frontend/public/assets/generated/",
+        "Frontend components reference images using /assets/generated/ paths",
+        "Images load correctly without backend routing",
+        "All faction logos and facility maps display properly"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/boot/BootSequenceOverlay.tsx",
+          "operation": "modify",
+          "description": "Update Lambda logo reference to use /assets/generated/lambda-boot.dim_800x800.png from frontend/public/assets/generated/ directory. Ensure image loads before boot animation starts"
+        },
+        {
+          "path": "frontend/src/components/boot/FactionSwitchOverlay.tsx",
+          "operation": "modify",
+          "description": "Update faction logo references to use paths from frontend/public/assets/generated/: hev-logo.dim_256x256.png, hecu-logo.dim_256x256.png, security-logo.dim_256x256.png, combine-logo.dim_256x256.png. Preload all logos on app initialization"
+        },
+        {
+          "path": "frontend/src/components/security/FacilityMapPanel.tsx",
+          "operation": "modify",
+          "description": "Update facility map reference to use /assets/generated/facility-map.dim_1200x800.png from frontend/public/assets/generated/. Ensure map image loads and displays with interactive overlays"
+        },
+        {
+          "path": "frontend/src/components/medical/MedicalDiagram.tsx",
+          "operation": "modify",
+          "description": "Update medical diagram reference to use /assets/generated/hev-medical-diagram.dim_1200x1600.png from frontend/public/assets/generated/"
+        },
+        {
+          "path": "frontend/src/components/weapons/WeaponSchematic.tsx",
+          "operation": "modify",
+          "description": "Update weapon image references to use paths from frontend/public/assets/generated/: weapon-crowbar.dim_512x512.png, weapon-pistol.dim_512x512.png, weapon-shotgun.dim_512x512.png, weapon-smg.dim_512x512.png, weapon-gravity-device.dim_512x512.png"
+        },
+        {
+          "path": "frontend/src/components/security/SecurityCameraGrid.tsx",
+          "operation": "modify",
+          "description": "Update security camera feed references to use paths from frontend/public/assets/generated/: security-cam-01.dim_320x240.png, security-cam-02.dim_320x240.png, security-cam-03.dim_320x240.png"
+        },
+        {
+          "path": "frontend/src/components/hud/HudLayout.tsx",
+          "operation": "modify",
+          "description": "Update any faction logo displays in header to use /assets/generated/ paths for hev-logo.dim_256x256.png, hecu-logo.dim_256x256.png, security-logo.dim_256x256.png, combine-logo.dim_256x256.png"
         }
       ]
     }
