@@ -1,0 +1,69 @@
+{
+  "kind": "build_request",
+  "title": "Restore H.E.V HUD and Add Boot Sequence Skip Button",
+  "projectName": "H.E.V Tactical HUD",
+  "priority": "high",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Restore the H.E.V HUD so it renders correctly after the boot sequence completes. The HUD must be visible and fully functional, displaying all tabs and modules including CRT flicker overlay, faction color-switching, suit voice readout, and all other previously implemented features. The HUD must not disappear or fail to render after the boot-up animation finishes.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1",
+          "msg-3"
+        ],
+        "quotes": [
+          "The hud disappeared",
+          "I'm ready to fix this and bring it back with all 12 features intact (CRT flicker, faction color-switching, suit voice, the works!)"
+        ]
+      },
+      "acceptanceCriteria": [
+        "After the boot sequence completes (onComplete fires), the main HUD view renders visibly on screen",
+        "CRT flicker overlay is present and animating",
+        "Faction color-switching functions correctly across all faction themes",
+        "Suit voice readout component is present and reactive to stat changes",
+        "All HUD tabs (Basics, Hazards, Medical, Tactical, etc.) are accessible and render without errors",
+        "The HUD does not disappear or become invisible after boot-up"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Add a 'SKIP' button to the boot-up sequence overlay (BootSequenceOverlay.tsx) that, when clicked, immediately dismisses the boot animation and navigates straight to the main HUD view, bypassing all remaining boot phases (lambda logo, CRT power-on, scrolling boot text, typewriter voice lines).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4",
+          "msg-5",
+          "msg-6"
+        ],
+        "quotes": [
+          "The boot up went down fine but can you add a skip button as well?",
+          "If should skip boot up and straight to main"
+        ]
+      },
+      "acceptanceCriteria": [
+        "A 'SKIP' button is visible during the boot sequence overlay",
+        "The skip button is positioned consistently (e.g., bottom-right corner of the overlay)",
+        "Clicking the skip button immediately calls onComplete and dismisses the boot overlay",
+        "The main HUD view renders immediately after the skip button is pressed",
+        "The skip button is styled consistently with the HUD aesthetic (faction color tokens, monospace font)",
+        "The skip button does not appear after the boot sequence has already completed"
+      ]
+    }
+  ],
+  "constraints": [
+    "Do not modify files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui",
+    "Preserve all 12 existing HUD features — do not remove or regress any functionality",
+    "All Motoko logic must remain in backend/main.mo as a single actor"
+  ],
+  "nonGoals": [
+    "Adding new HUD features beyond restoration and the skip button",
+    "Changing the boot sequence animation timing or phases (other than adding the skip button)",
+    "Modifying backend data models or state"
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

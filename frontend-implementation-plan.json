@@ -1,0 +1,60 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Restore H.E.V HUD and Add Boot Sequence Skip Button",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Restore the H.E.V HUD so it renders correctly after the boot sequence completes, ensuring all tabs, modules, CRT flicker overlay, faction color-switching, suit voice readout, and other features are visible and fully functional.",
+      "acceptanceCriteria": [
+        "After the boot sequence completes (onComplete fires), the main HUD view renders visibly on screen",
+        "CRT flicker overlay is present and animating",
+        "Faction color-switching functions correctly across all faction themes",
+        "Suit voice readout component is present and reactive to stat changes",
+        "All HUD tabs (Basics, Hazards, Medical, Tactical, etc.) are accessible and render without errors",
+        "The HUD does not disappear or become invisible after boot-up"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Fix the HUD rendering logic after boot sequence completion. Ensure that when showBootSequence is set to false (after onComplete callback), the main HUD content (HudLayout, CrtOverlay, tabs, and all child components) renders correctly. Verify conditional rendering branches do not prevent HUD display. Ensure the boot sequence onComplete handler properly transitions state to show the full HUD with all 12 features intact: CRT flicker overlay, faction color-switching, suit voice readout, tab navigation, hazard panels, stat displays, module toggles, audio controls, tactical overlays, medical panels, weapon systems, and vehicle status."
+        },
+        {
+          "path": "frontend/src/components/hud/CrtOverlay.tsx",
+          "operation": "modify",
+          "description": "Verify the CRT overlay component renders and animates correctly when the boot sequence completes. Ensure scanlines, vignette, flicker, and glitch animations are active (unless reduced motion is preferred). If the overlay was previously hidden or non-functional after boot, restore its visibility and animation state."
+        },
+        {
+          "path": "frontend/src/components/hud/SuitVoiceReadout.tsx",
+          "operation": "modify",
+          "description": "Ensure the suit voice readout component is rendered and functional after boot sequence completion. Verify it displays rotating faction-specific status messages and critical warnings based on health, armor, and hazard level changes. If the component was not rendering post-boot, restore its presence in the HUD layout."
+        },
+        {
+          "path": "frontend/src/components/hud/HudTabsBar.tsx",
+          "operation": "modify",
+          "description": "Verify the HUD tabs bar renders correctly after boot sequence completes, displaying all tab buttons (Basics, Hazards, Medical, Tactical, Weapons, etc.) with alert indicators. Ensure tab navigation is functional and tabs remain visible throughout HUD operation."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Add a 'SKIP' button to the boot-up sequence overlay that immediately dismisses the boot animation and navigates straight to the main HUD view when clicked.",
+      "acceptanceCriteria": [
+        "A 'SKIP' button is visible during the boot sequence overlay",
+        "The skip button is positioned consistently (e.g., bottom-right corner of the overlay)",
+        "Clicking the skip button immediately calls onComplete and dismisses the boot overlay",
+        "The main HUD view renders immediately after the skip button is pressed",
+        "The skip button is styled consistently with the HUD aesthetic (faction color tokens, monospace font)",
+        "The skip button does not appear after the boot sequence has already completed"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/boot/BootSequenceOverlay.tsx",
+          "operation": "modify",
+          "description": "Add a 'SKIP' button to the BootSequenceOverlay component. Position the button consistently in the bottom-right corner of the overlay using absolute positioning. Style the button with faction color tokens (e.g., border-accent, text-accent, hover:bg-accent/10) and monospace font to match the HUD aesthetic. Wire the button's onClick handler to immediately call the onComplete callback prop, bypassing all remaining boot phases (lambda logo, CRT power-on, scrolling boot text, typewriter voice lines). Ensure the button only renders when the boot sequence is active and does not appear after boot completion. Add hover effects and optional audio feedback (UI click sound) on button press for consistency with other HUD controls."
+        }
+      ]
+    }
+  ]
+}

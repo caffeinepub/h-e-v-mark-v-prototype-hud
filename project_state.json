@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "H.E.V HUD project with 12 features (CRT flicker, faction color-switching, suit voice, etc.). HUD disappeared and needs restoration. Adding a skip button to the boot-up sequence that jumps straight to the main HUD view.",
+  "architectural_notes": [],
+  "known_issues": [
+    "H.E.V HUD disappeared after boot-up sequence completed successfully"
+  ],
+  "isFixRequest": true,
+  "existing_features": [
+    {
+      "id": "feature-restore-the-h-e-v-hud-so-it-renders-correctly-after-the-boot-sequence-completes-the-hud-must-be-visible-and-fully-functional-displaying-all-tabs-and-modules-including-crt-flicker-overlay-faction-color-switching-suit-voice-readout-and-all-other-previously-implemented-features-the-hud-must-not-disappear-or-fail-to-render-after-the-boot-up-animation-finishes",
+      "title": "Restore the H.E.V HUD so it renders correctly after the boot sequence completes. The HUD must be visible and fully functional, displaying all tabs and modules including CRT flicker overlay, faction color-switching, suit voice readout, and all other previously implemented features. The HUD must not disappear or fail to render after the boot-up animation finishes.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-skip-button-to-the-boot-up-sequence-overlay-bootsequenceoverlay-tsx-that-when-clicked-immediately-dismisses-the-boot-animation-and-navigates-straight-to-the-main-hud-view-bypassing-all-remaining-boot-phases-lambda-logo-crt-power-on-scrolling-boot-text-typewriter-voice-lines",
+      "title": "Add a 'SKIP' button to the boot-up sequence overlay (BootSequenceOverlay.tsx) that, when clicked, immediately dismisses the boot animation and navigates straight to the main HUD view, bypassing all remaining boot phases (lambda logo, CRT power-on, scrolling boot text, typewriter voice lines).",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Restore H.E.V HUD with all 12 features (CRT flicker, faction color-switching, suit voice, etc.)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Add a skip button to the boot-up sequence that jumps straight to the main HUD view",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "H.E.V HUD",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

@@ -1,0 +1,483 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   OKLCH COLOR SYSTEM — H.E.V. HUD
+   ============================================================ */
+@layer base {
+  :root {
+    /* Base */
+    --background: oklch(0.08 0.005 60);
+    --foreground: oklch(0.92 0.04 75);
+
+    /* Card / Popover */
+    --card: oklch(0.10 0.006 60);
+    --card-foreground: oklch(0.90 0.04 75);
+    --popover: oklch(0.10 0.006 60);
+    --popover-foreground: oklch(0.90 0.04 75);
+
+    /* Primary — H.E.V. Orange */
+    --primary: oklch(0.72 0.18 55);
+    --primary-foreground: oklch(0.08 0.005 60);
+
+    /* Secondary */
+    --secondary: oklch(0.15 0.01 60);
+    --secondary-foreground: oklch(0.80 0.04 75);
+
+    /* Muted */
+    --muted: oklch(0.14 0.008 60);
+    --muted-foreground: oklch(0.55 0.03 70);
+
+    /* Accent — H.E.V. Orange glow */
+    --accent: oklch(0.72 0.18 55);
+    --accent-foreground: oklch(0.08 0.005 60);
+
+    /* Destructive */
+    --destructive: oklch(0.60 0.22 25);
+    --destructive-foreground: oklch(0.95 0.01 25);
+
+    /* Border / Input / Ring */
+    --border: oklch(0.22 0.02 60);
+    --input: oklch(0.14 0.008 60);
+    --ring: oklch(0.72 0.18 55);
+
+    /* Radius */
+    --radius: 0px;
+
+    /* Faction-specific tokens */
+    --hecu-primary: oklch(0.65 0.14 140);
+    --hecu-accent: oklch(0.70 0.16 135);
+    --security-primary: oklch(0.60 0.14 230);
+    --security-accent: oklch(0.65 0.16 225);
+    --resistance-primary: oklch(0.68 0.16 280);
+    --resistance-accent: oklch(0.72 0.18 275);
+  }
+
+  /* Dark mode — same as default (HUD is always dark) */
+  .dark {
+    --background: oklch(0.06 0.005 60);
+    --foreground: oklch(0.92 0.04 75);
+    --card: oklch(0.09 0.006 60);
+    --card-foreground: oklch(0.90 0.04 75);
+    --popover: oklch(0.09 0.006 60);
+    --popover-foreground: oklch(0.90 0.04 75);
+    --primary: oklch(0.72 0.18 55);
+    --primary-foreground: oklch(0.08 0.005 60);
+    --secondary: oklch(0.13 0.01 60);
+    --secondary-foreground: oklch(0.80 0.04 75);
+    --muted: oklch(0.12 0.008 60);
+    --muted-foreground: oklch(0.50 0.03 70);
+    --accent: oklch(0.72 0.18 55);
+    --accent-foreground: oklch(0.08 0.005 60);
+    --destructive: oklch(0.58 0.22 25);
+    --destructive-foreground: oklch(0.95 0.01 25);
+    --border: oklch(0.20 0.02 60);
+    --input: oklch(0.12 0.008 60);
+    --ring: oklch(0.72 0.18 55);
+  }
+
+  /* ── Faction themes ── */
+  .faction-hecu {
+    --accent: var(--hecu-accent);
+    --primary: var(--hecu-primary);
+    --ring: var(--hecu-accent);
+  }
+  .faction-security {
+    --accent: var(--security-accent);
+    --primary: var(--security-primary);
+    --ring: var(--security-accent);
+  }
+  .faction-resistance {
+    --accent: var(--resistance-accent);
+    --primary: var(--resistance-primary);
+    --ring: var(--resistance-accent);
+  }
+}
+
+/* ============================================================
+   GLOBAL RESET & BASE
+   ============================================================ */
+@layer base {
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+  }
+
+  html, body, #root {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: oklch(0.30 0.05 60);
+    border-radius: 0;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: oklch(0.50 0.10 60);
+  }
+}
+
+/* ============================================================
+   HUD CONTAINER
+   ============================================================ */
+@layer components {
+  .hud-root {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: oklch(0.07 0.005 60);
+    transform-origin: top left;
+  }
+
+  .hud-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .hud-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.375rem 0.75rem;
+    border-bottom: 1px solid oklch(0.22 0.02 60);
+    background: oklch(0.09 0.006 60 / 0.9);
+    font-family: 'Orbitron', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: oklch(0.72 0.18 55);
+    flex-shrink: 0;
+  }
+
+  .hud-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  .hud-tabs-bar {
+    flex-shrink: 0;
+  }
+
+  .hud-tab-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0.5rem;
+    min-height: 0;
+  }
+}
+
+/* ============================================================
+   CRT EFFECTS
+   ============================================================ */
+@layer components {
+  .crt-scanlines {
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      oklch(0 0 0 / 0.08) 2px,
+      oklch(0 0 0 / 0.08) 4px
+    );
+    pointer-events: none;
+  }
+
+  .crt-flicker {
+    animation: crt-flicker 8s infinite;
+    background: oklch(0.95 0.02 60 / 0.03);
+  }
+
+  @keyframes crt-flicker {
+    0%, 95%, 100% { opacity: 0; }
+    96% { opacity: 1; }
+    97% { opacity: 0; }
+    98% { opacity: 0.8; }
+    99% { opacity: 0; }
+  }
+}
+
+/* ============================================================
+   BOOT SEQUENCE
+   ============================================================ */
+@layer components {
+  .boot-overlay {
+    background: oklch(0.05 0.004 60);
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .boot-scanlines {
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      oklch(0 0 0 / 0.12) 3px,
+      oklch(0 0 0 / 0.12) 6px
+    );
+    pointer-events: none;
+  }
+
+  .boot-glitch-flash {
+    background: oklch(0.72 0.18 55 / 0.08);
+    animation: glitch-flash 0.12s steps(2) forwards;
+  }
+
+  @keyframes glitch-flash {
+    0% { opacity: 1; transform: translateX(0); }
+    25% { opacity: 0.5; transform: translateX(-2px); }
+    50% { opacity: 1; transform: translateX(2px); }
+    75% { opacity: 0.3; transform: translateX(-1px); }
+    100% { opacity: 0; transform: translateX(0); }
+  }
+
+  .boot-logo-glow {
+    filter: drop-shadow(0 0 12px oklch(0.72 0.18 55 / 0.7));
+  }
+}
+
+/* ============================================================
+   HUD PANELS
+   ============================================================ */
+@layer components {
+  .hud-panel {
+    border: 1px solid oklch(0.22 0.02 60);
+    background: oklch(0.10 0.006 60 / 0.85);
+    padding: 0.5rem;
+    position: relative;
+  }
+
+  .hud-panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 8px; height: 8px;
+    border-top: 1px solid oklch(0.72 0.18 55 / 0.6);
+    border-left: 1px solid oklch(0.72 0.18 55 / 0.6);
+  }
+
+  .hud-panel::after {
+    content: '';
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 8px; height: 8px;
+    border-bottom: 1px solid oklch(0.72 0.18 55 / 0.6);
+    border-right: 1px solid oklch(0.72 0.18 55 / 0.6);
+  }
+
+  .hud-panel-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: oklch(0.72 0.18 55);
+    margin-bottom: 0.375rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid oklch(0.22 0.02 60);
+  }
+
+  /* Faction panel variants */
+  .faction-hecu .hud-panel::before,
+  .faction-hecu .hud-panel::after {
+    border-color: oklch(0.70 0.16 135 / 0.6);
+  }
+  .faction-hecu .hud-panel-title {
+    color: oklch(0.70 0.16 135);
+  }
+
+  .faction-security .hud-panel::before,
+  .faction-security .hud-panel::after {
+    border-color: oklch(0.65 0.16 225 / 0.6);
+  }
+  .faction-security .hud-panel-title {
+    color: oklch(0.65 0.16 225);
+  }
+
+  .faction-resistance .hud-panel::before,
+  .faction-resistance .hud-panel::after {
+    border-color: oklch(0.72 0.18 275 / 0.6);
+  }
+  .faction-resistance .hud-panel-title {
+    color: oklch(0.72 0.18 275);
+  }
+}
+
+/* ============================================================
+   PROGRESS BARS
+   ============================================================ */
+@layer components {
+  .hud-progress {
+    height: 6px;
+    background: oklch(0.14 0.008 60);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .hud-progress-bar {
+    height: 100%;
+    background: oklch(0.72 0.18 55);
+    transition: width 0.4s ease;
+    position: relative;
+  }
+
+  .hud-progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 2px; height: 100%;
+    background: oklch(0.95 0.05 60 / 0.8);
+  }
+
+  .hud-progress-bar.critical {
+    background: oklch(0.60 0.22 25);
+    animation: critical-pulse 1s ease-in-out infinite;
+  }
+
+  .hud-progress-bar.warning {
+    background: oklch(0.75 0.18 75);
+  }
+
+  @keyframes critical-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+}
+
+/* ============================================================
+   TACTICAL / RADAR
+   ============================================================ */
+@layer components {
+  .tactical-reticle {
+    border: 1px solid oklch(0.72 0.18 55 / 0.4);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .radar-sweep {
+    animation: radar-sweep 3s linear infinite;
+    transform-origin: center bottom;
+  }
+
+  @keyframes radar-sweep {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@layer utilities {
+  @keyframes hud-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  @keyframes hud-slide-in {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  @keyframes hud-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes damage-flash {
+    0% { opacity: 0.8; }
+    100% { opacity: 0; }
+  }
+
+  @keyframes geiger-tick {
+    0%, 90%, 100% { transform: scaleX(1); }
+    95% { transform: scaleX(1.05); }
+  }
+
+  .animate-hud-blink { animation: hud-blink 1s step-end infinite; }
+  .animate-hud-slide-in { animation: hud-slide-in 0.3s ease-out; }
+  .animate-hud-fade-in { animation: hud-fade-in 0.4s ease-out; }
+  .animate-damage-flash { animation: damage-flash 0.6s ease-out forwards; }
+  .animate-geiger { animation: geiger-tick 0.3s ease-in-out; }
+}
+
+/* ============================================================
+   RESPONSIVE / MOBILE
+   ============================================================ */
+@layer utilities {
+  @media (max-width: 640px) {
+    .hud-tab-content {
+      padding: 0.25rem;
+    }
+    .hud-header {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.55rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .crt-flicker,
+    .boot-glitch-flash,
+    .animate-hud-blink,
+    .animate-pulse,
+    .radar-sweep {
+      animation: none !important;
+    }
+  }
+}
+
+/* ============================================================
+   SCROLLBAR STYLING FOR HUD PANELS
+   ============================================================ */
+.hud-tab-content::-webkit-scrollbar {
+  width: 3px;
+}
+.hud-tab-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.hud-tab-content::-webkit-scrollbar-thumb {
+  background: oklch(0.30 0.08 55);
+}
+
+/* ============================================================
+   FACTION SWITCH OVERLAY
+   ============================================================ */
+.faction-switch-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9500;
+  background: oklch(0.05 0.004 60 / 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Share Tech Mono', monospace;
+}
